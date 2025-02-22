@@ -5,6 +5,8 @@ import (
 	"errors"
 	"fmt"
 	"github.com/spf13/viper"
+	"path/filepath"
+	"runtime"
 	"strings"
 )
 
@@ -35,9 +37,12 @@ type EnvConfig struct {
 func NewEnvConfig() (*EnvConfig, error) {
 	v := viper.New()
 
+	_, b, _, _ := runtime.Caller(0)
+	projectRoot := filepath.Join(filepath.Dir(b), "..")
+
 	v.SetConfigName(".env")
 	v.SetConfigType("env")
-	v.AddConfigPath("../")
+	v.AddConfigPath(projectRoot)
 
 	v.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 
@@ -46,6 +51,7 @@ func NewEnvConfig() (*EnvConfig, error) {
 		if !errors.As(err, &configFileNotFoundError) {
 			return nil, errPackage.ErrEnvFileNotFound
 		}
+		return nil, err
 	}
 
 	v.AutomaticEnv()
@@ -61,29 +67,37 @@ func NewEnvConfig() (*EnvConfig, error) {
 
 func validateConfig(config *EnvConfig) error {
 	if config.Database.Host == "" {
-		return fmt.Errorf("DB_HOST es requerido")
+		return fmt.Errorf("DB_HOST is required")
 	}
 	if config.Database.User == "" {
-		return fmt.Errorf("DB_USERNAME es requerido")
+		return fmt.Errorf("DB_USERNAME is required")
 	}
 	if config.Database.Password == "" {
-		return fmt.Errorf("DB_PASSWORD es requerido")
+		return fmt.Errorf("DB_PASSWORD is required")
 	}
 	return nil
 }
 
 func MapEnvKeys(v *viper.Viper) {
-	v.BindEnv("server.port", "SERVER_PORT")
-	v.BindEnv("database.host", "DB_HOST")
-	v.BindEnv("database.port", "DB_PORT")
-	v.BindEnv("database.name", "DB_DATABASE")
-	v.BindEnv("database.user", "DB_USERNAME")
-	v.BindEnv("database.driver", "DB_DRIVER")
-	v.BindEnv("database.password", "DB_PASSWORD")
-	v.BindEnv("database.charset", "DB_CHARSET")
-	v.BindEnv("redis.host", "REDIS_HOST")
-	v.BindEnv("redis.port", "REDIS_PORT")
-	v.BindEnv("redis.password", "REDIS_PASSWORD")
-	v.BindEnv("log.level", "LOG_LEVEL")
-	v.BindEnv("log.fileLogging", "LOG_FILE_LOGGING")
+	// .env keys for database connection
+	v.Set("database.host", v.GetString("db_host"))
+	v.Set("database.port", v.GetString("db_port"))
+	v.Set("database.name", v.GetString("db_name"))
+	v.Set("database.user", v.GetString("db_user"))
+	v.Set("database.password", v.GetString("db_password"))
+	v.Set("database.charset", v.GetString("db_charset"))
+	v.Set("database.driver", v.GetString("db_driver"))
+
+	// .env keys for redis connection
+	v.Set("redis.host", v.GetString("redis_host"))
+	v.Set("redis.port", v.GetString("redis_port"))
+	v.Set("redis.password", v.GetString("redis_password"))
+
+	// .env keys for server configuration
+	v.Set("server.port", v.GetString("server_port"))
+
+	// .env keys for log configuration
+	v.Set("log.level", v.GetString("log_level"))
+	v.Set("log.fileLogging", v.GetString("log_file_logging"))
+
 }
