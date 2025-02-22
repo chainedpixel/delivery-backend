@@ -4,6 +4,7 @@ import (
 	"config"
 	"fmt"
 	"github.com/sirupsen/logrus"
+	"io"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -11,11 +12,18 @@ import (
 	"strings"
 )
 
+var Logger *logrus.Logger
+var logsLevel = map[string]logrus.Level{
+	"debug": logrus.DebugLevel,
+	"info":  logrus.InfoLevel,
+	"warn":  logrus.WarnLevel,
+	"error": logrus.ErrorLevel,
+	"fatal": logrus.FatalLevel,
+}
+
 type CustomFormatter struct {
 	logrus.TextFormatter
 }
-
-var Logger *logrus.Logger
 
 func (f *CustomFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 	levelColors := map[logrus.Level]string{
@@ -30,7 +38,7 @@ func (f *CustomFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 	level := strings.ToUpper(entry.Level.String())
 	color := levelColors[entry.Level]
 
-	baseMessage := fmt.Sprintf("%s [%s%s\033[0m] %s",
+	baseMessage := fmt.Sprintf("%s %s [%s]\033[0m %s",
 		color,
 		timestamp,
 		level,
@@ -39,9 +47,9 @@ func (f *CustomFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 
 	var fields string
 	if len(entry.Data) > 0 {
-		fields = "\nDetails:\n"
+		fields = "\n	Details:\n"
 		for k, v := range entry.Data {
-			fields += fmt.Sprintf("	%-20s: %v\n", k, v)
+			fields += fmt.Sprintf("	%-10s: %v\n", k, v)
 		}
 	}
 
@@ -52,27 +60,31 @@ func InitLogger(envConfig *config.EnvConfig) error {
 	_, b, _, _ := runtime.Caller(0)
 	Logger = logrus.New()
 
-	Logger.SetFormatter(&CustomFormatter{
+	formatter := &CustomFormatter{
 		TextFormatter: logrus.TextFormatter{
 			DisableColors: false,
 			FullTimestamp: true,
 		},
-	})
+	}
 
+	Logger.SetFormatter(formatter)
 	Logger.SetLevel(determineLogLevel(envConfig.Log.Level))
-	projectRoot := filepath.Join(filepath.Dir(b))
-	logFile, err := os.OpenFile(projectRoot+"system.log",
-		os.O_APPEND|os.O_CREATE|os.O_WRONLY,
-		0666,
-	)
-	if err != nil {
-		return errPackage.ErrFailedToCreateLogFiles
+	Logger.SetOutput(os.Stdout)
+
+	if envConfig.Log.FileLogging {
+		logFile, err := os.OpenFile(
+			filepath.Join(filepath.Dir(b), "system.log"),
+			os.O_APPEND|os.O_CREATE|os.O_WRONLY,
+			0666,
+		)
+		if err != nil {
+			return errPackage.ErrFailedToCreateLogFiles
+		}
+
+		mw := io.MultiWriter(os.Stdout, logFile)
+		Logger.SetOutput(mw)
 	}
 
-	Logger.SetOutput(os.Stdout)
-	if envConfig.Log.FileLogging {
-		Logger.SetOutput(logFile)
-	}
 	return nil
 }
 
@@ -105,18 +117,26 @@ func Fatal(msg string, fields ...map[string]interface{}) {
 }
 
 func determineLogLevel(logLevel string) logrus.Level {
-	switch logLevel {
-	case "debug":
-		return logrus.DebugLevel
-	case "info":
-		return logrus.InfoLevel
-	case "warn":
-		return logrus.WarnLevel
-	case "error":
-		return logrus.ErrorLevel
-	case "fatal":
-		return logrus.FatalLevel
-	default:
-		return logrus.InfoLevel
+	if level, ok := logsLevel[logLevel]; ok {
+		return level
 	}
+	return logrus.InfoLevel
+}
+
+type WriteHook struct {
+	Writer    io.Writer
+	Formatter logrus.Formatter
+}
+
+func (hook *WriteHook) Fire(entry *logrus.Entry) error {
+	line, err := hook.Formatter.Format(entry)
+	if err != nil {
+		return err
+	}
+	_, err = hook.Writer.Write(line)
+	return err
+}
+
+func (hook *WriteHook) Levels() []logrus.Level {
+	return logrus.AllLevels
 }
