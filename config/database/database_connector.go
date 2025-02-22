@@ -11,6 +11,7 @@ type DriverConfig interface {
 	GetDSN() gorm.Dialector
 	GetDriverName() string
 	GetHost() string
+	GetStringConnection() string
 }
 
 type DbConnection struct {
@@ -31,8 +32,9 @@ func (d *DbConnection) Open() error {
 	d.Db, d.Err = gorm.Open(d.Driver.GetDSN(), d.Config)
 	if d.Err != nil {
 		logs.Error(errPackage.ErrFailedToConnectDb.Error(), map[string]interface{}{
-			"Database type:": d.Driver.GetDriverName(),
-			"Database error": d.Err.Error(),
+			"Database type:":      d.Driver.GetDriverName(),
+			"Database connection": d.Driver.GetStringConnection(),
+			"Database error":      d.Err.Error(),
 		})
 		return d.Err
 	}
@@ -49,16 +51,18 @@ func (d *DbConnection) Close() error {
 	dbInstance, err := d.Db.DB()
 	if err != nil {
 		logs.Error(errPackage.ErrFailedToGetDBInstance.Error(), map[string]interface{}{
-			"Database type:": d.Driver.GetDriverName(),
-			"Database error": err.Error(),
+			"Database type:":      d.Driver.GetDriverName(),
+			"Database connection": d.Driver.GetStringConnection(),
+			"Database error":      err.Error(),
 		})
 		return err
 	}
 
 	if err := dbInstance.Close(); err != nil {
 		logs.Error(errPackage.ErrFailedToCloseDbConnection.Error(), map[string]interface{}{
-			"Database type:": d.Driver.GetDriverName(),
-			"Database error": err.Error(),
+			"Database type:":      d.Driver.GetDriverName(),
+			"Database connection": d.Driver.GetStringConnection(),
+			"Database error":      err.Error(),
 		})
 		return err
 	}

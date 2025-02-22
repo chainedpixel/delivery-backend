@@ -43,7 +43,7 @@ func (c *Container) Initialize() error {
 		return err
 	}
 
-	c.services = NewServiceContainer(c.repositories)
+	c.services = NewServiceContainer(c.repositories, c.config)
 	if err := c.services.Initialize(); err != nil {
 		return err
 	}
@@ -64,4 +64,24 @@ func (c *Container) Initialize() error {
 	}
 
 	return nil
+}
+
+func (c *Container) GetRepositoryContainer() *RepositoryContainer {
+	return c.repositories
+}
+
+func (c *Container) GetServiceContainer() *ServiceContainer {
+	return c.services
+}
+
+func (c *Container) GetUseCaseContainer() *UseCaseContainer {
+	return c.useCases
+}
+
+func (c *Container) GetHandlerContainer() *HandlerContainer {
+	return c.handlers
+}
+
+func (c *Container) GetMiddlewareContainer() *MiddlewareContainer {
+	return c.middleware
 }

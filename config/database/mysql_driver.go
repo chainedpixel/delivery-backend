@@ -16,15 +16,17 @@ func NewMysqlDriver(config *config.EnvConfig) *MysqlDriver {
 }
 
 func (m *MysqlDriver) GetDSN() gorm.Dialector {
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)%s?charset=%s&parseTime=True&loc=Local",
+	return mysql.Open(m.GetStringConnection())
+}
+
+func (m *MysqlDriver) GetStringConnection() string {
+	return fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=%s&parseTime=True&loc=Local",
 		m.Config.Database.User,
 		m.Config.Database.Password,
 		m.Config.Database.Host,
 		m.Config.Database.Port,
 		m.Config.Database.Name,
 		m.Config.Database.Charset)
-
-	return mysql.Open(dsn)
 }
 
 func (m *MysqlDriver) GetHost() string {

@@ -19,6 +19,10 @@ var (
 	ErrInvalidCredentials = errors.New("invalid email or password")
 	ErrInactiveUser       = errors.New("user is inactive")
 
+	ErrSessionNotFound   = errors.New("the session assigned to the token was not found, probably was deleted or expired")
+	ErrSessionDBNotFound = errors.New("the session assigned to the token was not found")
+	ErrGenericDBError    = errors.New("an error occurred while trying to execute the operation in the database")
+
 	ErrAuthorizationHeaderNotFound = errors.New("authorization header not found, please provide a valid token")
 	ErrInvalidAuthorizationFormat  = errors.New("invalid authorization format, the format should be 'Bearer <token>'")
 	ErrTokenExpiredOrTampered      = errors.New("token is expired or has been tampered with, please provide a valid token")

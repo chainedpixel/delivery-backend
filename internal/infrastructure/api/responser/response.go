@@ -12,6 +12,6 @@ type APIErrorResponse struct {
 
 type APIError struct {
 	Message string   `json:"message"`
-	Details []string `json:"details"`
+	Details []string `json:"details,omitempty"`
 	Code    string   `json:"code"`
 }
