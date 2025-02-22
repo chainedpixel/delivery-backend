@@ -7,7 +7,9 @@ type RedisConfig struct {
 }
 
 func NewRedisConfig(config *EnvConfig) *RedisConfig {
-	return &RedisConfig{}
+	return &RedisConfig{
+		config: config,
+	}
 }
 
 func (c *RedisConfig) GetURL() string {
