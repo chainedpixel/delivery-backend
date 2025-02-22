@@ -32,7 +32,7 @@ func (s *JWTService) GenerateToken(claims *auth.AuthClaims) (string, error) {
 
 	claims.ExpiresAt = exp
 
-	// Creamos los claims del JWT
+	// 1. Crear los claims del JWT
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"sub":  claims.UserID,
 		"role": claims.Role,
@@ -40,7 +40,7 @@ func (s *JWTService) GenerateToken(claims *auth.AuthClaims) (string, error) {
 		"iat":  now.Unix(),
 	})
 
-	// Firmamos el token
+	// 2. Firma del token
 	signedToken, err := token.SignedString([]byte(s.secretKey))
 	if err != nil {
 		logs.Error("Failed to sign token", map[string]interface{}{
@@ -49,16 +49,15 @@ func (s *JWTService) GenerateToken(claims *auth.AuthClaims) (string, error) {
 		return "", errPackage.ErrFailedToSignToken
 	}
 
-	// Guardamos el token en caché
+	// 3. Guardar el token en cache
 	key := "token:" + signedToken
 	jsonClaims, err := json.Marshal(claims)
 	if err != nil {
 		logs.Error("Failed to marshal claims", map[string]interface{}{
 			"error": err.Error(),
 		})
-		return "", errPackage.ErrFailedToMarshalClaims
+		return "", errPackage.ErrFailedToParseJSON
 	}
-
 	if err := s.cacheService.Set(key, jsonClaims, s.tokenTTL); err != nil {
 		logs.Error("Failed to store token in cache", map[string]interface{}{
 			"error": err.Error(),
@@ -75,7 +74,7 @@ func (s *JWTService) GenerateToken(claims *auth.AuthClaims) (string, error) {
 
 // ValidateToken valida un token JWT y retorna los claims si es válido
 func (s *JWTService) ValidateToken(tokenString string) (*auth.AuthClaims, error) {
-	// Primero verificamos en caché
+	// 1. Buscar el token en cache
 	key := "token:" + tokenString
 	cachedClaims, err := s.cacheService.Get(key)
 	if err != nil {
@@ -84,23 +83,21 @@ func (s *JWTService) ValidateToken(tokenString string) (*auth.AuthClaims, error)
 		})
 		return nil, err
 	}
-
 	var userClaims auth.AuthClaims
 	if err := json.Unmarshal([]byte(cachedClaims), &userClaims); err != nil {
 		logs.Error("Failed to unmarshal claims", map[string]interface{}{
 			"error": err.Error(),
 		})
-		return nil, errPackage.ErrFailedToUnmarshalClaims
+		return nil, errPackage.ErrFailedToUnparseJSON
 	}
 
-	// Validamos el token JWT
+	// 2. Validar el token
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("%w: %v", errPackage.ErrUnexpectedSigningMethod, token.Header["alg"])
 		}
 		return []byte(s.secretKey), nil
 	})
-
 	if err != nil || !token.Valid {
 		logs.Error("Invalid token", map[string]interface{}{
 			"error": err,

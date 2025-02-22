@@ -3,8 +3,8 @@ package error
 import "errors"
 
 var (
-	ErrFailedToMarshalClaims   = errors.New("failed to marshal claims")
-	ErrFailedToUnmarshalClaims = errors.New("failed to unmarshal claims")
+	ErrFailedToParseJSON   = errors.New("failed to marshal content")
+	ErrFailedToUnparseJSON = errors.New("failed to unmarshal content")
 
 	ErrFailedToSignToken       = errors.New("failed to sign token")
 	ErrUnexpectedSigningMethod = errors.New("unexpected signing method")
