@@ -1,6 +1,7 @@
 package ports
 
 import (
+	"domain/delivery/models/auth"
 	"github.com/go-redis/redis/v8"
 	"time"
 )
@@ -23,8 +24,8 @@ type CacheListService interface {
 }
 
 type TokenService interface {
-	GenerateToken(claims *UserClaims) (string, error)
-	ValidateToken(token string) (*UserClaims, error)
+	GenerateToken(claims *auth.AuthClaims) (string, error)
+	ValidateToken(token string) (*auth.AuthClaims, error)
 	RevokeToken(token string) error
 	GetTokenTTL() time.Duration
 }

@@ -18,4 +18,8 @@ var (
 
 	ErrInvalidCredentials = errors.New("invalid email or password")
 	ErrInactiveUser       = errors.New("user is inactive")
+
+	ErrAuthorizationHeaderNotFound = errors.New("authorization header not found, please provide a valid token")
+	ErrInvalidAuthorizationFormat  = errors.New("invalid authorization format, the format should be 'Bearer <token>'")
+	ErrTokenExpiredOrTampered      = errors.New("token is expired or has been tampered with, please provide a valid token")
 )

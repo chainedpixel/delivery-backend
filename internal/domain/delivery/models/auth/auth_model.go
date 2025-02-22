@@ -10,14 +10,3 @@ type Credentials struct {
 	IPAddress  string
 	CreatedAt  time.Time
 }
-
-// NewCredentials crea una nueva instancia de credenciales
-func NewCredentials(email, password, ipAddress string, deviceInfo map[string]interface{}) *Credentials {
-	return &Credentials{
-		Email:      email,
-		Password:   password,
-		DeviceInfo: deviceInfo,
-		IPAddress:  ipAddress,
-		CreatedAt:  time.Now(),
-	}
-}
