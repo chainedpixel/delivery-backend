@@ -21,3 +21,10 @@ type CacheListService interface {
 	LLen(key string) (int64, error)                         // Obtiene longitud de la lista
 	LTrim(key string, start, stop int64) error              // Mantiene solo el rango especificado
 }
+
+type TokenService interface {
+	GenerateToken(claims *UserClaims) (string, error)
+	ValidateToken(token string) (*UserClaims, error)
+	RevokeToken(token string) error
+	GetTokenTTL() time.Duration
+}
