@@ -12,7 +12,8 @@ import (
 
 type EnvConfig struct {
 	Server struct {
-		Port string
+		Port      string
+		JWTSecret string
 	}
 	Database struct {
 		Host     string
@@ -95,6 +96,7 @@ func MapEnvKeys(v *viper.Viper) {
 
 	// .env keys for server configuration
 	v.Set("server.port", v.GetString("server_port"))
+	v.Set("server.jwtSecret", v.GetString("jwt_secret"))
 
 	// .env keys for log configuration
 	v.Set("log.level", v.GetString("log_level"))
