@@ -10,8 +10,8 @@ type UserRole struct {
 	RoleID     string     `gorm:"column:role_id;type:char(36);primaryKey;not null" json:"role_id"`
 	AssignedAt time.Time  `gorm:"column:assigned_at;type:timestamp;default:CURRENT_TIMESTAMP" json:"assigned_at"`
 	AssignedBy string     `gorm:"column:assigned_by;type:char(36);not null" json:"assigned_by"`
-	IsActive   bool       `gorm:"column:is_active;type:boolean;default:true" json:"is_active"`
-	CreatedAt  time.Time  `gorm:"column:created_at;type:timestamp;default:CURRENT_TIMESTAMP" json:"created_at"`
+	IsActive   bool       `gorm:"column:is_active;type:boolean;default:true" json:"-"`
+	CreatedAt  time.Time  `gorm:"column:created_at;type:timestamp;default:CURRENT_TIMESTAMP" json:"-"`
 	User       *User      `gorm:"foreignKey:UserID;references:ID" json:"-"`
 	Role       *auth.Role `gorm:"foreignKey:RoleID;references:ID" json:"auth,omitempty"`
 }

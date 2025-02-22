@@ -11,8 +11,8 @@ type UserProfile struct {
 	EmergencyContactName  string     `gorm:"column:emergency_contact_name;type:varchar(255)" json:"emergency_contact_name,omitempty"`
 	EmergencyContactPhone string     `gorm:"column:emergency_contact_phone;type:varchar(20)" json:"emergency_contact_phone,omitempty"`
 	AdditionalInfo        string     `gorm:"column:additional_info;type:text" json:"additional_info,omitempty"`
-	CreatedAt             time.Time  `gorm:"column:created_at;type:timestamp;default:CURRENT_TIMESTAMP" json:"created_at"`
-	UpdatedAt             time.Time  `gorm:"column:updated_at;type:timestamp;default:CURRENT_TIMESTAMP" json:"updated_at"`
+	CreatedAt             time.Time  `gorm:"column:created_at;type:timestamp;default:CURRENT_TIMESTAMP" json:"-"`
+	UpdatedAt             time.Time  `gorm:"column:updated_at;type:timestamp;default:CURRENT_TIMESTAMP" json:"-"`
 	User                  *User      `gorm:"foreignKey:UserID;references:ID" json:"-"`
 }
 

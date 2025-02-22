@@ -2,8 +2,12 @@ package responser
 
 import (
 	"encoding/json"
+	"errors"
+	"fmt"
+	errPackage "infrastructure/error"
 	"net/http"
 	"shared/logs"
+	"strings"
 )
 
 type errorType string
@@ -79,14 +83,18 @@ func (w *ResponseWriter) handleValidationError(rw http.ResponseWriter, err error
 
 // handleBusinessError maneja los errores de negocio y envía una respuesta de error con el código de estado y el mensaje correspondiente.
 func (w *ResponseWriter) handleBusinessError(rw http.ResponseWriter, err error) {
-	rw.WriteHeader(http.StatusBadRequest)
-	json.NewEncoder(rw).Encode(APIResponse{
-		Success: false,
-		Error: &APIError{
-			Message: err.Error(),
-			Code:    "BUSINESS_ERROR",
-		},
-	})
+	var svcErr *errPackage.ServiceError
+	if errors.As(err, &svcErr) {
+		rw.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(rw).Encode(APIResponse{
+			Success: false,
+			Error: &APIError{
+				Message: svcErr.Error(),
+				Code:    fmt.Sprintf("BUSINESS_%s_ERROR", strings.ToUpper(svcErr.Type)),
+			},
+		})
+		return
+	}
 }
 
 // handleSystemError maneja los errores de sistema y envía una respuesta de error con el código de estado y el mensaje correspondiente.
@@ -124,6 +132,8 @@ func deriveErrorCode(status int, message string) string {
 // getErrorType obtiene el tipo de error de acuerdo al tipo de error proporcionado.
 func getErrorType(err error) errorType {
 	switch err.(type) {
+	case *errPackage.ServiceError:
+		return errorBusiness
 	default:
 		return errorSystem
 	}

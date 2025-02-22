@@ -16,14 +16,16 @@ func NewPostgresDriver(config *config.EnvConfig) *PostgresDriver {
 }
 
 func (p *PostgresDriver) GetDSN() gorm.Dialector {
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=America/El_Salvador",
+	return postgres.Open(p.GetStringConnection())
+}
+
+func (p *PostgresDriver) GetStringConnection() string {
+	return fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=America/El_Salvador",
 		p.Config.Database.Host,
 		p.Config.Database.User,
 		p.Config.Database.Password,
 		p.Config.Database.Name,
 		p.Config.Database.Port)
-
-	return postgres.Open(dsn)
 }
 
 func (p *PostgresDriver) GetHost() string {
