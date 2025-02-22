@@ -1,0 +1,4 @@
+.env
+.idea
+/internal/shared/logs/*.log
+mock_*.go

@@ -1,0 +1,12 @@
+go 1.23.2
+
+use (
+	./bootstrap
+	./cmd
+	./config
+	./internal/application
+	./internal/domain
+	./internal/infrastructure
+	./internal/shared
+	./test
+)
