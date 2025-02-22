@@ -2,7 +2,7 @@ package ports
 
 import (
 	"context"
-	"domain/delivery/models/role"
+	"domain/delivery/models/auth"
 	"domain/delivery/models/user"
 )
 
@@ -29,8 +29,8 @@ type UserRepository interface {
 	// Operaciones de Roles y Permisos
 	AssignRoleToUser(ctx context.Context, userID string, roleID string, assignedBy string) error
 	RemoveRoleFromUser(ctx context.Context, userID string, roleID string) error
-	GetUserRoles(ctx context.Context, userID string) ([]role.Role, error)
-	GetUserPermissions(ctx context.Context, userID string) ([]role.Permission, error)
+	GetUserRoles(ctx context.Context, userID string) ([]auth.Role, error)
+	GetUserPermissions(ctx context.Context, userID string) ([]auth.Permission, error)
 
 	// Operaciones de verificación
 	MarkEmailAsVerified(ctx context.Context, userID string) error

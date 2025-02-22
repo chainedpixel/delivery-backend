@@ -3,9 +3,11 @@ package error
 import "errors"
 
 var (
-	ErrInvalidCredentials = errors.New("invalid email or password")
-	ErrInvalidToken       = errors.New("invalid or expired token")
-	ErrSessionExpired     = errors.New("session has expired")
-	ErrUserInactive       = errors.New("user is inactive")
-	ErrUnauthorized       = errors.New("unauthorized access")
+	ErrFailedToMarshalClaims   = errors.New("failed to marshal claims")
+	ErrFailedToUnmarshalClaims = errors.New("failed to unmarshal claims")
+
+	ErrFailedToSignToken       = errors.New("failed to sign token")
+	ErrUnexpectedSigningMethod = errors.New("unexpected signing method")
+	ErrTokenExpired            = errors.New("token has expired")
+	ErrInvalidToken            = errors.New("token is invalid")
 )

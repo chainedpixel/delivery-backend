@@ -1,7 +1,7 @@
 package user
 
 import (
-	"domain/delivery/models/role"
+	"domain/delivery/models/auth"
 	"time"
 )
 
@@ -13,7 +13,7 @@ type UserRole struct {
 	IsActive   bool       `gorm:"column:is_active;type:boolean;default:true" json:"is_active"`
 	CreatedAt  time.Time  `gorm:"column:created_at;type:timestamp;default:CURRENT_TIMESTAMP" json:"created_at"`
 	User       *User      `gorm:"foreignKey:UserID;references:ID" json:"-"`
-	Role       *role.Role `gorm:"foreignKey:RoleID;references:ID" json:"role,omitempty"`
+	Role       *auth.Role `gorm:"foreignKey:RoleID;references:ID" json:"auth,omitempty"`
 }
 
 func (UserRole) TableName() string {

@@ -1,7 +1,7 @@
 package database
 
 import (
-	"domain/delivery/models/role"
+	"domain/delivery/models/auth"
 	"domain/delivery/models/user"
 	"fmt"
 	"gorm.io/gorm"
@@ -15,8 +15,8 @@ func RunMigrations(db *gorm.DB) error {
 		&user.UserProfile{},
 		&user.UserRole{},
 		&user.UserSession{},
-		&role.Role{},
-		&role.Permission{},
+		&auth.Role{},
+		&auth.Permission{},
 	}
 
 	logs.Info("Starting database migrations")

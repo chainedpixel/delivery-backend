@@ -2,7 +2,7 @@ package repositories
 
 import (
 	"context"
-	"domain/delivery/models/role"
+	"domain/delivery/models/auth"
 	"domain/delivery/ports"
 	"gorm.io/gorm"
 )
@@ -18,13 +18,13 @@ func NewRoleRepository(db *gorm.DB) ports.RoleRepository {
 }
 
 // CreateRole crea un nuevo rol
-func (r *roleRepository) CreateRole(ctx context.Context, role *role.Role) error {
+func (r *roleRepository) CreateRole(ctx context.Context, role *auth.Role) error {
 	return r.db.WithContext(ctx).Create(role).Error
 }
 
 // GetRoleByID obtiene un rol por su ID incluyendo sus permisos
-func (r *roleRepository) GetRoleByID(ctx context.Context, id string) (*role.Role, error) {
-	var role role.Role
+func (r *roleRepository) GetRoleByID(ctx context.Context, id string) (*auth.Role, error) {
+	var role auth.Role
 	err := r.db.WithContext(ctx).
 		Preload("Permissions").
 		First(&role, "id = ?", id).Error
@@ -35,8 +35,8 @@ func (r *roleRepository) GetRoleByID(ctx context.Context, id string) (*role.Role
 }
 
 // GetRoleByName obtiene un rol por su nombre
-func (r *roleRepository) GetRoleByName(ctx context.Context, name string) (*role.Role, error) {
-	var role role.Role
+func (r *roleRepository) GetRoleByName(ctx context.Context, name string) (*auth.Role, error) {
+	var role auth.Role
 	err := r.db.WithContext(ctx).
 		Where("name = ?", name).
 		First(&role).Error
@@ -47,21 +47,21 @@ func (r *roleRepository) GetRoleByName(ctx context.Context, name string) (*role.
 }
 
 // UpdateRole actualiza un rol
-func (r *roleRepository) UpdateRole(ctx context.Context, role *role.Role) error {
+func (r *roleRepository) UpdateRole(ctx context.Context, role *auth.Role) error {
 	return r.db.WithContext(ctx).Save(role).Error
 }
 
 // DeleteRole elimina un rol (soft delete)
 func (r *roleRepository) DeleteRole(ctx context.Context, id string) error {
 	return r.db.WithContext(ctx).
-		Model(&role.Role{}).
+		Model(&auth.Role{}).
 		Where("id = ?", id).
 		Update("is_active", false).Error
 }
 
 // ListRoles lista todos los roles activos
-func (r *roleRepository) ListRoles(ctx context.Context) ([]role.Role, error) {
-	var roles []role.Role
+func (r *roleRepository) ListRoles(ctx context.Context) ([]auth.Role, error) {
+	var roles []auth.Role
 	err := r.db.WithContext(ctx).
 		Where("is_active = ?", true).
 		Find(&roles).Error
@@ -72,13 +72,13 @@ func (r *roleRepository) ListRoles(ctx context.Context) ([]role.Role, error) {
 }
 
 // CreatePermission crea un nuevo permiso
-func (r *roleRepository) CreatePermission(ctx context.Context, permission *role.Permission) error {
+func (r *roleRepository) CreatePermission(ctx context.Context, permission *auth.Permission) error {
 	return r.db.WithContext(ctx).Create(permission).Error
 }
 
 // GetPermissionByID obtiene un permiso por su ID
-func (r *roleRepository) GetPermissionByID(ctx context.Context, id string) (*role.Permission, error) {
-	var permission role.Permission
+func (r *roleRepository) GetPermissionByID(ctx context.Context, id string) (*auth.Permission, error) {
+	var permission auth.Permission
 	err := r.db.WithContext(ctx).First(&permission, "id = ?", id).Error
 	if err != nil {
 		return nil, err
@@ -87,18 +87,18 @@ func (r *roleRepository) GetPermissionByID(ctx context.Context, id string) (*rol
 }
 
 // UpdatePermission actualiza un permiso
-func (r *roleRepository) UpdatePermission(ctx context.Context, permission *role.Permission) error {
+func (r *roleRepository) UpdatePermission(ctx context.Context, permission *auth.Permission) error {
 	return r.db.WithContext(ctx).Save(permission).Error
 }
 
 // DeletePermission elimina un permiso
 func (r *roleRepository) DeletePermission(ctx context.Context, id string) error {
-	return r.db.WithContext(ctx).Delete(&role.Permission{}, "id = ?", id).Error
+	return r.db.WithContext(ctx).Delete(&auth.Permission{}, "id = ?", id).Error
 }
 
 // ListPermissions lista todos los permisos
-func (r *roleRepository) ListPermissions(ctx context.Context) ([]role.Permission, error) {
-	var permissions []role.Permission
+func (r *roleRepository) ListPermissions(ctx context.Context) ([]auth.Permission, error) {
+	var permissions []auth.Permission
 	err := r.db.WithContext(ctx).Find(&permissions).Error
 	if err != nil {
 		return nil, err
@@ -123,8 +123,8 @@ func (r *roleRepository) RemovePermissionFromRole(ctx context.Context, roleID st
 }
 
 // GetRolePermissions obtiene todos los permisos de un rol
-func (r *roleRepository) GetRolePermissions(ctx context.Context, roleID string) ([]role.Permission, error) {
-	var permissions []role.Permission
+func (r *roleRepository) GetRolePermissions(ctx context.Context, roleID string) ([]auth.Permission, error) {
+	var permissions []auth.Permission
 	err := r.db.WithContext(ctx).
 		Table("permissions").
 		Joins("JOIN role_permissions ON role_permissions.permission_id = permissions.id").

@@ -15,4 +15,7 @@ var (
 	ErrFailedLRange         = errors.New("failed to execute LRange command in redis")
 	ErrFailedLLen           = errors.New("failed to execute LLen command in redis")
 	ErrFailedLTrim          = errors.New("failed to execute LTrim command in redis")
+
+	ErrInvalidCredentials = errors.New("invalid email or password")
+	ErrInactiveUser       = errors.New("user is inactive")
 )

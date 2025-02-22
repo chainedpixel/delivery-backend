@@ -2,7 +2,7 @@ package repositories
 
 import (
 	"context"
-	"domain/delivery/models/role"
+	"domain/delivery/models/auth"
 	"domain/delivery/models/user"
 	"domain/delivery/ports"
 	"gorm.io/gorm"
@@ -149,8 +149,8 @@ func (r *userRepository) RemoveRoleFromUser(ctx context.Context, userID string, 
 }
 
 // GetUserRoles obtiene todos los roles de un usuario
-func (r *userRepository) GetUserRoles(ctx context.Context, userID string) ([]role.Role, error) {
-	var roles []role.Role
+func (r *userRepository) GetUserRoles(ctx context.Context, userID string) ([]auth.Role, error) {
+	var roles []auth.Role
 	err := r.db.WithContext(ctx).
 		Table("roles").
 		Joins("JOIN user_roles ON user_roles.role_id = roles.id").
@@ -163,8 +163,8 @@ func (r *userRepository) GetUserRoles(ctx context.Context, userID string) ([]rol
 }
 
 // GetUserPermissions obtiene todos los permisos de un usuario a través de sus roles
-func (r *userRepository) GetUserPermissions(ctx context.Context, userID string) ([]role.Permission, error) {
-	var permissions []role.Permission
+func (r *userRepository) GetUserPermissions(ctx context.Context, userID string) ([]auth.Permission, error) {
+	var permissions []auth.Permission
 	err := r.db.WithContext(ctx).
 		Table("permissions").
 		Joins("JOIN role_permissions ON role_permissions.permission_id = permissions.id").
