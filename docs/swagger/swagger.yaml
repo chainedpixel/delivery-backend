@@ -1,0 +1,224 @@
+definitions:
+  auth.Role:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      is_active:
+        type: boolean
+      name:
+        type: string
+    type: object
+  dto.LoginRequest:
+    properties:
+      device_info:
+        additionalProperties: true
+        description: Device information
+        type: object
+      email:
+        description: |-
+          User email
+          @example user@example.com
+        type: string
+      password:
+        description: |-
+          User password
+          @example mySecurePassword123
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  dto.LoginResponse:
+    properties:
+      token:
+        description: |-
+          JWT Token
+          @example eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        type: string
+    type: object
+  responser.APIError:
+    properties:
+      code:
+        type: string
+      details:
+        items:
+          type: string
+        type: array
+      message:
+        type: string
+    type: object
+  responser.APIErrorResponse:
+    properties:
+      error:
+        $ref: '#/definitions/responser.APIError'
+    type: object
+  user.User:
+    properties:
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      email:
+        type: string
+      email_verified_at:
+        type: string
+      full_name:
+        type: string
+      id:
+        type: string
+      is_active:
+        type: boolean
+      phone:
+        type: string
+      phone_verified_at:
+        type: string
+      profile:
+        $ref: '#/definitions/user.UserProfile'
+      roles:
+        items:
+          $ref: '#/definitions/user.UserRole'
+        type: array
+      sessions:
+        items:
+          $ref: '#/definitions/user.UserSession'
+        type: array
+    type: object
+  user.UserProfile:
+    properties:
+      additional_info:
+        type: string
+      birth_date:
+        type: string
+      document_number:
+        type: string
+      document_type:
+        type: string
+      emergency_contact_name:
+        type: string
+      emergency_contact_phone:
+        type: string
+      profile_picture_url:
+        type: string
+      user_id:
+        type: string
+    type: object
+  user.UserRole:
+    properties:
+      assigned_at:
+        type: string
+      assigned_by:
+        type: string
+      auth:
+        $ref: '#/definitions/auth.Role'
+      role_id:
+        type: string
+      user_id:
+        type: string
+    type: object
+  user.UserSession:
+    properties:
+      created_at:
+        type: string
+      device_info:
+        description: Changed from json.RawMessage to string
+        type: string
+      expires_at:
+        type: string
+      id:
+        type: string
+      ip_address:
+        type: string
+      last_activity:
+        type: string
+      token:
+        type: string
+      user_id:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /api/v1/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate user and return JWT token
+      parameters:
+      - description: Login credentials
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.LoginResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responser.APIErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responser.APIErrorResponse'
+      summary: This endpoint is used to authenticate a user and return a JWT token
+        to be used in subsequent requests
+      tags:
+      - auth
+  /api/v1/auth/logout:
+    post:
+      consumes:
+      - application/json
+      description: Logout user and invalidate JWT token
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responser.APIErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responser.APIErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: This endpoint is used to logout a user and invalidate the JWT token
+      tags:
+      - auth
+  /api/v1/users/profile:
+    get:
+      consumes:
+      - application/json
+      description: Get authenticated user profile information
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.User'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responser.APIErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: This endpoint is used to get the authenticated user profile information
+        using the JWT token
+      tags:
+      - users
+swagger: "2.0"

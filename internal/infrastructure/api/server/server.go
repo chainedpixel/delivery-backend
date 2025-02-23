@@ -56,6 +56,7 @@ func (s *Server) Start() error {
 
 func (s *Server) configureRoutes() {
 	s.configureGlobalMiddlewares(s.router)
+	routes.RegisterSwaggerRoutes(s.router)
 
 	public := s.router.PathPrefix(s.publicPath).Subrouter()
 	private := s.router.PathPrefix(s.privatePath).Subrouter()

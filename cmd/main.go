@@ -4,6 +4,7 @@ import (
 	"bootstrap"
 	"config"
 	"config/database"
+	_ "docs/swagger"
 	"infrastructure/api/server"
 	infrastructureDb "infrastructure/database"
 	"shared/logs"
