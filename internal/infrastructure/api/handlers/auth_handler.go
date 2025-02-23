@@ -23,6 +23,17 @@ func NewAuthHandler(authUseCase ports.AuthUseCase) *AuthHandler {
 	}
 }
 
+// Login godoc
+// @Summary      This endpoint is used to authenticate a user and return a JWT token to be used in subsequent requests
+// @Description  Authenticate user and return JWT token
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param        request body dto.LoginRequest true "Login credentials"
+// @Success      200  {object}  dto.LoginResponse
+// @Failure      400  {object}  responser.APIErrorResponse
+// @Failure      401  {object}  responser.APIErrorResponse
+// @Router       /api/v1/auth/login [post]
 func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 	// 1. Obtener credenciales
 	req, err := dto.NewLoginRequest(r.Body)
@@ -51,6 +62,17 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+// Logout godoc
+// @Summary      This endpoint is used to logout a user and invalidate the JWT token
+// @Description  Logout user and invalidate JWT token
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Success      200  {object}  map[string]interface{}
+// @Failure      400  {object}  responser.APIErrorResponse
+// @Failure      401  {object}  responser.APIErrorResponse
+// @Router       /api/v1/auth/logout [post]
 func (h *AuthHandler) Logout(w http.ResponseWriter, r *http.Request) {
 	// 1. Obtener token
 	token := r.Context().Value("userToken").(string)

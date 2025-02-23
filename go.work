@@ -3,6 +3,7 @@ go 1.23.2
 use (
 	./bootstrap
 	./cmd
+	./docs
 	./config
 	./internal/application
 	./internal/domain

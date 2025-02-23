@@ -1,4 +1,5 @@
 .env
 .idea
+scripts
 /internal/shared/logs/*.log
-mock_*.go
+*_mock.go

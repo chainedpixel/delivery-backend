@@ -56,6 +56,7 @@ func (s *Server) Start() error {
 
 func (s *Server) configureRoutes() {
 	s.configureGlobalMiddlewares(s.router)
+	routes.RegisterSwaggerRoutes(s.router)
 
 	public := s.router.PathPrefix(s.publicPath).Subrouter()
 	private := s.router.PathPrefix(s.privatePath).Subrouter()
@@ -83,6 +84,7 @@ func (s *Server) configureProtectedRoutes(router *mux.Router) {
 
 func (s *Server) configureGlobalMiddlewares(router *mux.Router) {
 	router.Use(s.container.GetMiddlewareContainer().GetErrorMiddleware().Handler)
+	router.Use(s.container.GetMiddlewareContainer().GetCorsMiddleware().Handler)
 }
 
 func (s *Server) configureProtectedMiddlewares(router *mux.Router) {

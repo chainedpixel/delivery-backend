@@ -20,6 +20,16 @@ func NewUserHandler(useCase ports.UserUseCase) *UserHandler {
 	}
 }
 
+// GetUserProfile godoc
+// @Summary      This endpoint is used to get the authenticated user profile information using the JWT token
+// @Description  Get authenticated user profile information
+// @Tags         users
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Success      200  {object}  user.User
+// @Failure      401  {object}  responser.APIErrorResponse
+// @Router       /api/v1/users/profile [get]
 func (h *UserHandler) GetUserProfile(w http.ResponseWriter, r *http.Request) {
 	// 1. Obtener el ID de los claims del token
 	claims := r.Context().Value("claims").(*auth.AuthClaims)

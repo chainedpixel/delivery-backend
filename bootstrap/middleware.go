@@ -8,6 +8,7 @@ type MiddlewareContainer struct {
 	errMiddleware  *middleware.ErrorMiddleware
 	authMiddleware *middleware.AuthMiddleware
 	tokenExtractor *middleware.TokenExtractor
+	corsMiddleware *middleware.CorsMiddleware
 }
 
 func NewMiddlewareContainer(services *ServiceContainer) *MiddlewareContainer {
@@ -20,6 +21,11 @@ func (c *MiddlewareContainer) Initialize() error {
 	c.errMiddleware = middleware.NewErrorMiddleware()
 	c.authMiddleware = middleware.NewAuthMiddleware(c.services.GetTokenService())
 	c.tokenExtractor = middleware.NewTokenExtractor()
+	c.corsMiddleware = middleware.NewCorsMiddleware(
+		[]string{"*"},
+		nil,
+		nil,
+	)
 
 	return nil
 }
@@ -34,4 +40,8 @@ func (c *MiddlewareContainer) GetAuthMiddleware() *middleware.AuthMiddleware {
 
 func (c *MiddlewareContainer) GetTokenExtractor() *middleware.TokenExtractor {
 	return c.tokenExtractor
+}
+
+func (c *MiddlewareContainer) GetCorsMiddleware() *middleware.CorsMiddleware {
+	return c.corsMiddleware
 }
