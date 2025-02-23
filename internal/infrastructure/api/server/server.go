@@ -84,6 +84,7 @@ func (s *Server) configureProtectedRoutes(router *mux.Router) {
 
 func (s *Server) configureGlobalMiddlewares(router *mux.Router) {
 	router.Use(s.container.GetMiddlewareContainer().GetErrorMiddleware().Handler)
+	router.Use(s.container.GetMiddlewareContainer().GetCorsMiddleware().Handler)
 }
 
 func (s *Server) configureProtectedMiddlewares(router *mux.Router) {
