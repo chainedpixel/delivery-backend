@@ -19,6 +19,8 @@ var (
 	ErrInvalidCredentials = errors.New("invalid email or password")
 	ErrInactiveUser       = errors.New("users is inactive")
 
+	ErrNilOrder = errors.New("order cannot be nil, please provide a valid order")
+
 	ErrSessionNotFound   = errors.New("the session assigned to the token was not found, probably was deleted or expired")
 	ErrSessionDBNotFound = errors.New("the session assigned to the token was not found")
 	ErrGenericDBError    = errors.New("an error occurred while trying to execute the operation in the database")
