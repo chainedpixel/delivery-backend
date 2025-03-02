@@ -1,4 +1,4 @@
-package docs
+package api
 
 // @title          Delivery API
 // @version        1.0

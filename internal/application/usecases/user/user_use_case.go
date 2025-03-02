@@ -3,7 +3,7 @@ package user
 import (
 	appPorts "application/ports"
 	"context"
-	"domain/delivery/models/user"
+	"domain/delivery/models/users"
 	"domain/delivery/ports"
 )
 
@@ -17,6 +17,6 @@ func NewUserProfileUseCase(profileService ports.UserService) appPorts.UserUseCas
 	}
 }
 
-func (uc *UserUseCase) GetProfileInfo(ctx context.Context, userID string) (*user.User, error) {
+func (uc *UserUseCase) GetProfileInfo(ctx context.Context, userID string) (*users.User, error) {
 	return uc.profileService.GetUserInfo(ctx, userID)
 }

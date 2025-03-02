@@ -4,7 +4,7 @@ import (
 	"application/ports"
 	"context"
 	"domain/delivery/models/auth"
-	"domain/delivery/models/user"
+	"domain/delivery/models/users"
 	domainPorts "domain/delivery/ports"
 	"encoding/json"
 	"errors"
@@ -28,12 +28,12 @@ func NewAuthService(userRepo domainPorts.UserRepository, tokenService ports.Toke
 	}
 }
 
-func (s *authService) CreateSession(ctx context.Context, authUser *user.User, deviceInfo map[string]interface{}, ipAddress string) (string, error) {
+func (s *authService) CreateSession(ctx context.Context, authUser *users.User, deviceInfo map[string]interface{}, ipAddress string) (string, error) {
 
 	// 1. Obtener el rol principal del usuario
 	roles, err := s.userRepo.GetUserRoles(ctx, authUser.ID)
 	if err != nil {
-		logs.Error("Failed to get user roles", map[string]interface{}{
+		logs.Error("Failed to get users roles", map[string]interface{}{
 			"error": err.Error(),
 		})
 		return "", errPackage.NewGeneralServiceError("AuthService", "CreateSession", err)
@@ -59,7 +59,7 @@ func (s *authService) CreateSession(ctx context.Context, authUser *user.User, de
 
 	// 3. Crear sesion en base de datos
 	deviceInfoJSON, _ := json.Marshal(deviceInfo)
-	session := &user.UserSession{
+	session := &users.UserSession{
 		ID:           uuid.NewString(),
 		UserID:       authUser.ID,
 		Token:        token,
@@ -85,11 +85,11 @@ func (s *authService) CreateSession(ctx context.Context, authUser *user.User, de
 	return token, nil
 }
 
-func (s *authService) ValidateCredentials(ctx context.Context, email, password string) (*user.User, error) {
+func (s *authService) ValidateCredentials(ctx context.Context, email, password string) (*users.User, error) {
 	// 1. Buscar usuario por email
 	authUser, err := s.userRepo.GetByEmail(ctx, email)
 	if err != nil {
-		logs.Error("Failed to get user by email", map[string]interface{}{
+		logs.Error("Failed to get users by email", map[string]interface{}{
 			"error": err.Error(),
 		})
 		return nil, errPackage.NewGeneralServiceError("AuthService", "ValidateCredentials", errPackage.ErrInvalidCredentials)

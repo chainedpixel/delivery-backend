@@ -20,7 +20,7 @@ func (p *PostgresDriver) GetDSN() gorm.Dialector {
 }
 
 func (p *PostgresDriver) GetStringConnection() string {
-	return fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=America/El_Salvador",
+	return fmt.Sprintf("host=%s users=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=America/El_Salvador",
 		p.Config.Database.Host,
 		p.Config.Database.User,
 		p.Config.Database.Password,

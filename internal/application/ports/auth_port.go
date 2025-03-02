@@ -3,12 +3,12 @@ package ports
 import (
 	"context"
 	"domain/delivery/models/auth"
-	"domain/delivery/models/user"
+	"domain/delivery/models/users"
 )
 
 type AuthService interface {
-	ValidateCredentials(ctx context.Context, email, password string) (*user.User, error)
-	CreateSession(ctx context.Context, user *user.User, deviceInfo map[string]interface{}, ipAddress string) (string, error)
+	ValidateCredentials(ctx context.Context, email, password string) (*users.User, error)
+	CreateSession(ctx context.Context, user *users.User, deviceInfo map[string]interface{}, ipAddress string) (string, error)
 	InvalidateSession(ctx context.Context, token string) error
 }
 

@@ -44,6 +44,7 @@ func NewEnvConfig() (*EnvConfig, error) {
 	v.SetConfigName(".env")
 	v.SetConfigType("env")
 	v.AddConfigPath(projectRoot)
+	fmt.Println(projectRoot)
 
 	v.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 
@@ -70,11 +71,11 @@ func validateConfig(config *EnvConfig) error {
 	if config.Database.Host == "" {
 		return fmt.Errorf("DB_HOST is required")
 	}
-	if config.Database.User == "" {
-		return fmt.Errorf("DB_USERNAME is required")
-	}
 	if config.Database.Password == "" {
 		return fmt.Errorf("DB_PASSWORD is required")
+	}
+	if config.Database.User == "" {
+		return fmt.Errorf("DB_USER is required")
 	}
 	return nil
 }

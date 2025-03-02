@@ -146,7 +146,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: Authenticate user and return JWT token
+      description: Authenticate users and return JWT token
       parameters:
       - description: Login credentials
         in: body
@@ -169,7 +169,7 @@ paths:
           description: Unauthorized
           schema:
             $ref: '#/definitions/responser.APIErrorResponse'
-      summary: This endpoint is used to authenticate a user and return a JWT token
+      summary: This endpoint is used to authenticate a users and return a JWT token
         to be used in subsequent requests
       tags:
       - auth
@@ -177,7 +177,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: Logout user and invalidate JWT token
+      description: Logout users and invalidate JWT token
       produces:
       - application/json
       responses:
@@ -196,14 +196,14 @@ paths:
             $ref: '#/definitions/responser.APIErrorResponse'
       security:
       - BearerAuth: []
-      summary: This endpoint is used to logout a user and invalidate the JWT token
+      summary: This endpoint is used to logout a users and invalidate the JWT token
       tags:
       - auth
   /api/v1/users/profile:
     get:
       consumes:
       - application/json
-      description: Get authenticated user profile information
+      description: Get authenticated users profile information
       produces:
       - application/json
       responses:
@@ -217,7 +217,7 @@ paths:
             $ref: '#/definitions/responser.APIErrorResponse'
       security:
       - BearerAuth: []
-      summary: This endpoint is used to get the authenticated user profile information
+      summary: This endpoint is used to get the authenticated users profile information
         using the JWT token
       tags:
       - users
