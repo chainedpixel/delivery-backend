@@ -1,5 +1,5 @@
 .env
 .idea
-scripts
-/internal/shared/logs/*.log
+scripts/user-data*.sh
+/pkg/shared/logs/*.log
 *_mock.go

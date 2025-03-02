@@ -1,13 +1,14 @@
 go 1.23.2
 
 use (
-	./bootstrap
+	./internal/bootstrap
 	./cmd
+	./api
+	./configs
 	./docs
-	./config
 	./internal/application
 	./internal/domain
 	./internal/infrastructure
-	./internal/shared
+	./pkg/shared
 	./test
 )

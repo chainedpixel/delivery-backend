@@ -1,4 +1,4 @@
-package user
+package users
 
 import "time"
 
@@ -11,7 +11,9 @@ type UserSession struct {
 	LastActivity time.Time `gorm:"column:last_activity;type:timestamp" json:"last_activity"`
 	ExpiresAt    time.Time `gorm:"column:expires_at;type:timestamp;not null" json:"expires_at"`
 	CreatedAt    time.Time `gorm:"column:created_at;type:timestamp;default:CURRENT_TIMESTAMP" json:"created_at"`
-	User         *User     `gorm:"foreignKey:UserID;references:ID" json:"-"`
+
+	// Inverse Relationships
+	User *User `gorm:"foreignKey:UserID;references:ID" json:"-"`
 }
 
 func (UserSession) TableName() string {

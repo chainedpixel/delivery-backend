@@ -1,8 +1,8 @@
 package database
 
 import (
-	"domain/delivery/models/auth"
-	"domain/delivery/models/user"
+	"domain/delivery/models/roles"
+	"domain/delivery/models/users"
 	"fmt"
 	"gorm.io/gorm"
 	"shared/logs"
@@ -11,12 +11,12 @@ import (
 // RunMigrations ejecuta todas las migraciones de la base de datos
 func RunMigrations(db *gorm.DB) error {
 	modelsToMigrate := []interface{}{
-		&user.User{},
-		&user.UserProfile{},
-		&user.UserRole{},
-		&user.UserSession{},
-		&auth.Role{},
-		&auth.Permission{},
+		&users.User{},
+		&users.Profile{},
+		&users.Role{},
+		&users.UserSession{},
+		&roles.Role{},
+		&roles.Permission{},
 	}
 
 	logs.Info("Starting database migrations")

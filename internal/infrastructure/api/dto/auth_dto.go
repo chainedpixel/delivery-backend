@@ -10,7 +10,7 @@ import (
 
 type LoginRequest struct {
 	// User email
-	// @example user@example.com
+	// @example users@example.com
 	Email string `json:"email" validate:"required,email"`
 	// User password
 	// @example mySecurePassword123

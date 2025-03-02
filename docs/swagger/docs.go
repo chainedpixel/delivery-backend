@@ -17,7 +17,7 @@ const docTemplate = `{
     "paths": {
         "/api/v1/auth/login": {
             "post": {
-                "description": "Authenticate user and return JWT token",
+                "description": "Authenticate users and return JWT token",
                 "consumes": [
                     "application/json"
                 ],
@@ -27,7 +27,7 @@ const docTemplate = `{
                 "tags": [
                     "auth"
                 ],
-                "summary": "This endpoint is used to authenticate a user and return a JWT token to be used in subsequent requests",
+                "summary": "This endpoint is used to authenticate a users and return a JWT token to be used in subsequent requests",
                 "parameters": [
                     {
                         "description": "Login credentials",
@@ -68,7 +68,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Logout user and invalidate JWT token",
+                "description": "Logout users and invalidate JWT token",
                 "consumes": [
                     "application/json"
                 ],
@@ -78,7 +78,7 @@ const docTemplate = `{
                 "tags": [
                     "auth"
                 ],
-                "summary": "This endpoint is used to logout a user and invalidate the JWT token",
+                "summary": "This endpoint is used to logout a users and invalidate the JWT token",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -109,7 +109,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Get authenticated user profile information",
+                "description": "Get authenticated users profile information",
                 "consumes": [
                     "application/json"
                 ],
@@ -119,12 +119,12 @@ const docTemplate = `{
                 "tags": [
                     "users"
                 ],
-                "summary": "This endpoint is used to get the authenticated user profile information using the JWT token",
+                "summary": "This endpoint is used to get the authenticated users profile information using the JWT token",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/user.User"
+                            "$ref": "#/definitions/users.User"
                         }
                     },
                     "401": {
@@ -171,7 +171,7 @@ const docTemplate = `{
                     "additionalProperties": true
                 },
                 "email": {
-                    "description": "User email\n@example user@example.com",
+                    "description": "User email\n@example users@example.com",
                     "type": "string"
                 },
                 "password": {
@@ -214,7 +214,7 @@ const docTemplate = `{
                 }
             }
         },
-        "user.User": {
+        "users.User": {
             "type": "object",
             "properties": {
                 "created_at": {
@@ -245,23 +245,23 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "profile": {
-                    "$ref": "#/definitions/user.UserProfile"
+                    "$ref": "#/definitions/users.UserProfile"
                 },
                 "roles": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/user.UserRole"
+                        "$ref": "#/definitions/users.UserRole"
                     }
                 },
                 "sessions": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/user.UserSession"
+                        "$ref": "#/definitions/users.UserSession"
                     }
                 }
             }
         },
-        "user.UserProfile": {
+        "users.UserProfile": {
             "type": "object",
             "properties": {
                 "additional_info": {
@@ -290,7 +290,7 @@ const docTemplate = `{
                 }
             }
         },
-        "user.UserRole": {
+        "users.UserRole": {
             "type": "object",
             "properties": {
                 "assigned_at": {
@@ -310,7 +310,7 @@ const docTemplate = `{
                 }
             }
         },
-        "user.UserSession": {
+        "users.UserSession": {
             "type": "object",
             "properties": {
                 "created_at": {

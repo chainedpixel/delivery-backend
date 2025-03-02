@@ -5,6 +5,7 @@ import (
 	"config"
 	"config/database"
 	_ "docs/swagger"
+	"fmt"
 	"infrastructure/api/server"
 	infrastructureDb "infrastructure/database"
 	"shared/logs"
@@ -13,9 +14,7 @@ import (
 func main() {
 	envConfig, err := config.NewEnvConfig()
 	if err != nil {
-		logs.Fatal("Error initializing environment configuration", map[string]interface{}{
-			"error": err.Error(),
-		})
+		fmt.Println("Error loading environment variables" + err.Error())
 		return
 	}
 

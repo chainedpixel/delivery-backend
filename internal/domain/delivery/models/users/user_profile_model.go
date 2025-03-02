@@ -1,8 +1,8 @@
-package user
+package users
 
 import "time"
 
-type UserProfile struct {
+type Profile struct {
 	UserID                string     `gorm:"column:user_id;type:char(36);primary_key" json:"user_id"`
 	DocumentType          string     `gorm:"column:document_type;type:varchar(20)" json:"document_type,omitempty"`
 	DocumentNumber        string     `gorm:"column:document_number;type:varchar(30)" json:"document_number,omitempty"`
@@ -13,9 +13,11 @@ type UserProfile struct {
 	AdditionalInfo        string     `gorm:"column:additional_info;type:text" json:"additional_info,omitempty"`
 	CreatedAt             time.Time  `gorm:"column:created_at;type:timestamp;default:CURRENT_TIMESTAMP" json:"-"`
 	UpdatedAt             time.Time  `gorm:"column:updated_at;type:timestamp;default:CURRENT_TIMESTAMP" json:"-"`
-	User                  *User      `gorm:"foreignKey:UserID;references:ID" json:"-"`
+
+	// Inverse Relationships
+	User *User `gorm:"foreignKey:UserID;references:ID" json:"-"`
 }
 
-func (UserProfile) TableName() string {
+func (Profile) TableName() string {
 	return "user_profiles"
 }

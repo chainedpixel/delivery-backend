@@ -2,9 +2,9 @@ package ports
 
 import (
 	"context"
-	"domain/delivery/models/user"
+	"domain/delivery/models/users"
 )
 
 type UserService interface {
-	GetUserInfo(ctx context.Context, userID string) (*user.User, error)
+	GetUserInfo(ctx context.Context, userID string) (*users.User, error)
 }

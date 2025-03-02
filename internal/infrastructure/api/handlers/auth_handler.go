@@ -24,8 +24,8 @@ func NewAuthHandler(authUseCase ports.AuthUseCase) *AuthHandler {
 }
 
 // Login godoc
-// @Summary      This endpoint is used to authenticate a user and return a JWT token to be used in subsequent requests
-// @Description  Authenticate user and return JWT token
+// @Summary      This endpoint is used to authenticate a users and return a JWT token to be used in subsequent requests
+// @Description  Authenticate users and return JWT token
 // @Tags         auth
 // @Accept       json
 // @Produce      json
@@ -63,8 +63,8 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 }
 
 // Logout godoc
-// @Summary      This endpoint is used to logout a user and invalidate the JWT token
-// @Description  Logout user and invalidate JWT token
+// @Summary      This endpoint is used to logout a users and invalidate the JWT token
+// @Description  Logout users and invalidate JWT token
 // @Tags         auth
 // @Accept       json
 // @Produce      json
