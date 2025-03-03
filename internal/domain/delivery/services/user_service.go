@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"domain/delivery/interfaces"
 	"domain/delivery/models/users"
 	"domain/delivery/ports"
 	"shared/logs"
@@ -11,7 +12,7 @@ type userProfileService struct {
 	userRepo ports.UserRepository
 }
 
-func NewUserService(userRepo ports.UserRepository) ports.UserService {
+func NewUserService(userRepo ports.UserRepository) interfaces.UserService {
 	return &userProfileService{
 		userRepo: userRepo,
 	}

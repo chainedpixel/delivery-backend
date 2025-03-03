@@ -3,15 +3,15 @@ package user
 import (
 	appPorts "application/ports"
 	"context"
+	"domain/delivery/interfaces"
 	"domain/delivery/models/users"
-	"domain/delivery/ports"
 )
 
 type UserUseCase struct {
-	profileService ports.UserService
+	profileService interfaces.UserService
 }
 
-func NewUserProfileUseCase(profileService ports.UserService) appPorts.UserUseCase {
+func NewUserProfileUseCase(profileService interfaces.UserService) appPorts.UserUseCase {
 	return &UserUseCase{
 		profileService: profileService,
 	}

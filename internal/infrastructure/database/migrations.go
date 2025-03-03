@@ -5,12 +5,13 @@ import (
 	"domain/delivery/models/users"
 	"fmt"
 	"gorm.io/gorm"
+	"gorm.io/gorm/schema"
 	"shared/logs"
 )
 
 // RunMigrations ejecuta todas las migraciones de la base de datos
 func RunMigrations(db *gorm.DB) error {
-	modelsToMigrate := []interface{}{
+	modelsToMigrate := []schema.Tabler{
 		&users.User{},
 		&users.Profile{},
 		&users.Role{},
@@ -24,8 +25,8 @@ func RunMigrations(db *gorm.DB) error {
 	for i, model := range modelsToMigrate {
 		if err := db.AutoMigrate(model); err != nil {
 			logs.Error("Failed to migrate model", map[string]interface{}{
-				"model number": i,
-				"error":        err.Error(),
+				"model name": model.TableName(),
+				"error":      err.Error(),
 			})
 			return err
 		}

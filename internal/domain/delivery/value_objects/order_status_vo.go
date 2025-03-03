@@ -14,6 +14,7 @@ func NewOrderStatus(value string) *OrderStatus {
 }
 
 func (s *OrderStatus) IsValid() bool {
+
 	for _, status := range constants.ValidOrderStatuses {
 		if s.value == status {
 			return true

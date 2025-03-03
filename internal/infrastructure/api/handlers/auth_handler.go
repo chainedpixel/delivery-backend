@@ -4,7 +4,7 @@ import (
 	"application/ports"
 	"infrastructure/api/dto"
 	"infrastructure/api/responser"
-	error2 "infrastructure/error"
+	errPackage "infrastructure/error"
 	"net"
 	"net/http"
 	"shared/logs"
@@ -38,7 +38,7 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 	// 1. Obtener credenciales
 	req, err := dto.NewLoginRequest(r.Body)
 	if err != nil {
-		h.respWriter.HandleError(w, error2.NewGeneralServiceError("AuthHandler", "Login", err))
+		h.respWriter.HandleError(w, errPackage.NewGeneralServiceError("AuthHandler", "Login", err))
 		return
 	}
 

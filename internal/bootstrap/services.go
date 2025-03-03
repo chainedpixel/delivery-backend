@@ -3,7 +3,7 @@ package bootstrap
 import (
 	"application/ports"
 	"config"
-	domainPorts "domain/delivery/ports"
+	domainPorts "domain/delivery/interfaces"
 	"domain/delivery/services"
 	"infrastructure/adapters/auth"
 	"infrastructure/adapters/cache"

@@ -92,14 +92,14 @@ func (r *orderRepository) GetOrders(ctx context.Context) ([]orders.Order, error)
 }
 
 // UpdateOrder actualiza un pedido
-func (r *orderRepository) UpdateOrder(ctx context.Context, order *orders.Order) error {
+func (r *orderRepository) UpdateOrder(ctx context.Context, orderID string, order *orders.Order) error {
 	if order == nil {
 		return errPackage.ErrNilOrder
 	}
 
 	err := r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		if order != nil {
-			if err := tx.Save(order).Error; err != nil {
+			if err := tx.Save(order).Where("id = ?", orderID).Error; err != nil {
 				return err
 			}
 		}
@@ -136,6 +136,34 @@ func (r *orderRepository) ChangeStatus(ctx context.Context, id string, status st
 		}
 
 		return tx.Create(&statusHistory).Error
+	})
+
+	return err
+}
+
+func (r *orderRepository) AssignDriverToOrder(ctx context.Context, orderID, driverID string) error {
+	err := r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		if err := tx.Model(&orders.Order{}).Where("id = ?", orderID).Update("driver_id", driverID).Error; err != nil {
+			return err
+		}
+		return nil
+	})
+
+	return err
+}
+
+func (r *orderRepository) CreateQRData(ctx context.Context, qr *orders.QRCode) error {
+	if qr == nil {
+		return errPackage.ErrNilQR
+	}
+
+	err := r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		if qr != nil {
+			if err := tx.Create(qr).Error; err != nil {
+				return err
+			}
+		}
+		return nil
 	})
 
 	return err

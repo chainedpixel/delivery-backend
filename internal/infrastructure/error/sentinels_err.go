@@ -20,6 +20,7 @@ var (
 	ErrInactiveUser       = errors.New("users is inactive")
 
 	ErrNilOrder = errors.New("order cannot be nil, please provide a valid order")
+	ErrNilQR    = errors.New("qr code cannot be nil")
 
 	ErrSessionNotFound   = errors.New("the session assigned to the token was not found, probably was deleted or expired")
 	ErrSessionDBNotFound = errors.New("the session assigned to the token was not found")
