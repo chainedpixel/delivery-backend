@@ -2,9 +2,9 @@ package ports
 
 import (
 	"context"
-	"domain/delivery/models/users"
+	"domain/delivery/models/entities"
 )
 
 type UserUseCase interface {
-	GetProfileInfo(ctx context.Context, userID string) (*users.User, error)
+	GetProfileInfo(ctx context.Context, userID string) (*entities.User, error)
 }

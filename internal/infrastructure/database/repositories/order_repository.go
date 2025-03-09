@@ -2,11 +2,14 @@ package repositories
 
 import (
 	"context"
-	"domain/delivery/models/orders"
+	"domain/delivery/models/entities"
 	"domain/delivery/ports"
+	"encoding/json"
+	"fmt"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 	errPackage "infrastructure/error"
+	"shared/logs"
 )
 
 type orderRepository struct {
@@ -20,14 +23,39 @@ func NewOrderRepository(db *gorm.DB) ports.OrderRepository {
 }
 
 // CreateOrder crea un nuevo pedido
-func (r *orderRepository) CreateOrder(ctx context.Context, order *orders.Order) error {
+func (r *orderRepository) CreateOrder(ctx context.Context, order *entities.Order) error {
 	if order == nil {
 		return errPackage.ErrNilOrder
 	}
 
+	jsonMess, _ := json.Marshal(order)
+	logs.Info("OrderRepository.CreateOrder", map[string]interface{}{
+		"order": string(jsonMess),
+	})
+
 	err := r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
-		if order != nil {
-			if err := tx.Create(order).Error; err != nil {
+		// 1. Crear la orden y sus entidades relacionadas normalmente
+		if err := tx.Create(order).Error; err != nil {
+			return err
+		}
+
+		// 2. Actualizar los campos espaciales directamente usando gorm.Expr
+		// Para dirección de entrega
+		if order.DeliveryAddress != nil {
+			if err := tx.Model(&entities.DeliveryAddress{}).
+				Where("order_id = ?", order.ID).
+				Update("location", gorm.Expr("ST_PointFromText(?)", "POINT(-90.5091 14.6234)")).
+				Error; err != nil {
+				return err
+			}
+		}
+
+		// Para dirección de recogida
+		if order.PickupAddress != nil {
+			if err := tx.Model(&entities.PickupAddress{}).
+				Where("order_id = ?", order.ID).
+				Update("location", gorm.Expr("ST_PointFromText(?)", "POINT(-90.5191 14.6334)")).
+				Error; err != nil {
 				return err
 			}
 		}
@@ -38,10 +66,15 @@ func (r *orderRepository) CreateOrder(ctx context.Context, order *orders.Order) 
 }
 
 // GetOrderByID obtiene un pedido por ID
-func (r *orderRepository) GetOrderByID(ctx context.Context, id string) (*orders.Order, error) {
-	var order orders.Order
+func (r *orderRepository) GetOrderByID(ctx context.Context, id string) (*entities.Order, error) {
+	var order entities.Order
 	err := r.applyOrderPreloads(r.db.WithContext(ctx)).
 		First(&order, "id = ?", id).Error
+	if err != nil {
+		return nil, err
+	}
+
+	order.DeliveryAddress.Latitude, order.DeliveryAddress.Longitude, err = r.GetLocationCoordinates(ctx, order.ID, "delivery")
 	if err != nil {
 		return nil, err
 	}
@@ -50,10 +83,15 @@ func (r *orderRepository) GetOrderByID(ctx context.Context, id string) (*orders.
 }
 
 // GetOrderByQR obtiene un pedido por QR
-func (r *orderRepository) GetOrderByQR(ctx context.Context, qr *orders.QRCode) (*orders.Order, error) {
-	var order orders.Order
+func (r *orderRepository) GetOrderByQR(ctx context.Context, qr *entities.QRCode) (*entities.Order, error) {
+	var order entities.Order
 	err := r.applyOrderPreloads(r.db.WithContext(ctx)).
 		First(&order, "id = ?", qr.OrderID).Error
+	if err != nil {
+		return nil, err
+	}
+
+	order.DeliveryAddress.Latitude, order.DeliveryAddress.Longitude, err = r.GetLocationCoordinates(ctx, order.ID, "delivery")
 	if err != nil {
 		return nil, err
 	}
@@ -62,10 +100,15 @@ func (r *orderRepository) GetOrderByQR(ctx context.Context, qr *orders.QRCode) (
 }
 
 // GetOrderByTrackingNumber obtiene un pedido por número de seguimiento
-func (r *orderRepository) GetOrderByTrackingNumber(ctx context.Context, trackingNumber string) (*orders.Order, error) {
-	var order orders.Order
+func (r *orderRepository) GetOrderByTrackingNumber(ctx context.Context, trackingNumber string) (*entities.Order, error) {
+	var order entities.Order
 	err := r.applyOrderPreloads(r.db.WithContext(ctx)).
 		First(&order, "tracking_number = ?", trackingNumber).Error
+	if err != nil {
+		return nil, err
+	}
+
+	order.DeliveryAddress.Latitude, order.DeliveryAddress.Longitude, err = r.GetLocationCoordinates(ctx, order.ID, "delivery")
 	if err != nil {
 		return nil, err
 	}
@@ -74,8 +117,8 @@ func (r *orderRepository) GetOrderByTrackingNumber(ctx context.Context, tracking
 }
 
 // GetOrdersByUserID obtiene los pedidos de un usuario
-func (r *orderRepository) GetOrdersByUserID(ctx context.Context, userID string) ([]orders.Order, error) {
-	var orders []orders.Order
+func (r *orderRepository) GetOrdersByUserID(ctx context.Context, userID string) ([]entities.Order, error) {
+	var orders []entities.Order
 	err := r.applyOrderPreloads(r.db.WithContext(ctx)).
 		Find(&orders, "client_id = ?", userID).Error
 
@@ -83,8 +126,8 @@ func (r *orderRepository) GetOrdersByUserID(ctx context.Context, userID string) 
 }
 
 // GetOrders obtiene todos los pedidos
-func (r *orderRepository) GetOrders(ctx context.Context) ([]orders.Order, error) {
-	var orders []orders.Order
+func (r *orderRepository) GetOrders(ctx context.Context) ([]entities.Order, error) {
+	var orders []entities.Order
 	err := r.applyOrderPreloads(r.db.WithContext(ctx)).
 		Find(&orders).Error
 
@@ -92,7 +135,7 @@ func (r *orderRepository) GetOrders(ctx context.Context) ([]orders.Order, error)
 }
 
 // UpdateOrder actualiza un pedido
-func (r *orderRepository) UpdateOrder(ctx context.Context, orderID string, order *orders.Order) error {
+func (r *orderRepository) UpdateOrder(ctx context.Context, orderID string, order *entities.Order) error {
 	if order == nil {
 		return errPackage.ErrNilOrder
 	}
@@ -112,7 +155,7 @@ func (r *orderRepository) UpdateOrder(ctx context.Context, orderID string, order
 // DeleteOrder elimina un pedido
 func (r *orderRepository) DeleteOrder(ctx context.Context, id string) error {
 	err := r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
-		if err := tx.Delete(&orders.Order{}, "id = ?", id).Error; err != nil {
+		if err := tx.Delete(&entities.Order{}, "id = ?", id).Error; err != nil {
 			return err
 		}
 		return nil
@@ -124,12 +167,12 @@ func (r *orderRepository) DeleteOrder(ctx context.Context, id string) error {
 // ChangeStatus cambia el estado de un pedido
 func (r *orderRepository) ChangeStatus(ctx context.Context, id string, status string) error {
 	err := r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
-		if err := tx.Model(&orders.Order{}).Where("id = ?", id).Update("status", status).Error; err != nil {
+		if err := tx.Model(&entities.Order{}).Where("id = ?", id).Update("status", status).Error; err != nil {
 			return err
 		}
 
 		// Guardar historial de estado
-		statusHistory := orders.StatusHistory{
+		statusHistory := entities.StatusHistory{
 			ID:      uuid.NewString(),
 			OrderID: id,
 			Status:  status,
@@ -143,7 +186,7 @@ func (r *orderRepository) ChangeStatus(ctx context.Context, id string, status st
 
 func (r *orderRepository) AssignDriverToOrder(ctx context.Context, orderID, driverID string) error {
 	err := r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
-		if err := tx.Model(&orders.Order{}).Where("id = ?", orderID).Update("driver_id", driverID).Error; err != nil {
+		if err := tx.Model(&entities.Order{}).Where("id = ?", orderID).Update("driver_id", driverID).Error; err != nil {
 			return err
 		}
 		return nil
@@ -152,7 +195,7 @@ func (r *orderRepository) AssignDriverToOrder(ctx context.Context, orderID, driv
 	return err
 }
 
-func (r *orderRepository) CreateQRData(ctx context.Context, qr *orders.QRCode) error {
+func (r *orderRepository) CreateQRData(ctx context.Context, qr *entities.QRCode) error {
 	if qr == nil {
 		return errPackage.ErrNilQR
 	}
@@ -167,6 +210,28 @@ func (r *orderRepository) CreateQRData(ctx context.Context, qr *orders.QRCode) e
 	})
 
 	return err
+}
+
+// GetLocationCoordinates obtiene las coordenadas de una dirección
+func (r *orderRepository) GetLocationCoordinates(ctx context.Context, orderID string, addressType string) (float64, float64, error) {
+	var tableName string
+	if addressType == "delivery" {
+		tableName = "delivery_addresses"
+	} else {
+		tableName = "pickup_addresses"
+	}
+
+	var result struct {
+		Lat float64
+		Lng float64
+	}
+
+	err := r.db.WithContext(ctx).Raw(
+		fmt.Sprintf("SELECT ST_Y(location) as lat, ST_X(location) as lng FROM %s WHERE order_id = ?", tableName),
+		orderID,
+	).Scan(&result).Error
+
+	return result.Lat, result.Lng, err
 }
 
 func (r *orderRepository) applyOrderPreloads(query *gorm.DB) *gorm.DB {

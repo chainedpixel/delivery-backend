@@ -14,10 +14,12 @@ type ServiceContainer struct {
 	repositories *RepositoryContainer
 	config       *config.EnvConfig
 
-	jwtService   ports.TokenService
-	cacheService ports.CacheService
-	authService  ports.AuthService
-	userService  domainPorts.UserService
+	jwtService     ports.TokenService
+	cacheService   ports.CacheService
+	authService    ports.AuthService
+	userService    domainPorts.UserService
+	orderService   domainPorts.Orderer
+	companyService domainPorts.Companyrer
 }
 
 func NewServiceContainer(repositories *RepositoryContainer, config *config.EnvConfig) *ServiceContainer {
@@ -38,6 +40,8 @@ func (c *ServiceContainer) Initialize() error {
 	c.jwtService = token.NewJWTService(c.config.Server.JWTSecret, c.cacheService)
 	c.authService = auth.NewAuthService(c.repositories.GetUserRepository(), c.jwtService)
 	c.userService = services.NewUserService(c.repositories.GetUserRepository())
+	c.orderService = services.NewOrderService(c.repositories.GetOrderRepository())
+	c.companyService = services.NewCompanyService(c.repositories.GetCompanyAddressRepository())
 
 	return nil
 }
@@ -56,4 +60,12 @@ func (c *ServiceContainer) GetAuthService() ports.AuthService {
 
 func (c *ServiceContainer) GetUserService() domainPorts.UserService {
 	return c.userService
+}
+
+func (c *ServiceContainer) GetOrderService() domainPorts.Orderer {
+	return c.orderService
+}
+
+func (c *ServiceContainer) GetCompanyService() domainPorts.Companyrer {
+	return c.companyService
 }

@@ -4,7 +4,7 @@ import (
 	"context"
 	"domain/delivery/constants"
 	"domain/delivery/interfaces"
-	"domain/delivery/models/orders"
+	"domain/delivery/models/entities"
 	"domain/delivery/ports"
 	"domain/delivery/value_objects"
 	errPackage "domain/error"
@@ -25,7 +25,7 @@ func NewOrderService(repo ports.OrderRepository) interfaces.Orderer {
 	}
 }
 
-func (o OrderService) GetOrderByTrackingNumber(ctx context.Context, trackingNumber string) (*orders.Order, error) {
+func (o OrderService) GetOrderByTrackingNumber(ctx context.Context, trackingNumber string) (*entities.Order, error) {
 	order, err := o.repo.GetOrderByTrackingNumber(ctx, trackingNumber)
 	if err != nil {
 		logs.Error("Failed to get order by tracking number", map[string]interface{}{
@@ -38,7 +38,7 @@ func (o OrderService) GetOrderByTrackingNumber(ctx context.Context, trackingNumb
 	return order, nil
 }
 
-func (o OrderService) GetOrdersByClientID(ctx context.Context, clientID string) ([]orders.Order, error) {
+func (o OrderService) GetOrdersByClientID(ctx context.Context, clientID string) ([]entities.Order, error) {
 	getOrders, err := o.repo.GetOrdersByUserID(ctx, clientID)
 	if err != nil {
 		logs.Error("Failed to get orders by client id", map[string]interface{}{
@@ -65,14 +65,14 @@ func (o OrderService) AssignDriverToOrder(ctx context.Context, orderID, driverID
 	return nil
 }
 
-func (o OrderService) CreateOrder(ctx context.Context, order *orders.Order) error {
+func (o OrderService) CreateOrder(ctx context.Context, order *entities.Order) error {
 	if order == nil {
 		logs.Error("Order is nil")
 		return errPackage.NewDomainError("OrderService", "CreateOrder", "order is nil")
 	}
 
 	// 1. Generar estado historico inicial
-	statusHistory := &orders.StatusHistory{
+	statusHistory := &entities.StatusHistory{
 		ID:      uuid.NewString(),
 		OrderID: order.ID,
 		Status:  constants.OrderStatusPending,
@@ -82,19 +82,13 @@ func (o OrderService) CreateOrder(ctx context.Context, order *orders.Order) erro
 	// 2. Generar tracking number
 	order.TrackingNumber = generateTrackingNumber()
 
-	//3. Crear QR
-	err := o.repo.CreateQRData(ctx, generateQRCode(*order))
-	if err != nil {
-		logs.Error("Failed to create qr code", map[string]interface{}{
-			"orderID":        order.ID,
-			"trackingNumber": order.TrackingNumber,
-			"error":          err.Error(),
-		})
-		return errPackage.NewDomainErrorWithCause("OrderService", "CreateOrder", "failed to create qr code", err)
+	// 3. Verificar puntos importantes
+	if err := order.Validate(); err != nil {
+		return err
 	}
 
 	//4. Crear pedido
-	err = o.repo.CreateOrder(ctx, order)
+	err := o.repo.CreateOrder(ctx, order)
 	if err != nil {
 		logs.Error("Failed to create order", map[string]interface{}{
 			"orderID":        order.ID,
@@ -102,6 +96,17 @@ func (o OrderService) CreateOrder(ctx context.Context, order *orders.Order) erro
 			"error":          err.Error(),
 		})
 		return errPackage.NewDomainErrorWithCause("OrderService", "CreateOrder", "failed to create order", err)
+	}
+
+	//5. Crear QR
+	err = o.repo.CreateQRData(ctx, generateQRCode(*order))
+	if err != nil {
+		logs.Error("Failed to create qr code", map[string]interface{}{
+			"orderID":        order.ID,
+			"trackingNumber": order.TrackingNumber,
+			"error":          err.Error(),
+		})
+		return errPackage.NewDomainErrorWithCause("OrderService", "CreateOrder", "failed to create qr code", err)
 	}
 
 	return nil
@@ -149,7 +154,7 @@ func (o OrderService) ChangeStatus(ctx context.Context, id, status string) error
 	return nil
 }
 
-func (o OrderService) GetOrderByID(ctx context.Context, orderID string) (*orders.Order, error) {
+func (o OrderService) GetOrderByID(ctx context.Context, orderID string) (*entities.Order, error) {
 	order, err := o.repo.GetOrderByID(ctx, orderID)
 	if err != nil {
 		logs.Error("Failed to get order by id", map[string]interface{}{
@@ -162,7 +167,7 @@ func (o OrderService) GetOrderByID(ctx context.Context, orderID string) (*orders
 	return order, nil
 }
 
-func (o OrderService) GetOrders(ctx context.Context) ([]orders.Order, error) {
+func (o OrderService) GetOrders(ctx context.Context) ([]entities.Order, error) {
 	dbOrders, err := o.repo.GetOrders(ctx)
 	if err != nil {
 		logs.Error("Failed to get orders", map[string]interface{}{
@@ -174,7 +179,7 @@ func (o OrderService) GetOrders(ctx context.Context) ([]orders.Order, error) {
 	return dbOrders, nil
 }
 
-func (o OrderService) UpdateOrder(ctx context.Context, orderID string, order *orders.Order) error {
+func (o OrderService) UpdateOrder(ctx context.Context, orderID string, order *entities.Order) error {
 	err := o.repo.UpdateOrder(ctx, orderID, order)
 	if err != nil {
 		logs.Error("Failed to update order", map[string]interface{}{
@@ -187,8 +192,8 @@ func (o OrderService) UpdateOrder(ctx context.Context, orderID string, order *or
 	return nil
 }
 
-func generateQRCode(order orders.Order) *orders.QRCode {
-	return &orders.QRCode{
+func generateQRCode(order entities.Order) *entities.QRCode {
+	return &entities.QRCode{
 		OrderID: order.ID,
 		QRData:  order.TrackingNumber,
 	}

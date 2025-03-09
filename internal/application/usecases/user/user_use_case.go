@@ -4,7 +4,7 @@ import (
 	appPorts "application/ports"
 	"context"
 	"domain/delivery/interfaces"
-	"domain/delivery/models/users"
+	"domain/delivery/models/entities"
 )
 
 type UserUseCase struct {
@@ -17,6 +17,6 @@ func NewUserProfileUseCase(profileService interfaces.UserService) appPorts.UserU
 	}
 }
 
-func (uc *UserUseCase) GetProfileInfo(ctx context.Context, userID string) (*users.User, error) {
+func (uc *UserUseCase) GetProfileInfo(ctx context.Context, userID string) (*entities.User, error) {
 	return uc.profileService.GetUserInfo(ctx, userID)
 }

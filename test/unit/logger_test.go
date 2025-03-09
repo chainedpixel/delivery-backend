@@ -1,7 +1,6 @@
 package unit
 
 import (
-	"config"
 	"github.com/sirupsen/logrus"
 	"shared/logs"
 	"testing"

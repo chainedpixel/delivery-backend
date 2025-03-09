@@ -4,7 +4,7 @@ import (
 	"application/ports"
 	"context"
 	"domain/delivery/models/auth"
-	"domain/delivery/models/users"
+	"domain/delivery/models/entities"
 	domainPorts "domain/delivery/ports"
 	"encoding/json"
 	"errors"
@@ -28,7 +28,7 @@ func NewAuthService(userRepo domainPorts.UserRepository, tokenService ports.Toke
 	}
 }
 
-func (s *authService) CreateSession(ctx context.Context, authUser *users.User, deviceInfo map[string]interface{}, ipAddress string) (string, error) {
+func (s *authService) CreateSession(ctx context.Context, authUser *entities.User, deviceInfo map[string]interface{}, ipAddress string) (string, error) {
 
 	// 1. Obtener el rol principal del usuario
 	roles, err := s.userRepo.GetUserRoles(ctx, authUser.ID)
@@ -59,7 +59,7 @@ func (s *authService) CreateSession(ctx context.Context, authUser *users.User, d
 
 	// 3. Crear sesion en base de datos
 	deviceInfoJSON, _ := json.Marshal(deviceInfo)
-	session := &users.UserSession{
+	session := &entities.UserSession{
 		ID:           uuid.NewString(),
 		UserID:       authUser.ID,
 		Token:        token,
@@ -85,7 +85,7 @@ func (s *authService) CreateSession(ctx context.Context, authUser *users.User, d
 	return token, nil
 }
 
-func (s *authService) ValidateCredentials(ctx context.Context, email, password string) (*users.User, error) {
+func (s *authService) ValidateCredentials(ctx context.Context, email, password string) (*entities.User, error) {
 	// 1. Buscar usuario por email
 	authUser, err := s.userRepo.GetByEmail(ctx, email)
 	if err != nil {

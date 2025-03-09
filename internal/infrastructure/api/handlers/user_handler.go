@@ -27,7 +27,7 @@ func NewUserHandler(useCase ports.UserUseCase) *UserHandler {
 // @Accept       json
 // @Produce      json
 // @Security     BearerAuth
-// @Success      200  {object}  users.User
+// @Success      200  {object}  entities.User
 // @Failure      401  {object}  responser.APIErrorResponse
 // @Router       /api/v1/users/profile [get]
 func (h *UserHandler) GetUserProfile(w http.ResponseWriter, r *http.Request) {

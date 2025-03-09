@@ -3,7 +3,7 @@ package services
 import (
 	"context"
 	"domain/delivery/interfaces"
-	"domain/delivery/models/users"
+	"domain/delivery/models/entities"
 	"domain/delivery/ports"
 	"shared/logs"
 )
@@ -18,7 +18,7 @@ func NewUserService(userRepo ports.UserRepository) interfaces.UserService {
 	}
 }
 
-func (s *userProfileService) GetUserInfo(ctx context.Context, userID string) (*users.User, error) {
+func (s *userProfileService) GetUserInfo(ctx context.Context, userID string) (*entities.User, error) {
 	userLogged, err := s.userRepo.GetByID(ctx, userID)
 	if err != nil {
 		logs.Error("Failed to get users profile", map[string]interface{}{

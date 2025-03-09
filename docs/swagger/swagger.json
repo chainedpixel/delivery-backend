@@ -6,7 +6,7 @@
     "paths": {
         "/api/v1/auth/login": {
             "post": {
-                "description": "Authenticate user and return JWT token",
+                "description": "Authenticate users and return JWT token",
                 "consumes": [
                     "application/json"
                 ],
@@ -16,7 +16,7 @@
                 "tags": [
                     "auth"
                 ],
-                "summary": "This endpoint is used to authenticate a user and return a JWT token to be used in subsequent requests",
+                "summary": "This endpoint is used to authenticate a users and return a JWT token to be used in subsequent requests",
                 "parameters": [
                     {
                         "description": "Login credentials",
@@ -57,7 +57,7 @@
                         "BearerAuth": []
                     }
                 ],
-                "description": "Logout user and invalidate JWT token",
+                "description": "Logout users and invalidate JWT token",
                 "consumes": [
                     "application/json"
                 ],
@@ -67,7 +67,7 @@
                 "tags": [
                     "auth"
                 ],
-                "summary": "This endpoint is used to logout a user and invalidate the JWT token",
+                "summary": "This endpoint is used to logout a users and invalidate the JWT token",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -91,6 +91,51 @@
                 }
             }
         },
+        "/api/v1/orders": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Create a new order",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orders"
+                ],
+                "summary": "This endpoint is used to create a new order",
+                "parameters": [
+                    {
+                        "description": "Order information",
+                        "name": "order",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.OrderCreateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/dto.OrderResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responser.APIErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/users/profile": {
             "get": {
                 "security": [
@@ -98,7 +143,7 @@
                         "BearerAuth": []
                     }
                 ],
-                "description": "Get authenticated user profile information",
+                "description": "Get authenticated users profile information",
                 "consumes": [
                     "application/json"
                 ],
@@ -108,12 +153,12 @@
                 "tags": [
                     "users"
                 ],
-                "summary": "This endpoint is used to get the authenticated user profile information using the JWT token",
+                "summary": "This endpoint is used to get the authenticated users profile information using the JWT token",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/user.User"
+                            "$ref": "#/definitions/entities.User"
                         }
                     },
                     "401": {
@@ -127,7 +172,602 @@
         }
     },
     "definitions": {
-        "auth.Role": {
+        "dto.DeliveryAddressRequest": {
+            "description": "Delivery destination address information",
+            "type": "object",
+            "required": [
+                "address_line1",
+                "city",
+                "latitude",
+                "longitude",
+                "recipient_name",
+                "recipient_phone",
+                "state"
+            ],
+            "properties": {
+                "address_line1": {
+                    "description": "First line of the address\n@example \"123 Main Street\"\n@required",
+                    "type": "string",
+                    "example": "123 Main Street"
+                },
+                "address_line2": {
+                    "description": "Second line of the address (optional)\n@example \"Apartment 4B\"",
+                    "type": "string",
+                    "example": "Apartment 4B"
+                },
+                "address_notes": {
+                    "description": "Additional notes about the address\n@example \"Ring doorbell twice\"",
+                    "type": "string",
+                    "example": "Ring doorbell twice"
+                },
+                "city": {
+                    "description": "City name\n@example \"New York\"\n@required",
+                    "type": "string",
+                    "example": "New York"
+                },
+                "latitude": {
+                    "description": "Latitude coordinate\n@minimum -90\n@maximum 90\n@example 40.7128\n@required",
+                    "type": "number",
+                    "maximum": 90,
+                    "minimum": -90,
+                    "example": 40.7128
+                },
+                "longitude": {
+                    "description": "Longitude coordinate\n@minimum -180\n@maximum 180\n@example -74.0060\n@required",
+                    "type": "number",
+                    "maximum": 180,
+                    "minimum": -180,
+                    "example": -74.006
+                },
+                "postal_code": {
+                    "description": "Postal or ZIP code\n@example \"10001\"",
+                    "type": "string",
+                    "example": "10001"
+                },
+                "recipient_name": {
+                    "description": "Name of the person receiving the package\n@example \"John Doe\"\n@required",
+                    "type": "string",
+                    "example": "John Doe"
+                },
+                "recipient_phone": {
+                    "description": "Contact phone number of the recipient\n@example \"+1234567890\"\n@required",
+                    "type": "string",
+                    "example": "+1234567890"
+                },
+                "state": {
+                    "description": "State or province name\n@example \"NY\"\n@required",
+                    "type": "string",
+                    "example": "NY"
+                }
+            }
+        },
+        "dto.DeliveryAddressResponse": {
+            "description": "Delivery address information",
+            "type": "object",
+            "properties": {
+                "address_line1": {
+                    "description": "First line of the address\n@example \"123 Main Street\"",
+                    "type": "string",
+                    "example": "123 Main Street"
+                },
+                "address_line2": {
+                    "description": "Second line of the address (optional)\n@example \"Apartment 4B\"",
+                    "type": "string",
+                    "example": "Apartment 4B"
+                },
+                "address_notes": {
+                    "description": "Additional notes about the address\n@example \"Ring doorbell twice\"",
+                    "type": "string",
+                    "example": "Ring doorbell twice"
+                },
+                "city": {
+                    "description": "City name\n@example \"New York\"",
+                    "type": "string",
+                    "example": "New York"
+                },
+                "formatted_address": {
+                    "description": "Full formatted address\n@example \"123 Main Street, Apartment 4B, New York, NY 10001\"",
+                    "type": "string",
+                    "example": "123 Main Street, Apartment 4B, New York, NY 10001"
+                },
+                "latitude": {
+                    "description": "Latitude coordinate\n@example 40.7128",
+                    "type": "number",
+                    "example": 40.7128
+                },
+                "longitude": {
+                    "description": "Longitude coordinate\n@example -74.0060",
+                    "type": "number",
+                    "example": -74.006
+                },
+                "postal_code": {
+                    "description": "Postal or ZIP code\n@example \"10001\"",
+                    "type": "string",
+                    "example": "10001"
+                },
+                "recipient_name": {
+                    "description": "Name of the person receiving the package\n@example \"John Doe\"",
+                    "type": "string",
+                    "example": "John Doe"
+                },
+                "recipient_phone": {
+                    "description": "Contact phone number of the recipient\n@example \"+1234567890\"",
+                    "type": "string",
+                    "example": "+1234567890"
+                },
+                "state": {
+                    "description": "State or province name\n@example \"NY\"",
+                    "type": "string",
+                    "example": "NY"
+                }
+            }
+        },
+        "dto.LoginRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "device_info": {
+                    "description": "Device information",
+                    "type": "object",
+                    "additionalProperties": true
+                },
+                "email": {
+                    "description": "User email\n@example users@example.com",
+                    "type": "string"
+                },
+                "password": {
+                    "description": "User password\n@example mySecurePassword123",
+                    "type": "string"
+                }
+            }
+        },
+        "dto.LoginResponse": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "description": "JWT Token\n@example eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                    "type": "string"
+                }
+            }
+        },
+        "dto.OrderCreateRequest": {
+            "description": "Request structure for creating a delivery order",
+            "type": "object",
+            "required": [
+                "branch_id",
+                "client_id",
+                "company_id",
+                "company_pickup_id",
+                "delivery_address",
+                "delivery_deadline",
+                "distance",
+                "package_details",
+                "pickup_contact_name",
+                "pickup_contact_phone",
+                "pickup_time",
+                "price"
+            ],
+            "properties": {
+                "branch_id": {
+                    "description": "Unique identifier of the company branch\n@example b5f8c3d1-2e59-4c4b-a6e8-e5f3c0c3d1b5\n@required",
+                    "type": "string",
+                    "example": "b5f8c3d1-2e59-4c4b-a6e8-e5f3c0c3d1b5"
+                },
+                "client_id": {
+                    "description": "Unique identifier of the client\n@example c7d8e9f0-3f4a-5c6b-7d8e-9f0a1b2c3d4e\n@required",
+                    "type": "string",
+                    "example": "c7d8e9f0-3f4a-5c6b-7d8e-9f0a1b2c3d4e"
+                },
+                "company_id": {
+                    "description": "Unique identifier of the company\n@example a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\n@required",
+                    "type": "string",
+                    "example": "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"
+                },
+                "company_pickup_id": {
+                    "description": "Unique identifier of the company pickup location\n@example a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\n@required",
+                    "type": "string",
+                    "example": "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"
+                },
+                "delivery_address": {
+                    "description": "Delivery destination address details\n@required",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/dto.DeliveryAddressRequest"
+                        }
+                    ]
+                },
+                "delivery_deadline": {
+                    "description": "Deadline for delivery completion\n@example 2023-05-15T16:30:00Z\n@required",
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2023-05-15T16:30:00Z"
+                },
+                "delivery_notes": {
+                    "description": "Additional notes for the delivery\n@example \"Please call recipient 5 minutes before arrival\"",
+                    "type": "string",
+                    "example": "Please call recipient 5 minutes before arrival"
+                },
+                "distance": {
+                    "description": "Distance of the delivery in kilometers\n@minimum 0\n@example 7.2\n@required",
+                    "type": "number",
+                    "minimum": 0,
+                    "example": 7.2
+                },
+                "package_details": {
+                    "description": "Details about the package being delivered\n@required",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/dto.PackageDetailRequest"
+                        }
+                    ]
+                },
+                "pickup_contact_name": {
+                    "description": "Contact name for pickup location\n@example \"Jane Smith\"\n@required",
+                    "type": "string"
+                },
+                "pickup_contact_phone": {
+                    "description": "Contact phone number for pickup location\n@example \"+0987654321\"\n@required",
+                    "type": "string"
+                },
+                "pickup_notes": {
+                    "description": "Important notes about the pickup location\n@example \"Enter through loading dock\"\n@required",
+                    "type": "string"
+                },
+                "pickup_time": {
+                    "description": "Scheduled pickup time\n@example 2023-05-15T14:30:00Z\n@required",
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2023-05-15T14:30:00Z"
+                },
+                "price": {
+                    "description": "Price of the delivery in local currency\n@minimum 0\n@example 25.50\n@required",
+                    "type": "number",
+                    "minimum": 0,
+                    "example": 25.5
+                },
+                "requires_signature": {
+                    "description": "Whether recipient signature is required for delivery\n@example false",
+                    "type": "boolean",
+                    "example": false
+                }
+            }
+        },
+        "dto.OrderDetailResponse": {
+            "description": "Order details including price, schedule and delivery requirements",
+            "type": "object",
+            "properties": {
+                "delivered_at": {
+                    "description": "When the order was actually delivered\n@example 2023-05-15T16:15:00Z",
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2023-05-15T16:15:00Z"
+                },
+                "delivery_deadline": {
+                    "description": "Deadline for delivery\n@example 2023-05-15T16:30:00Z",
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2023-05-15T16:30:00Z"
+                },
+                "delivery_notes": {
+                    "description": "Additional notes for delivery\n@example \"Please call recipient 5 minutes before arrival\"",
+                    "type": "string",
+                    "example": "Please call recipient 5 minutes before arrival"
+                },
+                "distance": {
+                    "description": "Distance to be traveled in kilometers\n@example 7.2",
+                    "type": "number",
+                    "example": 7.2
+                },
+                "pickup_time": {
+                    "description": "Scheduled pickup time\n@example 2023-05-15T14:30:00Z",
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2023-05-15T14:30:00Z"
+                },
+                "price": {
+                    "description": "Price of the delivery\n@example 25.50",
+                    "type": "number",
+                    "example": 25.5
+                },
+                "requires_signature": {
+                    "description": "Whether recipient signature is required\n@example false",
+                    "type": "boolean",
+                    "example": false
+                }
+            }
+        },
+        "dto.OrderResponse": {
+            "description": "Order information with all related details",
+            "type": "object",
+            "properties": {
+                "branch_id": {
+                    "description": "Branch ID where the order originated\n@example b5f8c3d1-2e59-4c4b-a6e8-e5f3c0c3d1b5",
+                    "type": "string",
+                    "example": "b5f8c3d1-2e59-4c4b-a6e8-e5f3c0c3d1b5"
+                },
+                "branch_name": {
+                    "description": "Branch name\n@example \"Downtown Branch\"",
+                    "type": "string",
+                    "example": "Downtown Branch"
+                },
+                "client_id": {
+                    "description": "Client ID who placed the order\n@example c7d8e9f0-3f4a-5c6b-7d8e-9f0a1b2c3d4e",
+                    "type": "string",
+                    "example": "c7d8e9f0-3f4a-5c6b-7d8e-9f0a1b2c3d4e"
+                },
+                "client_name": {
+                    "description": "Client full name\n@example \"John Smith\"",
+                    "type": "string",
+                    "example": "John Smith"
+                },
+                "company_id": {
+                    "description": "Company ID that owns the order\n@example a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+                    "type": "string",
+                    "example": "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"
+                },
+                "company_name": {
+                    "description": "Company name\n@example \"Express Delivery Inc.\"",
+                    "type": "string",
+                    "example": "Express Delivery Inc."
+                },
+                "created_at": {
+                    "description": "When the order was created\n@example 2023-05-15T10:30:00Z",
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2023-05-15T10:30:00Z"
+                },
+                "current_status": {
+                    "description": "Current tracking status\n@example IN_TRANSIT",
+                    "type": "string",
+                    "example": "IN_TRANSIT"
+                },
+                "delivery_address": {
+                    "description": "Delivery destination address",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/dto.DeliveryAddressResponse"
+                        }
+                    ]
+                },
+                "detail": {
+                    "description": "Details of the order",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/dto.OrderDetailResponse"
+                        }
+                    ]
+                },
+                "driver_id": {
+                    "description": "Driver ID assigned to the order\n@example d1e2f3g4-h5i6-j7k8-l9m0-n1o2p3q4r5s6",
+                    "type": "string",
+                    "example": "d1e2f3g4-h5i6-j7k8-l9m0-n1o2p3q4r5s6"
+                },
+                "driver_name": {
+                    "description": "Driver full name\n@example \"Michael Johnson\"",
+                    "type": "string",
+                    "example": "Michael Johnson"
+                },
+                "estimated_arrival": {
+                    "description": "Estimated time of arrival\n@example 2023-05-15T16:30:00Z",
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2023-05-15T16:30:00Z"
+                },
+                "id": {
+                    "description": "Unique identifier of the order\n@example a1b2c3d4-e5f6-7g8h-9i0j-k1l2m3n4o5p6",
+                    "type": "string",
+                    "example": "a1b2c3d4-e5f6-7g8h-9i0j-k1l2m3n4o5p6"
+                },
+                "last_updated": {
+                    "description": "Last time the order status was updated\n@example 2023-05-15T12:45:00Z",
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2023-05-15T12:45:00Z"
+                },
+                "package_detail": {
+                    "description": "Details about the package",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/dto.PackageDetailResponse"
+                        }
+                    ]
+                },
+                "pickup_address": {
+                    "description": "Pickup origin address",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/dto.PickupAddressResponse"
+                        }
+                    ]
+                },
+                "status": {
+                    "description": "Current status of the order\n@example PENDING",
+                    "type": "string",
+                    "example": "PENDING"
+                },
+                "tracking_number": {
+                    "description": "Tracking number for the order\n@example DEL-230512-7890",
+                    "type": "string",
+                    "example": "DEL-230512-7890"
+                },
+                "updated_at": {
+                    "description": "When the order was last updated\n@example 2023-05-15T10:30:00Z",
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2023-05-15T10:30:00Z"
+                }
+            }
+        },
+        "dto.PackageDetailRequest": {
+            "description": "Package characteristics and handling information",
+            "type": "object",
+            "properties": {
+                "height": {
+                    "description": "Height of the package in centimeters\n@minimum 0\n@example 15",
+                    "type": "number",
+                    "minimum": 0,
+                    "example": 15
+                },
+                "is_fragile": {
+                    "description": "Whether the package contains fragile items\n@example true",
+                    "type": "boolean",
+                    "example": true
+                },
+                "is_urgent": {
+                    "description": "Whether the package requires urgent handling\n@example false",
+                    "type": "boolean",
+                    "example": false
+                },
+                "length": {
+                    "description": "Length of the package in centimeters\n@minimum 0\n@example 30",
+                    "type": "number",
+                    "minimum": 0,
+                    "example": 30
+                },
+                "special_instructions": {
+                    "description": "Special handling instructions\n@example \"Contains glass items, handle with care\"",
+                    "type": "string",
+                    "example": "Contains glass items, handle with care"
+                },
+                "weight": {
+                    "description": "Weight of the package in kilograms\n@minimum 0\n@example 2.5",
+                    "type": "number",
+                    "minimum": 0,
+                    "example": 2.5
+                },
+                "width": {
+                    "description": "Width of the package in centimeters\n@minimum 0\n@example 20",
+                    "type": "number",
+                    "minimum": 0,
+                    "example": 20
+                }
+            }
+        },
+        "dto.PackageDetailResponse": {
+            "description": "Package characteristics and handling requirements",
+            "type": "object",
+            "properties": {
+                "dimensions": {
+                    "description": "Package dimensions in JSON format\n@example {\"length\":30,\"width\":20,\"height\":15,\"unit\":\"cm\"}",
+                    "type": "string",
+                    "example": "{\"length\":30,\"width\":20,\"height\":15,\"unit\":\"cm\"}"
+                },
+                "is_fragile": {
+                    "description": "Whether the package contains fragile items\n@example true",
+                    "type": "boolean",
+                    "example": true
+                },
+                "is_urgent": {
+                    "description": "Whether the package requires urgent handling\n@example false",
+                    "type": "boolean",
+                    "example": false
+                },
+                "special_instructions": {
+                    "description": "Special handling instructions\n@example \"Contains glass items, handle with care\"",
+                    "type": "string",
+                    "example": "Contains glass items, handle with care"
+                },
+                "weight": {
+                    "description": "Weight of the package in kilograms\n@example 2.5",
+                    "type": "number",
+                    "example": 2.5
+                }
+            }
+        },
+        "dto.PickupAddressResponse": {
+            "description": "Pickup address information",
+            "type": "object",
+            "properties": {
+                "address_line1": {
+                    "description": "First line of the address\n@example \"456 Business Ave\"",
+                    "type": "string",
+                    "example": "456 Business Ave"
+                },
+                "address_line2": {
+                    "description": "Second line of the address (optional)\n@example \"Suite 300\"",
+                    "type": "string",
+                    "example": "Suite 300"
+                },
+                "address_notes": {
+                    "description": "Additional notes about the address\n@example \"Enter through loading dock\"",
+                    "type": "string",
+                    "example": "Enter through loading dock"
+                },
+                "city": {
+                    "description": "City name\n@example \"Chicago\"",
+                    "type": "string",
+                    "example": "Chicago"
+                },
+                "contact_name": {
+                    "description": "Name of the contact person at pickup location\n@example \"Jane Smith\"",
+                    "type": "string",
+                    "example": "Jane Smith"
+                },
+                "contact_phone": {
+                    "description": "Contact phone number at pickup location\n@example \"+0987654321\"",
+                    "type": "string",
+                    "example": "+0987654321"
+                },
+                "formatted_address": {
+                    "description": "Full formatted address\n@example \"456 Business Ave, Suite 300, Chicago, IL 60606\"",
+                    "type": "string",
+                    "example": "456 Business Ave, Suite 300, Chicago, IL 60606"
+                },
+                "latitude": {
+                    "description": "Latitude coordinate\n@example 41.8781",
+                    "type": "number",
+                    "example": 41.8781
+                },
+                "longitude": {
+                    "description": "Longitude coordinate\n@example -87.6298",
+                    "type": "number",
+                    "example": -87.6298
+                },
+                "postal_code": {
+                    "description": "Postal or ZIP code\n@example \"60606\"",
+                    "type": "string",
+                    "example": "60606"
+                },
+                "state": {
+                    "description": "State or province name\n@example \"IL\"",
+                    "type": "string",
+                    "example": "IL"
+                }
+            }
+        },
+        "entities.Profile": {
+            "type": "object",
+            "properties": {
+                "additional_info": {
+                    "type": "string"
+                },
+                "birth_date": {
+                    "type": "string"
+                },
+                "document_number": {
+                    "type": "string"
+                },
+                "document_type": {
+                    "type": "string"
+                },
+                "emergency_contact_name": {
+                    "type": "string"
+                },
+                "emergency_contact_phone": {
+                    "type": "string"
+                },
+                "profile_picture_url": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "entities.Role": {
             "type": "object",
             "properties": {
                 "created_at": {
@@ -147,63 +787,7 @@
                 }
             }
         },
-        "dto.LoginRequest": {
-            "type": "object",
-            "required": [
-                "email",
-                "password"
-            ],
-            "properties": {
-                "device_info": {
-                    "description": "Device information",
-                    "type": "object",
-                    "additionalProperties": true
-                },
-                "email": {
-                    "description": "User email\n@example user@example.com",
-                    "type": "string"
-                },
-                "password": {
-                    "description": "User password\n@example mySecurePassword123",
-                    "type": "string"
-                }
-            }
-        },
-        "dto.LoginResponse": {
-            "type": "object",
-            "properties": {
-                "token": {
-                    "description": "JWT Token\n@example eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-                    "type": "string"
-                }
-            }
-        },
-        "responser.APIError": {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "type": "string"
-                },
-                "details": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "message": {
-                    "type": "string"
-                }
-            }
-        },
-        "responser.APIErrorResponse": {
-            "type": "object",
-            "properties": {
-                "error": {
-                    "$ref": "#/definitions/responser.APIError"
-                }
-            }
-        },
-        "user.User": {
+        "entities.User": {
             "type": "object",
             "properties": {
                 "created_at": {
@@ -234,52 +818,24 @@
                     "type": "string"
                 },
                 "profile": {
-                    "$ref": "#/definitions/user.UserProfile"
+                    "$ref": "#/definitions/entities.Profile"
                 },
                 "roles": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/user.UserRole"
+                        "$ref": "#/definitions/entities.UserRole"
                     }
                 },
                 "sessions": {
+                    "description": "Relationships",
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/user.UserSession"
+                        "$ref": "#/definitions/entities.UserSession"
                     }
                 }
             }
         },
-        "user.UserProfile": {
-            "type": "object",
-            "properties": {
-                "additional_info": {
-                    "type": "string"
-                },
-                "birth_date": {
-                    "type": "string"
-                },
-                "document_number": {
-                    "type": "string"
-                },
-                "document_type": {
-                    "type": "string"
-                },
-                "emergency_contact_name": {
-                    "type": "string"
-                },
-                "emergency_contact_phone": {
-                    "type": "string"
-                },
-                "profile_picture_url": {
-                    "type": "string"
-                },
-                "user_id": {
-                    "type": "string"
-                }
-            }
-        },
-        "user.UserRole": {
+        "entities.UserRole": {
             "type": "object",
             "properties": {
                 "assigned_at": {
@@ -289,7 +845,12 @@
                     "type": "string"
                 },
                 "auth": {
-                    "$ref": "#/definitions/auth.Role"
+                    "description": "Relationships",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/entities.Role"
+                        }
+                    ]
                 },
                 "role_id": {
                     "type": "string"
@@ -299,14 +860,13 @@
                 }
             }
         },
-        "user.UserSession": {
+        "entities.UserSession": {
             "type": "object",
             "properties": {
                 "created_at": {
                     "type": "string"
                 },
                 "device_info": {
-                    "description": "Changed from json.RawMessage to string",
                     "type": "string"
                 },
                 "expires_at": {
@@ -326,6 +886,31 @@
                 },
                 "user_id": {
                     "type": "string"
+                }
+            }
+        },
+        "responser.APIError": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "details": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "responser.APIErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "$ref": "#/definitions/responser.APIError"
                 }
             }
         }
