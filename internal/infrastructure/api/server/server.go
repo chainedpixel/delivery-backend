@@ -80,6 +80,7 @@ func (s *Server) configureProtectedRoutes(router *mux.Router) {
 
 	routes.RegisterProtectedAuthRoutes(router, s.container.GetHandlerContainer().GetAuthHandler())
 	routes.RegisterUserRoutes(router, s.container.GetHandlerContainer().GetUserHandler())
+	routes.RegisterOrderRoutes(router, s.container.GetHandlerContainer().GetOrderHandler())
 }
 
 func (s *Server) configureGlobalMiddlewares(router *mux.Router) {

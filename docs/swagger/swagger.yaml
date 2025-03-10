@@ -1,15 +1,123 @@
 definitions:
-  auth.Role:
+  dto.DeliveryAddressRequest:
+    description: Delivery destination address information
     properties:
-      created_at:
+      address_line1:
+        description: |-
+          First line of the address
+          @example "123 Main Street"
+          @required
+        example: 123 Main Street
         type: string
-      description:
+      address_line2:
+        description: |-
+          Second line of the address (optional)
+          @example "Apartment 4B"
+        example: Apartment 4B
         type: string
-      id:
+      address_notes:
+        description: |-
+          Additional notes about the address
+          @example "Ring doorbell twice"
+        example: Ring doorbell twice
         type: string
-      is_active:
-        type: boolean
-      name:
+      city:
+        description: |-
+          City name
+          @example "New York"
+          @required
+        example: New York
+        type: string
+      postal_code:
+        description: |-
+          Postal or ZIP code
+          @example "10001"
+        example: "10001"
+        type: string
+      recipient_name:
+        description: |-
+          Name of the person receiving the package
+          @example "John Doe"
+          @required
+        example: John Doe
+        type: string
+      recipient_phone:
+        description: |-
+          Contact phone number of the recipient
+          @example "+1234567890"
+          @required
+        example: "+1234567890"
+        type: string
+      state:
+        description: |-
+          State or province name
+          @example "NY"
+          @required
+        example: NY
+        type: string
+    required:
+    - address_line1
+    - city
+    - recipient_name
+    - recipient_phone
+    - state
+    type: object
+  dto.DeliveryAddressResponse:
+    description: Delivery address information
+    properties:
+      address_line1:
+        description: |-
+          First line of the address
+          @example "123 Main Street"
+        example: 123 Main Street
+        type: string
+      address_line2:
+        description: |-
+          Second line of the address (optional)
+          @example "Apartment 4B"
+        example: Apartment 4B
+        type: string
+      city:
+        description: |-
+          City name
+          @example "New York"
+        example: New York
+        type: string
+      latitude:
+        description: |-
+          Latitude coordinate
+          @example 40.7128
+        example: 40.7128
+        type: number
+      longitude:
+        description: |-
+          Longitude coordinate
+          @example -74.0060
+        example: -74.006
+        type: number
+      postal_code:
+        description: |-
+          Postal or ZIP code
+          @example "10001"
+        example: "10001"
+        type: string
+      recipient_name:
+        description: |-
+          Name of the recipient
+          @example "John Doe"
+        example: John Doe
+        type: string
+      recipient_phone:
+        description: |-
+          Contact phone number of the recipient
+          @example "+1234567890"
+        example: "+1234567890"
+        type: string
+      state:
+        description: |-
+          State or province name
+          @example "NY"
+        example: NY
         type: string
     type: object
   dto.LoginRequest:
@@ -21,7 +129,7 @@ definitions:
       email:
         description: |-
           User email
-          @example user@example.com
+          @example users@example.com
         type: string
       password:
         description: |-
@@ -40,23 +148,532 @@ definitions:
           @example eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
         type: string
     type: object
-  responser.APIError:
+  dto.OrderCreateRequest:
+    description: Request structure for creating a delivery order
     properties:
-      code:
+      client_id:
+        description: |-
+          Unique identifier of the client
+          @example c7d8e9f0-3f4a-5c6b-7d8e-9f0a1b2c3d4e
+          @required
+        example: c7d8e9f0-3f4a-5c6b-7d8e-9f0a1b2c3d4e
         type: string
-      details:
+      company_pickup_id:
+        description: |-
+          Unique identifier of the company pickup location
+          @example a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
+          @required
+        example: a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
+        type: string
+      delivery_address:
+        allOf:
+        - $ref: '#/definitions/dto.DeliveryAddressRequest'
+        description: |-
+          Delivery destination address details
+          @required
+      delivery_deadline:
+        description: |-
+          Deadline for delivery completion
+          @example 2023-05-15T16:30:00Z
+          @required
+        example: "2023-05-15T16:30:00Z"
+        format: date-time
+        type: string
+      delivery_notes:
+        description: |-
+          Additional notes for the delivery
+          @example "Please call recipient 5 minutes before arrival"
+        example: Please call recipient 5 minutes before arrival
+        type: string
+      distance:
+        description: |-
+          Distance of the delivery in kilometers
+          @minimum 0
+          @example 7.2
+          @required
+        example: 7.2
+        minimum: 0
+        type: number
+      package_details:
+        allOf:
+        - $ref: '#/definitions/dto.PackageDetailRequest'
+        description: |-
+          Details about the package being delivered
+          @required
+      pickup_contact_name:
+        description: |-
+          Contact name for pickup location
+          @example "Jane Smith"
+          @required
+        type: string
+      pickup_contact_phone:
+        description: |-
+          Contact phone number for pickup location
+          @example "+0987654321"
+          @required
+        type: string
+      pickup_notes:
+        description: |-
+          Important notes about the pickup location
+          @example "Enter through loading dock"
+          @required
+        type: string
+      pickup_time:
+        description: |-
+          Scheduled pickup time
+          @example 2023-05-15T14:30:00Z
+          @required
+        example: "2023-05-15T14:30:00Z"
+        format: date-time
+        type: string
+      price:
+        description: |-
+          Price of the delivery in local currency
+          @minimum 0
+          @example 25.50
+          @required
+        example: 25.5
+        minimum: 0
+        type: number
+      requires_signature:
+        description: |-
+          Whether recipient signature is required for delivery
+          @example false
+        example: false
+        type: boolean
+    required:
+    - client_id
+    - company_pickup_id
+    - delivery_address
+    - delivery_deadline
+    - distance
+    - package_details
+    - pickup_contact_name
+    - pickup_contact_phone
+    - pickup_time
+    - price
+    type: object
+  dto.OrderDetailResponse:
+    description: Order details including price, schedule and delivery requirements
+    properties:
+      delivered_at:
+        description: |-
+          When the order was actually delivered
+          @example 2023-05-15T16:15:00Z
+        example: "2023-05-15T16:15:00Z"
+        format: date-time
+        type: string
+      delivery_deadline:
+        description: |-
+          Deadline for delivery
+          @example 2023-05-15T16:30:00Z
+        example: "2023-05-15T16:30:00Z"
+        format: date-time
+        type: string
+      delivery_notes:
+        description: |-
+          Additional notes for delivery
+          @example "Please call recipient 5 minutes before arrival"
+        example: Please call recipient 5 minutes before arrival
+        type: string
+      distance:
+        description: |-
+          Distance to be traveled in kilometers
+          @example 7.2
+        example: 7.2
+        type: number
+      pickup_time:
+        description: |-
+          Scheduled pickup time
+          @example 2023-05-15T14:30:00Z
+        example: "2023-05-15T14:30:00Z"
+        format: date-time
+        type: string
+      price:
+        description: |-
+          Price of the delivery
+          @example 25.50
+        example: 25.5
+        type: number
+      requires_signature:
+        description: |-
+          Whether recipient signature is required
+          @example false
+        example: false
+        type: boolean
+    type: object
+  dto.OrderResponse:
+    description: Order information with all related details
+    properties:
+      branch_id:
+        description: |-
+          Branch ID where the order originated
+          @example b5f8c3d1-2e59-4c4b-a6e8-e5f3c0c3d1b5
+        example: b5f8c3d1-2e59-4c4b-a6e8-e5f3c0c3d1b5
+        type: string
+      branch_name:
+        description: |-
+          Branch name
+          @example "Downtown Branch"
+        example: Downtown Branch
+        type: string
+      client_id:
+        description: |-
+          Client ID who placed the order
+          @example c7d8e9f0-3f4a-5c6b-7d8e-9f0a1b2c3d4e
+        example: c7d8e9f0-3f4a-5c6b-7d8e-9f0a1b2c3d4e
+        type: string
+      client_name:
+        description: |-
+          Client full name
+          @example "John Smith"
+        example: John Smith
+        type: string
+      company_id:
+        description: |-
+          Company ID that owns the order
+          @example a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
+        example: a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
+        type: string
+      company_name:
+        description: |-
+          Company name
+          @example "Express Delivery Inc."
+        example: Express Delivery Inc.
+        type: string
+      created_at:
+        description: |-
+          When the order was created
+          @example 2023-05-15T10:30:00Z
+        example: "2023-05-15T10:30:00Z"
+        format: date-time
+        type: string
+      current_status:
+        description: |-
+          Current tracking status
+          @example IN_TRANSIT
+        example: IN_TRANSIT
+        type: string
+      delivery_address:
+        allOf:
+        - $ref: '#/definitions/dto.DeliveryAddressResponse'
+        description: Delivery destination address
+      detail:
+        allOf:
+        - $ref: '#/definitions/dto.OrderDetailResponse'
+        description: Details of the order
+      driver_id:
+        description: |-
+          Driver ID assigned to the order
+          @example d1e2f3g4-h5i6-j7k8-l9m0-n1o2p3q4r5s6
+        example: d1e2f3g4-h5i6-j7k8-l9m0-n1o2p3q4r5s6
+        type: string
+      driver_name:
+        description: |-
+          Driver full name
+          @example "Michael Johnson"
+        example: Michael Johnson
+        type: string
+      estimated_arrival:
+        description: |-
+          Estimated time of arrival
+          @example 2023-05-15T16:30:00Z
+        example: "2023-05-15T16:30:00Z"
+        format: date-time
+        type: string
+      id:
+        description: |-
+          Unique identifier of the order
+          @example a1b2c3d4-e5f6-7g8h-9i0j-k1l2m3n4o5p6
+        example: a1b2c3d4-e5f6-7g8h-9i0j-k1l2m3n4o5p6
+        type: string
+      last_updated:
+        description: |-
+          Last time the order status was updated
+          @example 2023-05-15T12:45:00Z
+        example: "2023-05-15T12:45:00Z"
+        format: date-time
+        type: string
+      package_detail:
+        allOf:
+        - $ref: '#/definitions/dto.PackageDetailResponse'
+        description: Details about the package
+      pickup_address:
+        allOf:
+        - $ref: '#/definitions/dto.PickupAddressResponse'
+        description: Pickup origin address
+      status:
+        description: |-
+          Current status of the order
+          @example PENDING
+        example: PENDING
+        type: string
+      status_history:
+        description: |-
+          Order status history
+          @example [{"status":"PENDING","description":"Order has been created","updated_at":"2023-05-15T10:30:00Z"}]
         items:
-          type: string
+          $ref: '#/definitions/dto.OrderStatusHistoryResponse'
         type: array
-      message:
+      tracking_number:
+        description: |-
+          Tracking number for the order
+          @example DEL-230512-7890
+        example: DEL-230512-7890
+        type: string
+      updated_at:
+        description: |-
+          When the order was last updated
+          @example 2023-05-15T10:30:00Z
+        example: "2023-05-15T10:30:00Z"
+        format: date-time
         type: string
     type: object
-  responser.APIErrorResponse:
+  dto.OrderStatusHistoryResponse:
     properties:
-      error:
-        $ref: '#/definitions/responser.APIError'
+      description:
+        description: |-
+          Description of the status change
+          @example "Driver has accepted the order and is heading to pickup location"
+        example: Driver has accepted the order and is heading to pickup location
+        type: string
+      status:
+        description: |-
+          Name of the status
+          @example ACCEPTED
+        example: PENDING
+        type: string
+      updated_at:
+        description: |-
+          Updated at time
+          @example 2023-05-15T12:45:00Z
+        example: "2023-05-15T12:45:00Z"
+        format: date-time
+        type: string
     type: object
-  user.User:
+  dto.PackageDetailRequest:
+    description: Package characteristics and handling information
+    properties:
+      height:
+        description: |-
+          Height of the package in centimeters
+          @minimum 0
+          @example 15
+        example: 15
+        minimum: 0
+        type: number
+      is_fragile:
+        description: |-
+          Whether the package contains fragile items
+          @example true
+        example: true
+        type: boolean
+      is_urgent:
+        description: |-
+          Whether the package requires urgent handling
+          @example false
+        example: false
+        type: boolean
+      length:
+        description: |-
+          Length of the package in centimeters
+          @minimum 0
+          @example 30
+        example: 30
+        minimum: 0
+        type: number
+      special_instructions:
+        description: |-
+          Special handling instructions
+          @example "Contains glass items, handle with care"
+        example: Contains glass items, handle with care
+        type: string
+      weight:
+        description: |-
+          Weight of the package in kilograms
+          @minimum 0
+          @example 2.5
+        example: 2.5
+        minimum: 0
+        type: number
+      width:
+        description: |-
+          Width of the package in centimeters
+          @minimum 0
+          @example 20
+        example: 20
+        minimum: 0
+        type: number
+    type: object
+  dto.PackageDetailResponse:
+    description: Package characteristics and handling requirements
+    properties:
+      dimensions:
+        description: |-
+          Package dimensions in JSON format
+          @example {"length":30,"width":20,"height":15,"unit":"cm"}
+        example: '{"length":30,"width":20,"height":15,"unit":"cm"}'
+        type: string
+      is_fragile:
+        description: |-
+          Whether the package contains fragile items
+          @example true
+        example: true
+        type: boolean
+      is_urgent:
+        description: |-
+          Whether the package requires urgent handling
+          @example false
+        example: false
+        type: boolean
+      special_instructions:
+        description: |-
+          Special handling instructions
+          @example "Contains glass items, handle with care"
+        example: Contains glass items, handle with care
+        type: string
+      weight:
+        description: |-
+          Weight of the package in kilograms
+          @example 2.5
+        example: 2.5
+        type: number
+    type: object
+  dto.PaginatedResponse:
+    description: Paginated data response with metadata about pagination
+    properties:
+      data:
+        description: |-
+          The actual data items
+          @example [{"id":"a1b2c3d4","tracking_number":"DEL-230512-7890"}]
+      page:
+        description: |-
+          Current page number
+          @example 1
+        example: 1
+        type: integer
+      page_size:
+        description: |-
+          Number of items per page
+          @example 20
+        example: 20
+        type: integer
+      total_items:
+        description: |-
+          Total number of items across all pages
+          @example 100
+        example: 100
+        type: integer
+      total_pages:
+        description: |-
+          Total number of pages
+          @example 5
+        example: 5
+        type: integer
+    type: object
+  dto.PickupAddressResponse:
+    description: Pickup address information
+    properties:
+      address_line1:
+        description: |-
+          First line of the address
+          @example "456 Business Ave"
+        example: 456 Business Ave
+        type: string
+      address_line2:
+        description: |-
+          Second line of the address (optional)
+          @example "Suite 300"
+        example: Suite 300
+        type: string
+      address_notes:
+        description: |-
+          Additional notes about the address
+          @example "Enter through loading dock"
+        example: Enter through loading dock
+        type: string
+      city:
+        description: |-
+          City name
+          @example "Chicago"
+        example: Chicago
+        type: string
+      contact_name:
+        description: |-
+          Name of the contact person at pickup location
+          @example "Jane Smith"
+        example: Jane Smith
+        type: string
+      contact_phone:
+        description: |-
+          Contact phone number at pickup location
+          @example "+0987654321"
+        example: "+0987654321"
+        type: string
+      formatted_address:
+        description: |-
+          Full formatted address
+          @example "456 Business Ave, Suite 300, Chicago, IL 60606"
+        example: 456 Business Ave, Suite 300, Chicago, IL 60606
+        type: string
+      latitude:
+        description: |-
+          Latitude coordinate
+          @example 41.8781
+        example: 41.8781
+        type: number
+      longitude:
+        description: |-
+          Longitude coordinate
+          @example -87.6298
+        example: -87.6298
+        type: number
+      postal_code:
+        description: |-
+          Postal or ZIP code
+          @example "60606"
+        example: "60606"
+        type: string
+      state:
+        description: |-
+          State or province name
+          @example "IL"
+        example: IL
+        type: string
+    type: object
+  entities.Profile:
+    properties:
+      additional_info:
+        type: string
+      birth_date:
+        type: string
+      document_number:
+        type: string
+      document_type:
+        type: string
+      emergency_contact_name:
+        type: string
+      emergency_contact_phone:
+        type: string
+      profile_picture_url:
+        type: string
+      user_id:
+        type: string
+    type: object
+  entities.Role:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      is_active:
+        type: boolean
+      name:
+        type: string
+    type: object
+  entities.User:
     properties:
       created_at:
         type: string
@@ -77,54 +694,37 @@ definitions:
       phone_verified_at:
         type: string
       profile:
-        $ref: '#/definitions/user.UserProfile'
+        $ref: '#/definitions/entities.Profile'
       roles:
         items:
-          $ref: '#/definitions/user.UserRole'
+          $ref: '#/definitions/entities.UserRole'
         type: array
       sessions:
+        description: Relationships
         items:
-          $ref: '#/definitions/user.UserSession'
+          $ref: '#/definitions/entities.UserSession'
         type: array
     type: object
-  user.UserProfile:
-    properties:
-      additional_info:
-        type: string
-      birth_date:
-        type: string
-      document_number:
-        type: string
-      document_type:
-        type: string
-      emergency_contact_name:
-        type: string
-      emergency_contact_phone:
-        type: string
-      profile_picture_url:
-        type: string
-      user_id:
-        type: string
-    type: object
-  user.UserRole:
+  entities.UserRole:
     properties:
       assigned_at:
         type: string
       assigned_by:
         type: string
       auth:
-        $ref: '#/definitions/auth.Role'
+        allOf:
+        - $ref: '#/definitions/entities.Role'
+        description: Relationships
       role_id:
         type: string
       user_id:
         type: string
     type: object
-  user.UserSession:
+  entities.UserSession:
     properties:
       created_at:
         type: string
       device_info:
-        description: Changed from json.RawMessage to string
         type: string
       expires_at:
         type: string
@@ -138,6 +738,22 @@ definitions:
         type: string
       user_id:
         type: string
+    type: object
+  responser.APIError:
+    properties:
+      code:
+        type: string
+      details:
+        items:
+          type: string
+        type: array
+      message:
+        type: string
+    type: object
+  responser.APIErrorResponse:
+    properties:
+      error:
+        $ref: '#/definitions/responser.APIError'
     type: object
 info:
   contact: {}
@@ -199,6 +815,149 @@ paths:
       summary: This endpoint is used to logout a users and invalidate the JWT token
       tags:
       - auth
+  /api/v1/orders:
+    get:
+      consumes:
+      - application/json
+      description: Get orders by company
+      parameters:
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Page size
+        in: query
+        name: page_size
+        type: integer
+      - description: Sort by
+        in: query
+        name: sort_by
+        type: string
+      - description: Tracking number
+        in: query
+        name: tracking_number
+        type: string
+      - description: Location like address, city, state, postal code, etc.
+        in: query
+        name: location
+        type: string
+      - description: Sort order
+        in: query
+        name: sort_direction
+        type: string
+      - description: Order status
+        in: query
+        name: status
+        type: string
+      - description: Start date
+        in: query
+        name: start_date
+        type: string
+      - description: End date
+        in: query
+        name: end_date
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.PaginatedResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responser.APIErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: This endpoint is used to get orders by company
+      tags:
+      - orders
+    post:
+      consumes:
+      - application/json
+      description: Create a new order
+      parameters:
+      - description: Order information
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/dto.OrderCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.OrderResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responser.APIErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: This endpoint is used to create a new order
+      tags:
+      - orders
+  /api/v1/orders/{order_id}:
+    get:
+      consumes:
+      - application/json
+      description: Get order by ID
+      parameters:
+      - description: Order ID
+        in: path
+        name: order_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.OrderResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responser.APIErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: This endpoint is used to get an order by ID
+      tags:
+      - orders
+    patch:
+      consumes:
+      - application/json
+      description: Change order status
+      parameters:
+      - description: Order ID
+        in: path
+        name: order_id
+        required: true
+        type: string
+      - description: New status
+        in: query
+        name: status
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.OrderResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responser.APIErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: This endpoint is used to change the status of an order
+      tags:
+      - orders
   /api/v1/users/profile:
     get:
       consumes:
@@ -210,7 +969,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/user.User'
+            $ref: '#/definitions/entities.User'
         "401":
           description: Unauthorized
           schema:

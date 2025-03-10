@@ -3,20 +3,20 @@ package user
 import (
 	appPorts "application/ports"
 	"context"
-	"domain/delivery/models/users"
-	"domain/delivery/ports"
+	"domain/delivery/interfaces"
+	"domain/delivery/models/entities"
 )
 
 type UserUseCase struct {
-	profileService ports.UserService
+	profileService interfaces.Userer
 }
 
-func NewUserProfileUseCase(profileService ports.UserService) appPorts.UserUseCase {
+func NewUserProfileUseCase(profileService interfaces.Userer) appPorts.UserUseCase {
 	return &UserUseCase{
 		profileService: profileService,
 	}
 }
 
-func (uc *UserUseCase) GetProfileInfo(ctx context.Context, userID string) (*users.User, error) {
+func (uc *UserUseCase) GetProfileInfo(ctx context.Context, userID string) (*entities.User, error) {
 	return uc.profileService.GetUserInfo(ctx, userID)
 }
