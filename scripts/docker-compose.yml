@@ -8,6 +8,9 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root_password # Cambiar esto antes de lanzar los contenedores
       MYSQL_DATABASE: delivery_db # Nombre de la base de datos, no cambiar este valor a menos que se cambie en el archivo .env
+      MYSQL_USER: app_user
+      MYSQL_PASSWORD: app_password
+      MYSQL_ROOT_HOST: "%"
     ports:
       - "3306:3306"
     volumes:
