@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"context"
+	"domain/delivery/constants"
 	"domain/delivery/models/entities"
 	"domain/delivery/ports"
 	"encoding/json"
@@ -10,6 +11,7 @@ import (
 	"gorm.io/gorm"
 	errPackage "infrastructure/error"
 	"shared/logs"
+	"time"
 )
 
 type orderRepository struct {
@@ -88,6 +90,10 @@ func (r *orderRepository) GetOrdersByCompany(ctx context.Context, companyID stri
 			)
 
 			query = query.Where(locationSearch)
+		}
+
+		if params.IncludeDeleted {
+			query = query.Unscoped()
 		}
 
 		if params.TrackingNumber != "" {
@@ -309,6 +315,65 @@ func (r *orderRepository) GetLocationCoordinates(ctx context.Context, orderID st
 	).Scan(&result).Error
 
 	return result.Lat, result.Lng, err
+}
+
+// SoftDeleteOrder realiza una eliminación lógica del pedido
+func (r *orderRepository) SoftDeleteOrder(ctx context.Context, id string) error {
+	now := time.Now()
+
+	return r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+
+		// 1. Marcar el pedido como eliminado
+		if err := tx.Model(&entities.Order{}).
+			Where("id = ?", id).
+			Updates(map[string]interface{}{
+				"deleted_at": now,
+				"status":     constants.OrderStatusDeleted,
+			}).Error; err != nil {
+			return err
+		}
+
+		// 2. Crear un registro en el historial de estados
+		statusHistory := entities.StatusHistory{
+			ID:          uuid.NewString(),
+			OrderID:     id,
+			Status:      constants.OrderStatusDeleted,
+			Description: "Pedido eliminado por el usuario",
+			CreatedAt:   now,
+		}
+
+		if err := tx.Create(&statusHistory).Error; err != nil {
+			return err
+		}
+
+		return nil
+	})
+}
+
+// RestoreOrder restaura un pedido previamente eliminado lógicamente
+func (r *orderRepository) RestoreOrder(ctx context.Context, id string) error {
+	return r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		// 1. Restaurar el pedido
+		if err := tx.Model(&entities.Order{}).
+			Where("id = ?", id).
+			Updates(map[string]interface{}{
+				"deleted_at": nil,
+				"status":     constants.OrderStatusRestored,
+			}).Error; err != nil {
+			return err
+		}
+
+		// 2. Crear un registro en el historial de estados
+		statusHistory := entities.StatusHistory{
+			ID:          uuid.NewString(),
+			OrderID:     id,
+			Status:      constants.OrderStatusRestored,
+			Description: "Pedido restaurado",
+			CreatedAt:   time.Now(),
+		}
+
+		return tx.Create(&statusHistory).Error
+	})
 }
 
 func (r *orderRepository) applyOrderPreloads(query *gorm.DB) *gorm.DB {

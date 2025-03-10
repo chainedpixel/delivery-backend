@@ -113,7 +113,16 @@ func (o OrderService) CreateOrder(ctx context.Context, order *entities.Order) er
 }
 
 func (o OrderService) ChangeStatus(ctx context.Context, id, status string) error {
-	// 1. Validar que el estado sea valido
+	// 1. Validar que el pedido no este eliminado
+	if o.OrderIsDeleted(ctx, id) {
+		logs.Warn("Dont change status, order is deleted", map[string]interface{}{
+			"orderID": id,
+			"error":   errPackage.ErrOrderDeleted.Error(),
+		})
+		return errPackage.NewDomainErrorWithCause("OrderService", "ChangeStatus", "Dont change status", errPackage.ErrOrderDeleted)
+	}
+
+	// 2. Validar que el estado sea valido
 	if !value_objects.NewOrderStatus(status).IsValid() {
 		logs.Error("Invalid order status", map[string]interface{}{
 			"status": status,
@@ -121,7 +130,7 @@ func (o OrderService) ChangeStatus(ctx context.Context, id, status string) error
 		return errPackage.NewDomainError("OrderService", "ChangeStatus", "invalid order status")
 	}
 
-	// 2. Obtener pedido para obtener estado actual
+	// 3. Obtener pedido para obtener estado actual
 	order, err := o.repo.GetOrderByID(ctx, id)
 	if err != nil {
 		logs.Error("Failed to get order by id", map[string]interface{}{
@@ -131,7 +140,7 @@ func (o OrderService) ChangeStatus(ctx context.Context, id, status string) error
 		return errPackage.NewDomainErrorWithCause("OrderService", "ChangeStatus", "failed to get order by id", err)
 	}
 
-	// 3. Validar que la transicion de estados sea valida
+	// 4. Validar que la transicion de estados sea valida
 	if !value_objects.NewOrderStatus(order.Status).CanTransitionTo(value_objects.NewOrderStatus(status)) {
 		logs.Error("Invalid transition", map[string]interface{}{
 			"from": order.Status,
@@ -140,7 +149,7 @@ func (o OrderService) ChangeStatus(ctx context.Context, id, status string) error
 		return errPackage.NewDomainError("OrderService", "ChangeStatus", fmt.Sprintf("invalid transition from %s to %s", order.Status, status))
 	}
 
-	// 3. Cambiar estado
+	// 5. Cambiar estado
 	err = o.repo.ChangeStatus(ctx, id, status)
 	if err != nil {
 		logs.Error("Failed to change status", map[string]interface{}{
@@ -180,6 +189,16 @@ func (o OrderService) GetOrders(ctx context.Context) ([]entities.Order, error) {
 }
 
 func (o OrderService) UpdateOrder(ctx context.Context, orderID string, order *entities.Order) error {
+	// 1. Verificar si el pedido no esta eliminado
+	if o.OrderIsDeleted(ctx, orderID) {
+		logs.Warn("Dont update order, order is deleted", map[string]interface{}{
+			"orderID": orderID,
+			"error":   errPackage.ErrOrderDeleted.Error(),
+		})
+		return errPackage.NewDomainErrorWithCause("OrderService", "UpdateOrder", "order is deleted", errPackage.ErrOrderDeleted)
+	}
+
+	// 2. Verificar si el pedido esta en un estado que permite actualizacion
 	err := o.repo.UpdateOrder(ctx, orderID, order)
 	if err != nil {
 		logs.Error("Failed to update order", map[string]interface{}{
@@ -205,11 +224,104 @@ func (o OrderService) GetOrdersByCompany(ctx context.Context, companyID string, 
 	return orders, total, nil
 }
 
+func (o OrderService) SoftDeleteOrder(ctx context.Context, id string) error {
+	// 1. Verificar si el pedido no esta eliminado
+	if o.OrderIsDeleted(ctx, id) {
+		logs.Warn("Dont delete order, order is already deleted", map[string]interface{}{
+			"orderID": id,
+			"error":   errPackage.ErrOrderAlreadyDeleted.Error(),
+		})
+		return errPackage.NewDomainErrorWithCause("OrderService", "SoftDeleteOrder", "order is already deleted", errPackage.ErrOrderAlreadyDeleted)
+	}
+
+	// 2. Verificar si el pedido esta en un estado que permite eliminacion
+	err := o.repo.SoftDeleteOrder(ctx, id)
+	if err != nil {
+		logs.Error("Failed to soft delete order", map[string]interface{}{
+			"orderID": id,
+			"error":   err.Error(),
+		})
+		return errPackage.NewDomainErrorWithCause("OrderService", "SoftDeleteOrder", "failed to soft delete order", err)
+	}
+
+	return nil
+}
+
+func (o OrderService) RestoreOrder(ctx context.Context, id string) error {
+	// 1. Verificar si el pedido esta eliminado
+	if !o.OrderIsDeleted(ctx, id) {
+		logs.Warn("Dont restore order, order is not deleted", map[string]interface{}{
+			"orderID": id,
+			"error":   errPackage.ErrOrderNotDeleted.Error(),
+		})
+		return errPackage.NewDomainErrorWithCause("OrderService", "RestoreOrder", "order is not deleted", errPackage.ErrOrderNotDeleted)
+	}
+
+	err := o.repo.RestoreOrder(ctx, id)
+	if err != nil {
+		logs.Error("Failed to restore order", map[string]interface{}{
+			"orderID": id,
+			"error":   err.Error(),
+		})
+		return errPackage.NewDomainErrorWithCause("OrderService", "RestoreOrder", "failed to restore order", err)
+	}
+
+	return nil
+}
+
+func (o OrderService) OrderIsDeleted(ctx context.Context, orderID string) bool {
+	order, err := o.GetOrderByID(ctx, orderID)
+	if err != nil {
+		logs.Error("Failed to get order by id in start of IsAvailableForDelete", map[string]interface{}{
+			"orderID": orderID,
+			"error":   err.Error(),
+		})
+		return false
+	}
+
+	return order.DeletedAt != nil
+}
+
+func (o OrderService) IsAvailableForDelete(ctx context.Context, orderID string) error {
+	order, err := o.GetOrderByID(ctx, orderID)
+	if err != nil {
+		logs.Error("Failed to get order by id in start of IsAvailableForDelete", map[string]interface{}{
+			"orderID": orderID,
+			"error":   err.Error(),
+		})
+		return err
+	}
+
+	if order.DeletedAt != nil {
+		logs.Warn("Order is already deleted", map[string]interface{}{
+			"orderID":   orderID,
+			"error":     errPackage.ErrOrderAlreadyDeleted.Error(),
+			"deletedAt": order.DeletedAt,
+		})
+		return errPackage.NewDomainErrorWithCause("OrderService", "IsAvailableForDelete", "an error occurred", errPackage.ErrOrderAlreadyDeleted)
+	}
+
+	if !canDeleteOrder(order) {
+		logs.Warn("Order is not available for delete", map[string]interface{}{
+			"orderID": orderID,
+			"error":   errPackage.ErrCannotDeleteOrder.Error(),
+			"status":  order.Status,
+		})
+		return errPackage.NewDomainErrorWithCause("OrderService", "IsAvailableForDelete", "order is not available for delete", errPackage.ErrCannotDeleteOrder)
+	}
+
+	return nil
+}
+
 func generateQRCode(order entities.Order) *entities.QRCode {
 	return &entities.QRCode{
 		OrderID: order.ID,
 		QRData:  order.TrackingNumber,
 	}
+}
+
+func canDeleteOrder(order *entities.Order) bool {
+	return constants.AllowedStatesToDelete[order.Status]
 }
 
 func generateTrackingNumber() string {

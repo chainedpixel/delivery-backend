@@ -15,4 +15,8 @@ type Orderer interface {
 	GetOrderByTrackingNumber(ctx context.Context, trackingNumber string) (*entities.Order, error)
 	GetOrdersByClientID(ctx context.Context, clientID string) ([]entities.Order, error)
 	AssignDriverToOrder(ctx context.Context, orderID, driverID string) error
+	SoftDeleteOrder(ctx context.Context, id string) error
+	OrderIsDeleted(ctx context.Context, orderID string) bool
+	RestoreOrder(ctx context.Context, id string) error
+	IsAvailableForDelete(ctx context.Context, orderID string) error
 }

@@ -857,6 +857,10 @@ paths:
         in: query
         name: end_date
         type: string
+      - description: Include deleted orders
+        in: query
+        name: include_deleted
+        type: boolean
       produces:
       - application/json
       responses:
@@ -888,9 +892,9 @@ paths:
       - application/json
       responses:
         "201":
-          description: Created
+          description: Order created successfully
           schema:
-            $ref: '#/definitions/dto.OrderResponse'
+            type: string
         "400":
           description: Bad Request
           schema:
@@ -901,6 +905,32 @@ paths:
       tags:
       - orders
   /api/v1/orders/{order_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete order
+      parameters:
+      - description: Order ID
+        in: path
+        name: order_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Order deleted successfully
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responser.APIErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: This endpoint is used to delete an order
+      tags:
+      - orders
     get:
       consumes:
       - application/json
@@ -956,6 +986,33 @@ paths:
       security:
       - BearerAuth: []
       summary: This endpoint is used to change the status of an order
+      tags:
+      - orders
+  /api/v1/orders/recovery/{order_id}:
+    get:
+      consumes:
+      - application/json
+      description: Restore order
+      parameters:
+      - description: Order ID
+        in: path
+        name: order_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Order restored successfully
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responser.APIErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: This endpoint is used to restore a deleted order
       tags:
       - orders
   /api/v1/users/profile:

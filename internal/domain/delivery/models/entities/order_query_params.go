@@ -9,6 +9,7 @@ type OrderQueryParams struct {
 	Location       string     `json:"location,omitempty"`
 	StartDate      *time.Time `json:"start_date,omitempty"`
 	EndDate        *time.Time `json:"end_date,omitempty"`
+	IncludeDeleted bool       `json:"include_deleted,omitempty"`
 
 	// Paginación
 	Page     int `json:"page,omitempty"`

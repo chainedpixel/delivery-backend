@@ -32,7 +32,7 @@ func NewOrderHandler(useCase ports.OrdererUseCase) *OrderHandler {
 // @Produce      json
 // @Security     BearerAuth
 // @Param        order body dto.OrderCreateRequest true "Order information"
-// @Success      201  {object}  dto.OrderResponse
+// @Success      201  {object}  string "Order created successfully"
 // @Failure      400  {object}  responser.APIErrorResponse
 // @Router       /api/v1/orders [post]
 func (h *OrderHandler) CreateOrder(w http.ResponseWriter, r *http.Request) {
@@ -145,6 +145,7 @@ func (h *OrderHandler) ChangeOrderStatus(w http.ResponseWriter, r *http.Request)
 // @Param status query string false "Order status"
 // @Param start_date query string false "Start date"
 // @Param end_date query string false "End date"
+// @Param include_deleted query bool false "Include deleted orders"
 // @Success      200  {object}  dto.PaginatedResponse
 // @Failure      400  {object}  responser.APIErrorResponse
 // @Router       /api/v1/orders [get]
@@ -169,4 +170,58 @@ func (h *OrderHandler) GetOrdersByCompany(w http.ResponseWriter, r *http.Request
 
 	// 4. Responder
 	h.respWriter.Success(w, http.StatusOK, response)
+}
+
+// DeleteOrder godoc
+// @Summary      This endpoint is used to delete an order
+// @Description  Delete order
+// @Tags         orders
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        order_id path string true "Order ID"
+// @Success      200  {object}  string "Order deleted successfully"
+// @Failure      400  {object}  responser.APIErrorResponse
+// @Router       /api/v1/orders/{order_id} [delete]
+func (h *OrderHandler) DeleteOrder(w http.ResponseWriter, r *http.Request) {
+	// 1. Extraer ID del pedido
+	vars := mux.Vars(r)
+	orderID := vars["order_id"]
+
+	// 2. Eliminar pedido
+	err := h.useCase.DeleteOrder(r.Context(), orderID)
+	if err != nil {
+		h.respWriter.HandleError(w, err)
+		return
+	}
+
+	// 3. Responder
+	h.respWriter.Success(w, http.StatusOK, "Order deleted successfully")
+}
+
+// RestoreOrder godoc
+// @Summary      This endpoint is used to restore a deleted order
+// @Description  Restore order
+// @Tags         orders
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        order_id path string true "Order ID"
+// @Success      200  {object}  string "Order restored successfully"
+// @Failure      400  {object}  responser.APIErrorResponse
+// @Router       /api/v1/orders/recovery/{order_id} [get]
+func (h *OrderHandler) RestoreOrder(w http.ResponseWriter, r *http.Request) {
+	// 1. Extraer ID del pedido
+	vars := mux.Vars(r)
+	orderID := vars["order_id"]
+
+	// 2. Restaurar pedido
+	err := h.useCase.RestoreOrder(r.Context(), orderID)
+	if err != nil {
+		h.respWriter.HandleError(w, err)
+		return
+	}
+
+	// 3. Responder
+	h.respWriter.Success(w, http.StatusOK, "Order restored successfully")
 }

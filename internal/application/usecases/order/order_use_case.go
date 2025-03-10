@@ -4,7 +4,9 @@ import (
 	"context"
 	"domain/delivery/interfaces"
 	"domain/delivery/models/entities"
+	errPackage "domain/error"
 	"infrastructure/api/dto"
+	error2 "infrastructure/error"
 	"net/http"
 	"shared/mappers/request_mapper"
 	"strconv"
@@ -54,6 +56,11 @@ func (uc *OrderUseCase) CreateOrder(ctx context.Context, authUserID string, reqO
 
 // GetOrderByID obtiene un pedido por su ID
 func (uc *OrderUseCase) GetOrderByID(ctx context.Context, orderID string) (*entities.Order, error) {
+	// 1. Verificar si el pedido no está eliminado
+	if uc.orderService.OrderIsDeleted(ctx, orderID) {
+		return nil, error2.NewGeneralServiceError("OrderUseCase", "GetOrderByID", errPackage.ErrOrderDeleted)
+	}
+
 	order, err := uc.orderService.GetOrderByID(ctx, orderID)
 	if err != nil {
 		return nil, err
@@ -80,13 +87,47 @@ func (uc *OrderUseCase) GetOrdersByCompany(ctx context.Context, userID string, r
 	// 2. Obtener el ID de la empresa por el ID del usuario
 	companyID, _, err := uc.companyService.GetCompanyAndBranchForUser(ctx, userID)
 
-	// 2. Obtener los pedidos
+	// 3. Obtener los pedidos
 	orders, total, err := uc.orderService.GetOrdersByCompany(ctx, companyID, params)
 	if err != nil {
 		return nil, nil, 0, err
 	}
 
 	return orders, params, total, nil
+}
+
+// DeleteOrder elimina un pedido
+func (uc *OrderUseCase) DeleteOrder(ctx context.Context, id string) error {
+	// 1. Obtener el pedido
+	order, err := uc.orderService.GetOrderByID(ctx, id)
+	if err != nil {
+		return err
+	}
+
+	// 2. Verificar si el pedido está en un estado que permite eliminación
+	err = uc.orderService.IsAvailableForDelete(ctx, order.ID)
+	if err != nil {
+		return err
+	}
+
+	// 3. Eliminar el pedido de la base de datos
+	err = uc.orderService.SoftDeleteOrder(ctx, id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// RestoreOrder restaura un pedido
+func (uc *OrderUseCase) RestoreOrder(ctx context.Context, id string) error {
+	// 1. Restaurar el pedido de la base de datos
+	err := uc.orderService.RestoreOrder(ctx, id)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // parseOrderQueryParams extrae los parámetros de consulta de la request
@@ -97,6 +138,10 @@ func (uc *OrderUseCase) parseOrderQueryParams(r *http.Request) *entities.OrderQu
 	params.Status = r.URL.Query().Get("status")
 	params.Location = r.URL.Query().Get("location")
 	params.TrackingNumber = r.URL.Query().Get("tracking_number")
+
+	// Opción para incluir pedidos eliminados
+	includeDeletedStr := r.URL.Query().Get("include_deleted")
+	params.IncludeDeleted = includeDeletedStr == "true" || includeDeletedStr == "1"
 
 	// Fechas
 	if startDateStr := r.URL.Query().Get("start_date"); startDateStr != "" {

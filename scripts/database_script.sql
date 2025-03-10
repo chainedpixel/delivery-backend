@@ -251,7 +251,7 @@ VALUES
 
 -- Insertar usuario de compañía
 INSERT INTO company_users
-(user_id, company_id, position, department, can_create_orders, created_at, updated_at)
+(user_id, company_id, branch_id, position, department, can_create_orders, created_at, updated_at)
 VALUES
-    ('b2c3d4e5-f6a7-8b9c-0d1e-2f3a4b5c6d7e', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
+    ('b2c3d4e5-f6a7-8b9c-0d1e-2f3a4b5c6d7e', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'b5f8c3d1-2e59-4c4b-a6e8-e5f3c0c3d1b5',
      'Gerente de Operaciones', 'Operaciones', true, NOW(), NOW());
