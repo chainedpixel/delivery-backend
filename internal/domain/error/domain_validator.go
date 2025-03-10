@@ -1,5 +1,7 @@
 package error
 
+import "strings"
+
 type DomainError struct {
 	Type             string
 	Operation        string
@@ -37,6 +39,10 @@ func (e *DomainError) Error() string {
 	}
 
 	return e.Message + " | cause: " + e.Err.Error()
+}
+
+func (e *DomainError) IsNotFoundError() bool {
+	return strings.Contains(e.Error(), "not found")
 }
 
 func (e *DomainError) HasValidationErrors() bool {

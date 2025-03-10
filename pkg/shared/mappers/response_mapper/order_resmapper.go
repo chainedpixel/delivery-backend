@@ -46,6 +46,27 @@ func OrderToResponseDTO(order *entities.Order) *dto.OrderResponse {
 		}
 	}
 
+	if order.PackageDetail != nil {
+		response.PackageDetail = dto.PackageDetailResponse{
+			Weight:              order.PackageDetail.Weight,
+			IsFragile:           order.PackageDetail.IsFragile,
+			IsUrgent:            order.PackageDetail.IsUrgent,
+			Dimensions:          order.PackageDetail.Dimensions,
+			SpecialInstructions: order.PackageDetail.SpecialInstructions,
+		}
+	}
+
+	if order.StatusHistory != nil {
+		response.StatusHistory = make([]dto.OrderStatusHistoryResponse, len(order.StatusHistory))
+		for i, status := range order.StatusHistory {
+			response.StatusHistory[i] = dto.OrderStatusHistoryResponse{
+				Status:      status.Status,
+				Description: status.Description,
+				UpdatedAt:   status.CreatedAt.Format("2006-01-02 15:04:05"),
+			}
+		}
+	}
+
 	// Mapear información esencial de direcciones
 	if order.DeliveryAddress != nil {
 		response.DeliveryAddress = dto.DeliveryAddressResponse{
@@ -61,6 +82,20 @@ func OrderToResponseDTO(order *entities.Order) *dto.OrderResponse {
 		}
 	}
 
+	if order.PickupAddress != nil {
+		response.PickupAddress = dto.PickupAddressResponse{
+			ContactName:  order.PickupAddress.ContactName,
+			ContactPhone: order.PickupAddress.ContactPhone,
+			AddressLine1: order.PickupAddress.AddressLine1,
+			AddressLine2: order.PickupAddress.AddressLine2,
+			City:         order.PickupAddress.City,
+			State:        order.PickupAddress.State,
+			PostalCode:   order.PickupAddress.PostalCode,
+			Latitude:     order.PickupAddress.Latitude,
+			Longitude:    order.PickupAddress.Longitude,
+		}
+	}
+
 	// Mapear información básica de estado de seguimiento
 	response.CurrentStatus = order.Status
 	if order.Tracking != nil {
@@ -69,4 +104,51 @@ func OrderToResponseDTO(order *entities.Order) *dto.OrderResponse {
 	}
 
 	return response
+}
+
+// MapOrdersToResponse mapea las órdenes a DTOs de respuesta
+func MapOrdersToResponse(orders []entities.Order, params *entities.OrderQueryParams, total int64) *dto.PaginatedResponse {
+	response := make([]dto.OrderListResponse, len(orders))
+
+	for i, order := range orders {
+		var driverName string
+		if order.Driver != nil {
+			driverName = order.Driver.User.FullName
+		}
+
+		response[i] = dto.OrderListResponse{
+			ID:               order.ID,
+			TrackingNumber:   order.TrackingNumber,
+			ClientName:       order.DeliveryAddress.RecipientName,
+			DeliveryAddress:  order.DeliveryAddress.AddressLine1,
+			DeliveryDeadline: order.Detail.DeliveryDeadline,
+			Price:            order.Detail.Price,
+			Status:           order.Status,
+			DriverID:         order.DriverID,
+			DriverName:       driverName,
+			CreatedAt:        order.CreatedAt,
+		}
+	}
+
+	return &dto.PaginatedResponse{
+		Data:       response,
+		TotalItems: total,
+		Page:       params.Page,
+		PageSize:   params.PageSize,
+		TotalPages: calculateTotalPages(total, params.PageSize),
+	}
+}
+
+// calculateTotalPages calcula el número total de páginas
+func calculateTotalPages(totalItems int64, pageSize int) int {
+	if pageSize <= 0 {
+		return 0
+	}
+
+	pages := int(totalItems) / pageSize
+	if int(totalItems)%pageSize > 0 {
+		pages++
+	}
+
+	return pages
 }

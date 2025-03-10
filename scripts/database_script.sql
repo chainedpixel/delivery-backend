@@ -1,705 +1,3 @@
--- Users Domain
-CREATE TABLE users (
-                       id CHAR(36) PRIMARY KEY,
-                       email VARCHAR(255) UNIQUE NOT NULL,
-                       password_hash VARCHAR(255) NOT NULL,
-                       full_name VARCHAR(255) NOT NULL,
-                       phone VARCHAR(20),
-                       is_active BOOLEAN DEFAULT true,
-                       email_verified_at TIMESTAMP NULL,
-                       phone_verified_at TIMESTAMP NULL,
-                       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                       deleted_at TIMESTAMP NULL
-);
-
-CREATE TABLE roles (
-                       id CHAR(36) PRIMARY KEY,
-                       name VARCHAR(50) UNIQUE NOT NULL,
-                       description TEXT,
-                       is_active BOOLEAN DEFAULT true,
-                       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
-
-CREATE TABLE permissions (
-                             id CHAR(36) PRIMARY KEY,
-                             name VARCHAR(100) UNIQUE NOT NULL,
-                             description TEXT,
-                             resource VARCHAR(50) NOT NULL,
-                             action VARCHAR(50) NOT NULL,
-                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
-
-CREATE TABLE user_roles (
-                            user_id CHAR(36) NOT NULL,
-                            role_id CHAR(36) NOT NULL,
-                            assigned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                            assigned_by CHAR(36) NOT NULL,
-                            is_active BOOLEAN DEFAULT true,
-                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                            PRIMARY KEY (user_id, role_id)
-);
-
-CREATE TABLE role_permissions (
-                                  role_id CHAR(36) NOT NULL,
-                                  permission_id CHAR(36) NOT NULL,
-                                  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                                  PRIMARY KEY (role_id, permission_id)
-);
-
-CREATE TABLE user_profiles (
-                               user_id CHAR(36) PRIMARY KEY,
-                               document_type VARCHAR(20),
-                               document_number VARCHAR(30),
-                               birth_date DATE,
-                               profile_picture_url VARCHAR(255),
-                               emergency_contact_name VARCHAR(255),
-                               emergency_contact_phone VARCHAR(20),
-                               additional_info JSON,
-                               created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                               updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
-
-CREATE TABLE user_sessions (
-                               id CHAR(36) PRIMARY KEY,
-                               user_id CHAR(36) NOT NULL,
-                               token VARCHAR(255) NOT NULL,
-                               device_info JSON,
-                               ip_address VARCHAR(45),
-                               last_activity TIMESTAMP,
-                               expires_at TIMESTAMP NOT NULL,
-                               created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- Companies Domain
-CREATE TABLE companies (
-                           id CHAR(36) PRIMARY KEY,
-                           name VARCHAR(255) NOT NULL,
-                           legal_name VARCHAR(255) NOT NULL,
-                           tax_id VARCHAR(50) UNIQUE NOT NULL,
-                           contact_email VARCHAR(255) NOT NULL,
-                           contact_phone VARCHAR(20) NOT NULL,
-                           website VARCHAR(255),
-                           is_active BOOLEAN DEFAULT true,
-                           contract_details JSON,
-                           delivery_rate DECIMAL(10,2) NOT NULL,
-                           logo_url VARCHAR(255),
-                           contract_start_date TIMESTAMP NOT NULL,
-                           contract_end_date TIMESTAMP,
-                           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                           updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
-
-CREATE TABLE company_addresses (
-                                   company_id CHAR(36) NOT NULL,
-                                   address_line1 VARCHAR(255) NOT NULL,
-                                   address_line2 VARCHAR(255),
-                                   city VARCHAR(100) NOT NULL,
-                                   state VARCHAR(100) NOT NULL,
-                                   postal_code VARCHAR(20),
-                                   location POINT NOT NULL,
-                                   is_main BOOLEAN DEFAULT false,
-                                   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                                   PRIMARY KEY (company_id)
-);
-
--- Orders Domain
-CREATE TABLE orders (
-                        id CHAR(36) PRIMARY KEY,
-                        company_id CHAR(36) NOT NULL,
-                        branch_id CHAR(36) NOT NULL,
-                        client_id CHAR(36) NOT NULL,
-                        driver_id CHAR(36),
-                        tracking_number VARCHAR(50) UNIQUE NOT NULL,
-                        status VARCHAR(20) NOT NULL,
-                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
-
-CREATE TABLE order_details (
-                               order_id CHAR(36) PRIMARY KEY,
-                               price DECIMAL(10,2) NOT NULL,
-                               distance DECIMAL(10,2) NOT NULL,
-                               pickup_time TIMESTAMP NOT NULL,
-                               delivery_deadline TIMESTAMP NOT NULL,
-                               delivered_at TIMESTAMP NULL,
-                               requires_signature BOOLEAN DEFAULT false,
-                               delivery_notes JSON,
-                               created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                               updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
-
-CREATE TABLE package_details (
-                                 order_id CHAR(36) PRIMARY KEY,
-                                 is_fragile BOOLEAN DEFAULT false,
-                                 is_urgent BOOLEAN DEFAULT false,
-                                 weight DECIMAL(10,2),
-                                 dimensions JSON,
-                                 special_instructions TEXT,
-                                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE delivery_addresses (
-                                    order_id CHAR(36) PRIMARY KEY,
-                                    recipient_name VARCHAR(255) NOT NULL,
-                                    recipient_phone VARCHAR(20) NOT NULL,
-                                    address_line1 VARCHAR(255) NOT NULL,
-                                    address_line2 VARCHAR(255),
-                                    city VARCHAR(100) NOT NULL,
-                                    state VARCHAR(100) NOT NULL,
-                                    postal_code VARCHAR(20),
-                                    location POINT NOT NULL,
-                                    address_notes JSON,
-                                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE pickup_addresses (
-                                  order_id CHAR(36) PRIMARY KEY,
-                                  contact_name VARCHAR(255) NOT NULL,
-                                  contact_phone VARCHAR(20) NOT NULL,
-                                  address_line1 VARCHAR(255) NOT NULL,
-                                  address_line2 VARCHAR(255),
-                                  city VARCHAR(100) NOT NULL,
-                                  state VARCHAR(100) NOT NULL,
-                                  postal_code VARCHAR(20),
-                                  location POINT NOT NULL,
-                                  address_notes JSON,
-                                  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE order_status_history (
-                                      id CHAR(36) PRIMARY KEY,
-                                      order_id CHAR(36) NOT NULL,
-                                      status VARCHAR(20) NOT NULL,
-                                      description TEXT,
-                                      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE order_tracking (
-                                order_id CHAR(36) PRIMARY KEY,
-                                current_location POINT,
-                                current_status VARCHAR(20) NOT NULL,
-                                last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE qr_codes (
-                          order_id CHAR(36) PRIMARY KEY,
-                          qr_data TEXT NOT NULL,
-                          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE company_branches (
-                                  id CHAR(36) PRIMARY KEY,
-                                  company_id CHAR(36) NOT NULL,
-                                  name VARCHAR(255) NOT NULL,
-                                  code VARCHAR(50) NOT NULL,
-                                  contact_name VARCHAR(255) NOT NULL,
-                                  contact_phone VARCHAR(20) NOT NULL,
-                                  contact_email VARCHAR(255) NOT NULL,
-                                  is_active BOOLEAN DEFAULT true,
-                                  zone_id CHAR(36) NOT NULL,
-                                  operating_hours JSON,
-                                  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                                  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                                  UNIQUE KEY uk_company_branch_code (company_id, code)
-);
-
-CREATE TABLE company_users (
-                               user_id CHAR(36) NOT NULL,
-                               company_id CHAR(36) NOT NULL,
-                               position VARCHAR(100) NOT NULL,
-                               department VARCHAR(100),
-                               permissions JSON,
-                               can_create_orders BOOLEAN DEFAULT false,
-                               created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                               updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                               PRIMARY KEY (user_id, company_id)
-);
-
-CREATE TABLE company_billing (
-                                 id CHAR(36) PRIMARY KEY,
-                                 company_id CHAR(36) NOT NULL,
-                                 billing_period_start DATE NOT NULL,
-                                 billing_period_end DATE NOT NULL,
-                                 total_deliveries INT NOT NULL DEFAULT 0,
-                                 total_amount DECIMAL(10,2) NOT NULL DEFAULT 0.00,
-                                 status VARCHAR(20) NOT NULL,
-                                 billing_details JSON,
-                                 paid_at TIMESTAMP NULL,
-                                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
-
--- Zones Domain
-CREATE TABLE zones (
-                       id CHAR(36) PRIMARY KEY,
-                       name VARCHAR(100) NOT NULL UNIQUE,
-                       code VARCHAR(20) NOT NULL UNIQUE,
-                       boundaries POLYGON NOT NULL,
-                       center_point POINT NOT NULL,
-                       base_rate DECIMAL(10,2) NOT NULL,
-                       max_delivery_time INT NOT NULL,
-                       is_active BOOLEAN DEFAULT true,
-                       priority_level INT NOT NULL DEFAULT 1,
-                       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE adjacent_zones (
-                                zone_id CHAR(36) NOT NULL,
-                                adjacent_zone_id CHAR(36) NOT NULL,
-                                distance DECIMAL(10,2) NOT NULL,
-                                travel_time INT NOT NULL,
-                                coverage_overlap DECIMAL(5,2),
-                                is_active BOOLEAN DEFAULT true,
-                                PRIMARY KEY (zone_id, adjacent_zone_id)
-);
-
-CREATE TABLE zone_coverage (
-                               zone_id CHAR(36) NOT NULL,
-                               coverage_area POLYGON NOT NULL,
-                               operating_hours JSON NOT NULL,
-                               max_concurrent_orders INT NOT NULL DEFAULT 10,
-                               surge_multiplier DECIMAL(3,2) DEFAULT 1.00,
-                               coverage_rules JSON,
-                               PRIMARY KEY (zone_id)
-);
-
--- Drivers Domain
-CREATE TABLE drivers (
-                         user_id CHAR(36) PRIMARY KEY,
-                         license_number VARCHAR(50) UNIQUE NOT NULL,
-                         license_expiry DATE NOT NULL,
-                         vehicle_type VARCHAR(50) NOT NULL,
-                         vehicle_plate VARCHAR(20) NOT NULL,
-                         vehicle_model VARCHAR(100) NOT NULL,
-                         vehicle_color VARCHAR(50) NOT NULL,
-                         is_active BOOLEAN DEFAULT true,
-                         vehicle_details JSON,
-                         documentation JSON,
-                         rating DECIMAL(3,2) DEFAULT 5.00,
-                         completed_deliveries INT DEFAULT 0,
-                         last_delivery TIMESTAMP NULL,
-                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
-
-CREATE TABLE driver_zones (
-                              driver_id CHAR(36) NOT NULL,
-                              zone_id CHAR(36) NOT NULL,
-                              is_primary BOOLEAN DEFAULT false,
-                              efficiency_rating DECIMAL(3,2) DEFAULT 5.00,
-                              deliveries_completed INT DEFAULT 0,
-                              last_delivery TIMESTAMP NULL,
-                              is_active BOOLEAN DEFAULT true,
-                              created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                              PRIMARY KEY (driver_id, zone_id)
-);
-
-CREATE TABLE driver_availability (
-                                     driver_id CHAR(36) NOT NULL,
-                                     current_zone_id CHAR(36) NOT NULL,
-                                     current_location POINT NOT NULL,
-                                     status VARCHAR(20) NOT NULL,
-                                     last_update TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                                     active_orders INT DEFAULT 0,
-                                     can_take_orders BOOLEAN DEFAULT true,
-                                     shift_start TIMESTAMP NOT NULL,
-                                     shift_end TIMESTAMP NOT NULL,
-                                     PRIMARY KEY (driver_id)
-);
-
--- Payments Domain
-CREATE TABLE payment_methods (
-                                 id CHAR(36) PRIMARY KEY,
-                                 user_id CHAR(36) NOT NULL,
-                                 method_type VARCHAR(50) NOT NULL,
-                                 provider VARCHAR(50) NOT NULL,
-                                 details JSON NOT NULL,
-                                 is_default BOOLEAN DEFAULT false,
-                                 is_active BOOLEAN DEFAULT true,
-                                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
-
-CREATE TABLE payment_transactions (
-                                      id CHAR(36) PRIMARY KEY,
-                                      order_id CHAR(36) NOT NULL,
-                                      payment_method_id CHAR(36) NOT NULL,
-                                      amount DECIMAL(10,2) NOT NULL,
-                                      currency VARCHAR(3) DEFAULT 'USD',
-                                      status VARCHAR(20) NOT NULL,
-                                      transaction_reference VARCHAR(100),
-                                      payment_details JSON,
-                                      processed_at TIMESTAMP NULL,
-                                      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                                      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
-
-CREATE TABLE payment_status_history (
-                                        id CHAR(36) PRIMARY KEY,
-                                        payment_transaction_id CHAR(36) NOT NULL,
-                                        status VARCHAR(20) NOT NULL,
-                                        details JSON,
-                                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- Billing Domain
-CREATE TABLE invoices (
-                          id CHAR(36) PRIMARY KEY,
-                          company_id CHAR(36) NOT NULL,
-                          invoice_number VARCHAR(50) UNIQUE NOT NULL,
-                          period_start DATE NOT NULL,
-                          period_end DATE NOT NULL,
-                          subtotal DECIMAL(10,2) NOT NULL,
-                          tax DECIMAL(10,2) NOT NULL,
-                          total_amount DECIMAL(10,2) NOT NULL,
-                          status VARCHAR(20) NOT NULL,
-                          due_date DATE NOT NULL,
-                          paid_at TIMESTAMP NULL,
-                          payment_reference VARCHAR(100),
-                          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
-
-CREATE TABLE invoice_items (
-                               id CHAR(36) PRIMARY KEY,
-                               invoice_id CHAR(36) NOT NULL,
-                               order_id CHAR(36) NULL,
-                               description VARCHAR(255) NOT NULL,
-                               quantity INT NOT NULL DEFAULT 1,
-                               unit_price DECIMAL(10,2) NOT NULL,
-                               subtotal DECIMAL(10,2) NOT NULL,
-                               tax_rate DECIMAL(5,2) NOT NULL DEFAULT 0.00,
-                               tax_amount DECIMAL(10,2) NOT NULL DEFAULT 0.00,
-                               total_amount DECIMAL(10,2) NOT NULL,
-                               created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE billing_cycles (
-                                company_id CHAR(36) PRIMARY KEY,
-                                cycle_day INT NOT NULL,
-                                last_billed_date DATE,
-                                next_billing_date DATE,
-                                billing_frequency VARCHAR(20) DEFAULT 'MONTHLY',
-                                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
-
--- Events Domain
-CREATE TABLE system_events (
-                               id CHAR(36) PRIMARY KEY,
-                               event_type VARCHAR(50) NOT NULL,
-                               source VARCHAR(50) NOT NULL,
-                               source_id CHAR(36) NOT NULL,
-                               event_data JSON NOT NULL,
-                               severity VARCHAR(20) NOT NULL DEFAULT 'INFO',
-                               occurred_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE event_logs (
-                            id CHAR(36) PRIMARY KEY,
-                            event_id CHAR(36) NOT NULL,
-                            log_level VARCHAR(20) NOT NULL,
-                            description TEXT NOT NULL,
-                            metadata JSON,
-                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE audit_logs (
-                            id CHAR(36) PRIMARY KEY,
-                            user_id CHAR(36) NOT NULL,
-                            action VARCHAR(50) NOT NULL,
-                            entity_type VARCHAR(50) NOT NULL,
-                            entity_id CHAR(36) NOT NULL,
-                            old_values JSON,
-                            new_values JSON,
-                            ip_address VARCHAR(45),
-                            user_agent TEXT,
-                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- Notifications Domain
-CREATE TABLE notification_templates (
-                                        id CHAR(36) PRIMARY KEY,
-                                        name VARCHAR(100) NOT NULL,
-                                        type VARCHAR(50) NOT NULL,
-                                        title_template TEXT NOT NULL,
-                                        content_template TEXT NOT NULL,
-                                        variables JSON,
-                                        is_active BOOLEAN DEFAULT true,
-                                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
-
-CREATE TABLE notifications (
-                               id CHAR(36) PRIMARY KEY,
-                               user_id CHAR(36) NOT NULL,
-                               template_id CHAR(36) NOT NULL,
-                               title VARCHAR(255) NOT NULL,
-                               content TEXT NOT NULL,
-                               type VARCHAR(50) NOT NULL,
-                               metadata JSON,
-                               is_read BOOLEAN DEFAULT false,
-                               read_at TIMESTAMP NULL,
-                               sent_at TIMESTAMP NULL,
-                               created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE notification_preferences (
-                                          user_id CHAR(36) NOT NULL,
-                                          notification_type VARCHAR(50) NOT NULL,
-                                          email_enabled BOOLEAN DEFAULT true,
-                                          push_enabled BOOLEAN DEFAULT true,
-                                          sms_enabled BOOLEAN DEFAULT false,
-                                          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                                          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                                          PRIMARY KEY (user_id, notification_type)
-);
-
-CREATE TABLE notification_devices (
-                                      id CHAR(36) PRIMARY KEY,
-                                      user_id CHAR(36) NOT NULL,
-                                      device_token TEXT NOT NULL,
-                                      device_type VARCHAR(50) NOT NULL,
-                                      is_active BOOLEAN DEFAULT true,
-                                      last_used_at TIMESTAMP NULL,
-                                      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                                      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
-
-
--- Dominio de control de almacen
-CREATE TABLE warehouse (
-                           id CHAR(36) PRIMARY KEY,
-                           zone_id CHAR(36) NOT NULL,
-                           name VARCHAR(100) NOT NULL,
-                           address VARCHAR(255) NOT NULL,
-                           location POINT NOT NULL,
-                           is_active BOOLEAN DEFAULT true,
-                           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-
-CREATE TABLE package_warehouse_tracking (
-                                            id CHAR(36) PRIMARY KEY,
-                                            order_id CHAR(36) NOT NULL,
-                                            warehouse_id CHAR(36) NOT NULL,
-                                            status VARCHAR(50) NOT NULL,
-                                            collector_id CHAR(36) NOT NULL,
-                                            collected_at TIMESTAMP NULL,
-                                            notes TEXT,
-                                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE warehouse_inventory (
-                                     id CHAR(36) PRIMARY KEY,
-                                     warehouse_id CHAR(36) NOT NULL,
-                                     order_id CHAR(36) NOT NULL,
-                                     status VARCHAR(50) NOT NULL,
-                                     shelf_location VARCHAR(50),
-                                     received_at TIMESTAMP NOT NULL,
-                                     dispatched_at TIMESTAMP NULL,
-                                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- INDICES
-
--- Dominio Usuarios
-ALTER TABLE users
-    ADD INDEX idx_users_email (email),
-   ADD INDEX idx_users_phone (phone),
-   ADD INDEX idx_users_status (is_active, deleted_at);
-
-ALTER TABLE user_roles
-    ADD INDEX idx_user_roles_user (user_id),
-   ADD INDEX idx_user_roles_role (role_id),
-   ADD INDEX idx_user_roles_active (is_active);
-
-ALTER TABLE user_sessions
-    ADD INDEX idx_sessions_user (user_id),
-   ADD INDEX idx_sessions_token (token),
-   ADD INDEX idx_sessions_expiry (expires_at);
-
-ALTER TABLE user_profiles
-    ADD INDEX idx_profiles_document (document_type, document_number);
-
--- Dominio Empresas
-ALTER TABLE companies
-    ADD INDEX idx_companies_tax (tax_id),
-   ADD INDEX idx_companies_status (is_active),
-   ADD INDEX idx_companies_contract (contract_start_date, contract_end_date);
-
-ALTER TABLE company_branches
-    ADD INDEX idx_branches_company (company_id),
-   ADD INDEX idx_branches_zone (zone_id),
-   ADD INDEX idx_branches_status (is_active);
-
-ALTER TABLE company_users
-    ADD INDEX idx_company_users_company (company_id),
-   ADD INDEX idx_company_users_status (can_create_orders);
-
-ALTER TABLE company_addresses
-    ADD SPATIAL INDEX idx_company_location (location);
-
--- Dominio Pedidos
-ALTER TABLE orders
-    ADD INDEX idx_orders_company (company_id),
-   ADD INDEX idx_orders_branch (branch_id),
-   ADD INDEX idx_orders_client (client_id),
-   ADD INDEX idx_orders_driver (driver_id),
-   ADD INDEX idx_orders_tracking (tracking_number),
-   ADD INDEX idx_orders_status (status),
-   ADD INDEX idx_orders_created (created_at);
-
-ALTER TABLE order_details
-    ADD INDEX idx_order_details_delivery (delivery_deadline);
-
-ALTER TABLE delivery_addresses
-    ADD SPATIAL INDEX idx_delivery_location (location);
-
-ALTER TABLE pickup_addresses
-    ADD SPATIAL INDEX idx_pickup_location (location);
-
-ALTER TABLE order_tracking
-    ADD SPATIAL INDEX idx_order_current_location (current_location);
-
--- Dominio Zonas
-ALTER TABLE zones
-    ADD SPATIAL INDEX idx_zone_boundaries (boundaries),
-   ADD SPATIAL INDEX idx_zone_center (center_point),
-   ADD INDEX idx_zone_status (is_active);
-
-ALTER TABLE zone_coverage
-    ADD SPATIAL INDEX idx_coverage_area (coverage_area);
-
-ALTER TABLE driver_zones
-    ADD INDEX idx_driver_zones_driver (driver_id),
-   ADD INDEX idx_driver_zones_zone (zone_id),
-   ADD INDEX idx_driver_zones_status (is_active);
-
--- Dominio Pagos
-ALTER TABLE payment_transactions
-    ADD INDEX idx_payments_order (order_id),
-   ADD INDEX idx_payments_method (payment_method_id),
-   ADD INDEX idx_payments_status (status),
-   ADD INDEX idx_payments_created (created_at);
-
-ALTER TABLE invoices
-    ADD INDEX idx_invoices_company (company_id),
-   ADD INDEX idx_invoices_status (status),
-   ADD INDEX idx_invoices_dates (period_start, period_end);
-
--- Dominio Eventos y Notificaciones
-ALTER TABLE system_events
-    ADD INDEX idx_events_type (event_type),
-   ADD INDEX idx_events_source (source, source_id),
-   ADD INDEX idx_events_occurred (occurred_at);
-
-ALTER TABLE notifications
-    ADD INDEX idx_notifications_user (user_id),
-   ADD INDEX idx_notifications_template (template_id),
-   ADD INDEX idx_notifications_status (is_read),
-   ADD INDEX idx_notifications_type (type);
-
--- RELACIONES
-
--- Dominio Usuarios
-ALTER TABLE user_roles
-    ADD CONSTRAINT fk_user_roles_user FOREIGN KEY (user_id) REFERENCES users(id),
-   ADD CONSTRAINT fk_user_roles_role FOREIGN KEY (role_id) REFERENCES roles(id);
-
-ALTER TABLE user_profiles
-    ADD CONSTRAINT fk_profiles_user FOREIGN KEY (user_id) REFERENCES users(id);
-
-ALTER TABLE user_sessions
-    ADD CONSTRAINT fk_sessions_user FOREIGN KEY (user_id) REFERENCES users(id);
-
--- Dominio Empresas
-ALTER TABLE company_branches
-    ADD CONSTRAINT fk_branches_company FOREIGN KEY (company_id) REFERENCES companies(id),
-   ADD CONSTRAINT fk_branches_zone FOREIGN KEY (zone_id) REFERENCES zones(id);
-
-ALTER TABLE company_users
-    ADD CONSTRAINT fk_company_users_user FOREIGN KEY (user_id) REFERENCES users(id),
-   ADD CONSTRAINT fk_company_users_company FOREIGN KEY (company_id) REFERENCES companies(id);
-
-ALTER TABLE company_addresses
-    ADD CONSTRAINT fk_company_addresses FOREIGN KEY (company_id) REFERENCES companies(id);
-
--- Dominio Pedidos
-ALTER TABLE orders
-    ADD CONSTRAINT fk_orders_company FOREIGN KEY (company_id) REFERENCES companies(id),
-   ADD CONSTRAINT fk_orders_branch FOREIGN KEY (branch_id) REFERENCES company_branches(id),
-   ADD CONSTRAINT fk_orders_client FOREIGN KEY (client_id) REFERENCES users(id),
-   ADD CONSTRAINT fk_orders_driver FOREIGN KEY (driver_id) REFERENCES drivers(user_id);
-
-ALTER TABLE order_details
-    ADD CONSTRAINT fk_order_details FOREIGN KEY (order_id) REFERENCES orders(id);
-
-ALTER TABLE package_details
-    ADD CONSTRAINT fk_package_details FOREIGN KEY (order_id) REFERENCES orders(id);
-
-ALTER TABLE delivery_addresses
-    ADD CONSTRAINT fk_delivery_addresses FOREIGN KEY (order_id) REFERENCES orders(id);
-
-ALTER TABLE pickup_addresses
-    ADD CONSTRAINT fk_pickup_addresses FOREIGN KEY (order_id) REFERENCES orders(id);
-
--- Dominio Zonas
-ALTER TABLE adjacent_zones
-    ADD CONSTRAINT fk_adjacent_zones_zone FOREIGN KEY (zone_id) REFERENCES zones(id),
-   ADD CONSTRAINT fk_adjacent_zones_adjacent FOREIGN KEY (adjacent_zone_id) REFERENCES zones(id);
-
-ALTER TABLE driver_zones
-    ADD CONSTRAINT fk_driver_zones_driver FOREIGN KEY (driver_id) REFERENCES drivers(user_id),
-   ADD CONSTRAINT fk_driver_zones_zone FOREIGN KEY (zone_id) REFERENCES zones(id);
-
--- Dominio Pagos
-ALTER TABLE payment_transactions
-    ADD CONSTRAINT fk_payments_order FOREIGN KEY (order_id) REFERENCES orders(id),
-   ADD CONSTRAINT fk_payments_method FOREIGN KEY (payment_method_id) REFERENCES payment_methods(id);
-
-ALTER TABLE invoice_items
-    ADD CONSTRAINT fk_invoice_items_invoice FOREIGN KEY (invoice_id) REFERENCES invoices(id),
-   ADD CONSTRAINT fk_invoice_items_order FOREIGN KEY (order_id) REFERENCES orders(id);
-
--- Dominio Notificaciones
-ALTER TABLE notifications
-    ADD CONSTRAINT fk_notifications_user FOREIGN KEY (user_id) REFERENCES users(id),
-   ADD CONSTRAINT fk_notifications_template FOREIGN KEY (template_id) REFERENCES notification_templates(id);
-
-ALTER TABLE notification_preferences
-    ADD CONSTRAINT fk_notification_prefs_user FOREIGN KEY (user_id) REFERENCES users(id);
-
-ALTER TABLE notification_devices
-    ADD CONSTRAINT fk_notification_devices_user FOREIGN KEY (user_id) REFERENCES users(id);
-
-ALTER TABLE driver_availability
-    ADD CONSTRAINT fk_driver_availability_driver
-        FOREIGN KEY (driver_id) REFERENCES drivers(user_id),
-    ADD CONSTRAINT fk_driver_availability_zone
-    FOREIGN KEY (current_zone_id) REFERENCES zones(id);
-
-ALTER TABLE event_logs
-    ADD CONSTRAINT fk_event_logs_event
-        FOREIGN KEY (event_id) REFERENCES system_events(id);
-
--- Dominio de almacen
-ALTER TABLE warehouse
-    ADD FOREIGN KEY (zone_id) REFERENCES zones(id);
-
-ALTER TABLE package_warehouse_tracking
-    ADD FOREIGN KEY (order_id) REFERENCES orders(id),
-    ADD FOREIGN KEY (warehouse_id) REFERENCES warehouse(id),
-    ADD FOREIGN KEY (collector_id) REFERENCES users(id);
-
-ALTER TABLE warehouse_inventory
-    ADD FOREIGN KEY (warehouse_id) REFERENCES warehouse(id),
-    ADD FOREIGN KEY (order_id) REFERENCES orders(id);
-
 -- Inicializacion de roles
 
 INSERT INTO roles (id, name, description) VALUES
@@ -708,3 +6,252 @@ INSERT INTO roles (id, name, description) VALUES
                                               (UUID(), 'DRIVER', 'Repartidor'),
                                               (UUID(), 'WAREHOUSE_STAFF', 'Personal de almacén'),
                                               (UUID(), 'COLLECTOR', 'Recolector de paquetes');
+
+-- 1. Usuario Administrador
+INSERT INTO users (id, email, password_hash, full_name, phone, is_active, email_verified_at)
+VALUES (
+           'a1b2c3d4-e5f6-7890-a1b2-c3d4e5f6g7h8',
+           'admin@delivery.com',
+           '$2a$10$2o6x9aCZsWM8oRHy/ZJqLuNmDYFzZAbfzUPBLc4pRJrto2VbmlIAq',
+           'Admin System',
+           '+1234567890',
+           true,
+           CURRENT_TIMESTAMP
+       );
+
+INSERT INTO user_profiles (user_id, document_type, document_number, birth_date)
+VALUES (
+           'a1b2c3d4-e5f6-7890-a1b2-c3d4e5f6g7h8',
+           'DNI',
+           '12345678',
+           '1990-01-01'
+       );
+
+-- Asignar rol ADMIN
+INSERT INTO user_roles (user_id, role_id, assigned_by, is_active)
+SELECT
+    'a1b2c3d4-e5f6-7890-a1b2-c3d4e5f6g7h8',
+    id,
+    'a1b2c3d4-e5f6-7890-a1b2-c3d4e5f6g7h8',
+    true
+FROM roles WHERE name = 'ADMIN';
+
+-- 2. Usuario Empresa
+INSERT INTO users (id, email, password_hash, full_name, phone, is_active, email_verified_at)
+VALUES (
+           'b2c3d4e5-f6g7-8901-b2c3-d4e5f6g7h8i9',
+           'company@delivery.com',
+           '$2a$10$2o6x9aCZsWM8oRHy/ZJqLuNmDYFzZAbfzUPBLc4pRJrto2VbmlIAq',
+           'Company User',
+           '+1234567891',
+           true,
+           CURRENT_TIMESTAMP
+       );
+
+INSERT INTO user_profiles (user_id, document_type, document_number, birth_date)
+VALUES (
+           'b2c3d4e5-f6g7-8901-b2c3-d4e5f6g7h8i9',
+           'DNI',
+           '23456789',
+           '1991-02-02'
+       );
+
+-- Asignar rol COMPANY_USER
+INSERT INTO user_roles (user_id, role_id, assigned_by, is_active)
+SELECT
+    'b2c3d4e5-f6g7-8901-b2c3-d4e5f6g7h8i9',
+    id,
+    'a1b2c3d4-e5f6-7890-a1b2-c3d4e5f6g7h8',
+    true
+FROM roles WHERE name = 'COMPANY_USER';
+
+-- 3. Usuario Repartidor
+INSERT INTO users (id, email, password_hash, full_name, phone, is_active, email_verified_at)
+VALUES (
+           'c3d4e5f6-g7h8-9012-c3d4-e5f6g7h8i9j0',
+           'driver@delivery.com',
+           '$2a$10$2o6x9aCZsWM8oRHy/ZJqLuNmDYFzZAbfzUPBLc4pRJrto2VbmlIAq',
+           'Driver User',
+           '+1234567892',
+           true,
+           CURRENT_TIMESTAMP
+       );
+
+INSERT INTO user_profiles (user_id, document_type, document_number, birth_date)
+VALUES (
+           'c3d4e5f6-g7h8-9012-c3d4-e5f6g7h8i9j0',
+           'DNI',
+           '34567890',
+           '1992-03-03'
+       );
+
+-- Asignar rol DRIVER
+INSERT INTO user_roles (user_id, role_id, assigned_by, is_active)
+SELECT
+    'c3d4e5f6-g7h8-9012-c3d4-e5f6g7h8i9j0',
+    id,
+    'a1b2c3d4-e5f6-7890-a1b2-c3d4e5f6g7h8',
+    true
+FROM roles WHERE name = 'DRIVER';
+
+-- 4. Usuario Personal de Almacén
+INSERT INTO users (id, email, password_hash, full_name, phone, is_active, email_verified_at)
+VALUES (
+           'd4e5f6g7-h8i9-0123-d4e5-f6g7h8i9j0k1',
+           'warehouse@delivery.com',
+           '$2a$10$2o6x9aCZsWM8oRHy/ZJqLuNmDYFzZAbfzUPBLc4pRJrto2VbmlIAq',
+           'Warehouse Staff',
+           '+1234567893',
+           true,
+           CURRENT_TIMESTAMP
+       );
+
+INSERT INTO user_profiles (user_id, document_type, document_number, birth_date)
+VALUES (
+           'd4e5f6g7-h8i9-0123-d4e5-f6g7h8i9j0k1',
+           'DNI',
+           '45678901',
+           '1993-04-04'
+       );
+
+-- Asignar rol WAREHOUSE_STAFF
+INSERT INTO user_roles (user_id, role_id, assigned_by, is_active)
+SELECT
+    'd4e5f6g7-h8i9-0123-d4e5-f6g7h8i9j0k1',
+    id,
+    'a1b2c3d4-e5f6-7890-a1b2-c3d4e5f6g7h8',
+    true
+FROM roles WHERE name = 'WAREHOUSE_STAFF';
+
+-- 5. Usuario Recolector
+INSERT INTO users (id, email, password_hash, full_name, phone, is_active, email_verified_at)
+VALUES (
+           'e5f6g7h8-i9j0-1234-e5f6-g7h8i9j0k1l2',
+           'collector@delivery.com',
+           '$2a$10$2o6x9aCZsWM8oRHy/ZJqLuNmDYFzZAbfzUPBLc4pRJrto2VbmlIAq',
+           'Collector User',
+           '+1234567894',
+           true,
+           CURRENT_TIMESTAMP
+       );
+
+INSERT INTO user_profiles (user_id, document_type, document_number, birth_date)
+VALUES (
+           'e5f6g7h8-i9j0-1234-e5f6-g7h8i9j0k1l2',
+           'DNI',
+           '56789012',
+           '1994-05-05'
+       );
+
+-- Asignar rol COLLECTOR
+INSERT INTO user_roles (user_id, role_id, assigned_by, is_active)
+SELECT
+    'e5f6g7h8-i9j0-1234-e5f6-g7h8i9j0k1l2',
+    id,
+    'a1b2c3d4-e5f6-7890-a1b2-c3d4e5f6g7h8',
+    true
+FROM roles WHERE name = 'COLLECTOR';
+
+-- Insertar zonas
+INSERT INTO zones
+(id, name, code, boundaries, center_point, base_rate, max_delivery_time, is_active, priority_level, created_at)
+VALUES
+    ('f8c3e8d7-b6a5-4d3c-9f1e-0a2b4c6d8e0f', 'Zona Norte', 'ZNORTE',
+     ST_GeomFromText('POLYGON((-74.03 4.70, -74.02 4.70, -74.02 4.72, -74.03 4.72, -74.03 4.70))'),
+     ST_GeomFromText('POINT(-74.025 4.71)'),
+     25.00, 60, true, 1, NOW()),
+
+    ('e7d6c5b4-a3f2-4e1d-8c9b-7a6b5c4d3e2f', 'Zona Centro', 'ZCENTRO',
+     ST_GeomFromText('POLYGON((-74.08 4.60, -74.06 4.60, -74.06 4.62, -74.08 4.62, -74.08 4.60))'),
+     ST_GeomFromText('POINT(-74.07 4.61)'),
+     30.00, 45, true, 2, NOW()),
+
+    ('d6e5f4c3-b2a1-4d0e-9f8c-7b6a5d4c3e2f', 'Zona Sur', 'ZSUR',
+     ST_GeomFromText('POLYGON((-74.12 4.50, -74.10 4.50, -74.10 4.52, -74.12 4.52, -74.12 4.50))'),
+     ST_GeomFromText('POINT(-74.11 4.51)'),
+     35.00, 75, true, 1, NOW());
+
+-- Insertar cobertura de zonas
+INSERT INTO zone_coverage
+(zone_id, coverage_area, operating_hours, max_concurrent_orders, surge_multiplier)
+VALUES
+    ('f8c3e8d7-b6a5-4d3c-9f1e-0a2b4c6d8e0f',
+     ST_GeomFromText('POLYGON((-74.04 4.69, -74.01 4.69, -74.01 4.73, -74.04 4.73, -74.04 4.69))'),
+     '{"weekdays":{"start":"08:00","end":"20:00"},"weekends":{"start":"09:00","end":"17:00"}}',
+     15, 1.5),
+
+    ('e7d6c5b4-a3f2-4e1d-8c9b-7a6b5c4d3e2f',
+     ST_GeomFromText('POLYGON((-74.09 4.59, -74.05 4.59, -74.05 4.63, -74.09 4.63, -74.09 4.59))'),
+     '{"weekdays":{"start":"07:00","end":"22:00"},"weekends":{"start":"08:00","end":"20:00"}}',
+     25, 1.8),
+
+    ('d6e5f4c3-b2a1-4d0e-9f8c-7b6a5d4c3e2f',
+     ST_GeomFromText('POLYGON((-74.13 4.49, -74.09 4.49, -74.09 4.53, -74.13 4.53, -74.13 4.49))'),
+     '{"weekdays":{"start":"08:00","end":"21:00"},"weekends":{"start":"09:00","end":"18:00"}}',
+     20, 1.3);
+
+-- Usuario de empresa
+INSERT INTO users
+(id, email, password_hash, full_name, phone, is_active, created_at, updated_at)
+VALUES
+    ('b2c3d4e5-f6a7-8b9c-0d1e-2f3a4b5c6d7e', 'empresauser@empresa.com',
+     '$2a$10$2o6x9aCZsWM8oRHy/ZJqLuNmDYFzZAbfzUPBLc4pRJrto2VbmlIAq', 'Gerente Empresa', '+573007654321', true, NOW(), NOW());
+
+INSERT INTO user_profiles
+(user_id, document_type, document_number, birth_date, emergency_contact_name, emergency_contact_phone)
+VALUES ('b2c3d4e5-f6a7-8b9c-0d1e-2f3a4b5c6d7e', 'DUI', '9876543210', '1990-07-20', 'Contacto Empresa', '+573001112233');
+
+INSERT INTO user_roles
+(user_id, role_id, assigned_at, assigned_by, is_active, created_at)
+VALUES ('b2c3d4e5-f6a7-8b9c-0d1e-2f3a4b5c6d7e', '991dfbd6-f89b-11ef-a120-0242ac120003', NOW(), 'a1b2c3d4-e5f6-7890-a1b2-c3d4e5f6g7h8', true, NOW());
+
+-- Insertar compañías
+INSERT INTO companies
+(id, name, legal_name, tax_id, contact_email, contact_phone, is_active, delivery_rate, contract_start_date, created_at, updated_at)
+VALUES
+    ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'Express Delivery Co.', 'Express Delivery S.A.S',
+     '900123456-7', 'contacto@expressdelivery.com', '+573001234567', true, 20.50,
+     NOW(), NOW(), NOW()),
+
+    ('b1ffc99-8d0a-4be8-aa6c-7aa8ce481a22', 'Rapid Logistics Inc.', 'Rapid Logistics International Inc.',
+     '900654321-8', 'contacto@rapidlogistics.com', '+573009876543', true, 25.75,
+     NOW(), NOW(), NOW());
+
+-- Insertar direcciones de compañía
+INSERT INTO company_addresses
+(id, company_id, address_line1, address_line2, city, state, postal_code, location, is_main, created_at)
+VALUES
+    ('e1b09d38-e71f-415f-b3eb-ffeb8dd3b493', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
+     'Calle 100 #15-20', 'Edificio Centro Empresarial', 'Bogotá', 'Cundinamarca', '110121',
+     ST_GeomFromText('POINT(-74.05 4.68)'), true, NOW()),
+
+    ('f2c18d47-f81f-416f-c4fc-00fc9ee4c594', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
+     'Calle 80 #20-30', 'Torre Norte', 'Bogotá', 'Cundinamarca', '110111',
+     ST_GeomFromText('POINT(-74.07 4.67)'), false, NOW()),
+
+    ('03d29d56-091f-417f-d5fd-11fd0ff5d605', 'b1ffc99-8d0a-4be8-aa6c-7aa8ce481a22',
+     'Carrera 15 #93-60', 'Piso 3', 'Bogotá', 'Cundinamarca', '110221',
+     ST_GeomFromText('POINT(-74.04 4.66)'), true, NOW());
+
+-- Insertar sucursales
+INSERT INTO company_branches
+(id, company_id, name, code, contact_name, contact_phone, contact_email, is_active, zone_id, created_at, updated_at)
+VALUES
+    ('b5f8c3d1-2e59-4c4b-a6e8-e5f3c0c3d1b5', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
+     'Sucursal Norte', 'SUC-NORTE-001', 'Gerente Norte', '+573001112233', 'norte@expressdelivery.com',
+     true, 'f8c3e8d7-b6a5-4d3c-9f1e-0a2b4c6d8e0f', NOW(), NOW()),
+
+    ('c6f9d4e2-3f6a-5d7c-b9f0-f6f4d3c2b1a6', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
+     'Sucursal Centro', 'SUC-CENTRO-001', 'Gerente Centro', '+573004445566', 'centro@expressdelivery.com',
+     true, 'e7d6c5b4-a3f2-4e1d-8c9b-7a6b5c4d3e2f', NOW(), NOW()),
+
+    ('d7a0e5f3-4a7b-6e8d-ca01-a7a5e4d3c2b1', 'b1ffc99-8d0a-4be8-aa6c-7aa8ce481a22',
+     'Sucursal Principal', 'SUC-PPAL-001', 'Gerente Principal', '+573007778899', 'principal@rapidlogistics.com',
+     true, 'd6e5f4c3-b2a1-4d0e-9f8c-7b6a5d4c3e2f', NOW(), NOW());
+
+-- Insertar usuario de compañía
+INSERT INTO company_users
+(user_id, company_id, position, department, can_create_orders, created_at, updated_at)
+VALUES
+    ('b2c3d4e5-f6a7-8b9c-0d1e-2f3a4b5c6d7e', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
+     'Gerente de Operaciones', 'Operaciones', true, NOW(), NOW());

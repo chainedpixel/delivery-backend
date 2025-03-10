@@ -192,6 +192,19 @@ func (o OrderService) UpdateOrder(ctx context.Context, orderID string, order *en
 	return nil
 }
 
+func (o OrderService) GetOrdersByCompany(ctx context.Context, companyID string, params *entities.OrderQueryParams) ([]entities.Order, int64, error) {
+	orders, total, err := o.repo.GetOrdersByCompany(ctx, companyID, params)
+	if err != nil {
+		logs.Error("Failed to get orders by company", map[string]interface{}{
+			"companyID": companyID,
+			"error":     err.Error(),
+		})
+		return nil, 0, errPackage.NewDomainErrorWithCause("OrderService", "GetOrdersByCompany", "failed to get orders by company", err)
+	}
+
+	return orders, total, nil
+}
+
 func generateQRCode(order entities.Order) *entities.QRCode {
 	return &entities.QRCode{
 		OrderID: order.ID,

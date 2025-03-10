@@ -65,6 +65,71 @@ func (r *orderRepository) CreateOrder(ctx context.Context, order *entities.Order
 	return err
 }
 
+func (r *orderRepository) GetOrdersByCompany(ctx context.Context, companyID string, params *entities.OrderQueryParams) ([]entities.Order, int64, error) {
+	var orders []entities.Order
+	var total int64
+
+	query := r.db.WithContext(ctx).Model(&entities.Order{}).Where("company_id = ?", companyID)
+	if params != nil {
+		if params.Status != "" {
+			query = query.Where("status = ?", params.Status)
+		}
+
+		if params.Location != "" {
+			query = query.Joins("LEFT JOIN delivery_addresses ON orders.id = delivery_addresses.order_id")
+			searchPattern := "%" + params.Location + "%"
+			locationSearch := r.db.Where(
+				"delivery_addresses.address_line1 LIKE ? OR delivery_addresses.address_line2 LIKE ? OR "+
+					"delivery_addresses.city LIKE ? OR delivery_addresses.state LIKE ? OR "+
+					"delivery_addresses.postal_code LIKE ? OR delivery_addresses.recipient_name LIKE ? OR "+
+					"delivery_addresses.address_notes LIKE ?",
+				searchPattern, searchPattern, searchPattern, searchPattern,
+				searchPattern, searchPattern, searchPattern,
+			)
+
+			query = query.Where(locationSearch)
+		}
+
+		if params.TrackingNumber != "" {
+			query = query.Where("tracking_number = ?", params.TrackingNumber)
+		}
+
+		if params.StartDate != nil && params.EndDate != nil {
+			query = query.Where("created_at BETWEEN ? AND ?", params.StartDate, params.EndDate)
+		} else if params.StartDate != nil {
+			query = query.Where("created_at >= ?", params.StartDate)
+		} else if params.EndDate != nil {
+			query = query.Where("created_at <= ?", params.EndDate)
+		}
+	}
+
+	if err := query.Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+
+	if params != nil {
+		if params.Page > 0 && params.PageSize > 0 {
+			offset := (params.Page - 1) * params.PageSize
+			query = query.Offset(offset).Limit(params.PageSize)
+		}
+
+		if params.SortBy != "" {
+			direction := "ASC"
+			if params.SortDirection == "desc" {
+				direction = "DESC"
+			}
+			query = query.Order(params.SortBy + " " + direction)
+		} else {
+			query = query.Order("created_at DESC")
+		}
+	} else {
+		query = query.Order("created_at DESC")
+	}
+
+	err := r.applyOrderPreloads(query).Find(&orders).Error
+	return orders, total, err
+}
+
 // GetOrderByID obtiene un pedido por ID
 func (r *orderRepository) GetOrderByID(ctx context.Context, id string) (*entities.Order, error) {
 	var order entities.Order
@@ -75,6 +140,10 @@ func (r *orderRepository) GetOrderByID(ctx context.Context, id string) (*entitie
 	}
 
 	order.DeliveryAddress.Latitude, order.DeliveryAddress.Longitude, err = r.GetLocationCoordinates(ctx, order.ID, "delivery")
+	if err != nil {
+		return nil, err
+	}
+	order.PickupAddress.Latitude, order.PickupAddress.Longitude, err = r.GetLocationCoordinates(ctx, order.ID, "pickup")
 	if err != nil {
 		return nil, err
 	}
@@ -95,6 +164,10 @@ func (r *orderRepository) GetOrderByQR(ctx context.Context, qr *entities.QRCode)
 	if err != nil {
 		return nil, err
 	}
+	order.PickupAddress.Latitude, order.PickupAddress.Longitude, err = r.GetLocationCoordinates(ctx, order.ID, "pickup")
+	if err != nil {
+		return nil, err
+	}
 
 	return &order, nil
 }
@@ -109,6 +182,10 @@ func (r *orderRepository) GetOrderByTrackingNumber(ctx context.Context, tracking
 	}
 
 	order.DeliveryAddress.Latitude, order.DeliveryAddress.Longitude, err = r.GetLocationCoordinates(ctx, order.ID, "delivery")
+	if err != nil {
+		return nil, err
+	}
+	order.PickupAddress.Latitude, order.PickupAddress.Longitude, err = r.GetLocationCoordinates(ctx, order.ID, "pickup")
 	if err != nil {
 		return nil, err
 	}

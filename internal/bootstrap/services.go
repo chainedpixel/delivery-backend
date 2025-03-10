@@ -17,7 +17,7 @@ type ServiceContainer struct {
 	jwtService     ports.TokenService
 	cacheService   ports.CacheService
 	authService    ports.AuthService
-	userService    domainPorts.UserService
+	userService    domainPorts.Userer
 	orderService   domainPorts.Orderer
 	companyService domainPorts.Companyrer
 }
@@ -58,7 +58,7 @@ func (c *ServiceContainer) GetAuthService() ports.AuthService {
 	return c.authService
 }
 
-func (c *ServiceContainer) GetUserService() domainPorts.UserService {
+func (c *ServiceContainer) GetUserService() domainPorts.Userer {
 	return c.userService
 }
 

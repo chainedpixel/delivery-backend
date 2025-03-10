@@ -9,20 +9,10 @@ import (
 // OrderCreateRequest represents the request body for creating a new order
 // @Description Request structure for creating a delivery order
 type OrderCreateRequest struct {
-	// Unique identifier of the company
-	// @example a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
-	// @required
-	CompanyID string `json:"company_id" example:"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11" binding:"required"`
-
 	// Unique identifier of the company pickup location
 	// @example a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
 	// @required
 	CompanyPickUpID string `json:"company_pickup_id" example:"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11" binding:"required"`
-
-	// Unique identifier of the company branch
-	// @example b5f8c3d1-2e59-4c4b-a6e8-e5f3c0c3d1b5
-	// @required
-	BranchID string `json:"branch_id" example:"b5f8c3d1-2e59-4c4b-a6e8-e5f3c0c3d1b5" binding:"required"`
 
 	// Unique identifier of the client
 	// @example c7d8e9f0-3f4a-5c6b-7d8e-9f0a1b2c3d4e
@@ -84,16 +74,8 @@ type OrderCreateRequest struct {
 }
 
 func (o *OrderCreateRequest) Validate() error {
-	if o.CompanyID == "" {
-		return error2.NewGeneralServiceError("OrderDTO", "Validate", errPackage.ErrCompanyIDRequired)
-	}
-
 	if o.CompanyPickUpID == "" {
 		return error2.NewGeneralServiceError("OrderDTO", "Validate", errPackage.ErrCompanyPickUpIDRequired)
-	}
-
-	if o.BranchID == "" {
-		return error2.NewGeneralServiceError("OrderDTO", "Validate", errPackage.ErrBranchIDRequired)
 	}
 
 	if o.ClientID == "" {
@@ -249,6 +231,10 @@ type OrderResponse struct {
 	// Pickup origin address
 	PickupAddress PickupAddressResponse `json:"pickup_address"`
 
+	// Order status history
+	// @example [{"status":"PENDING","description":"Order has been created","updated_at":"2023-05-15T10:30:00Z"}]
+	StatusHistory []OrderStatusHistoryResponse `json:"status_history"`
+
 	// Current tracking status
 	// @example IN_TRANSIT
 	CurrentStatus string `json:"current_status" example:"IN_TRANSIT"`
@@ -256,9 +242,6 @@ type OrderResponse struct {
 	// Last time the order status was updated
 	// @example 2023-05-15T12:45:00Z
 	LastUpdated time.Time `json:"last_updated,omitempty" example:"2023-05-15T12:45:00Z" format:"date-time"`
-
-	Longitude float64
-	Latitude  float64
 
 	// Estimated time of arrival
 	// @example 2023-05-15T16:30:00Z
@@ -321,10 +304,22 @@ type PackageDetailResponse struct {
 	SpecialInstructions string `json:"special_instructions,omitempty" example:"Contains glass items, handle with care"`
 }
 
+type OrderStatusHistoryResponse struct {
+	// Name of the status
+	// @example ACCEPTED
+	Status string `json:"status" example:"PENDING"`
+	// Description of the status change
+	// @example "Driver has accepted the order and is heading to pickup location"
+	Description string `json:"description,omitempty" example:"Driver has accepted the order and is heading to pickup location"`
+	// Updated at time
+	// @example 2023-05-15T12:45:00Z
+	UpdatedAt string `json:"updated_at" example:"2023-05-15T12:45:00Z" format:"date-time"`
+}
+
 // DeliveryAddressResponse contains the destination address details
 // @Description Delivery address information
 type DeliveryAddressResponse struct {
-	// Name of the person receiving the package
+	// Name of the recipient
 	// @example "John Doe"
 	RecipientName string `json:"recipient_name" example:"John Doe"`
 
@@ -359,14 +354,30 @@ type DeliveryAddressResponse struct {
 	// Longitude coordinate
 	// @example -74.0060
 	Longitude float64 `json:"longitude" example:"-74.0060"`
+}
 
-	// Additional notes about the address
-	// @example "Ring doorbell twice"
-	AddressNotes string `json:"address_notes,omitempty" example:"Ring doorbell twice"`
+// PaginatedResponse represents a paginated response with metadata
+// @Description Paginated data response with metadata about pagination
+type PaginatedResponse struct {
+	// The actual data items
+	// @example [{"id":"a1b2c3d4","tracking_number":"DEL-230512-7890"}]
+	Data interface{} `json:"data"`
 
-	// Full formatted address
-	// @example "123 Main Street, Apartment 4B, New York, NY 10001"
-	FormattedAddress string `json:"formatted_address,omitempty" example:"123 Main Street, Apartment 4B, New York, NY 10001"`
+	// Total number of items across all pages
+	// @example 100
+	TotalItems int64 `json:"total_items" example:"100"`
+
+	// Current page number
+	// @example 1
+	Page int `json:"page" example:"1"`
+
+	// Number of items per page
+	// @example 20
+	PageSize int `json:"page_size" example:"20"`
+
+	// Total number of pages
+	// @example 5
+	TotalPages int `json:"total_pages" example:"5"`
 }
 
 // PickupAddressResponse contains the origin address details
@@ -424,53 +435,42 @@ type OrderListResponse struct {
 	// @example a1b2c3d4-e5f6-7g8h-9i0j-k1l2m3n4o5p6
 	ID string `json:"id" example:"a1b2c3d4-e5f6-7g8h-9i0j-k1l2m3n4o5p6"`
 
-	// Tracking number
+	// Tracking number for the order
 	// @example DEL-230512-7890
 	TrackingNumber string `json:"tracking_number" example:"DEL-230512-7890"`
 
-	// Company name
-	// @example "Express Delivery Inc."
-	CompanyName string `json:"company_name" example:"Express Delivery Inc."`
-
-	// Branch name
-	// @example "Downtown Branch"
-	BranchName string `json:"branch_name" example:"Downtown Branch"`
-
-	// Client name
+	// Full name of the client
 	// @example "John Smith"
 	ClientName string `json:"client_name" example:"John Smith"`
 
-	// Driver name if assigned
-	// @example "Michael Johnson"
-	DriverName string `json:"driver_name,omitempty" example:"Michael Johnson"`
+	// Shortened delivery address for display
+	// @example "123 Main St, New York, NY"
+	DeliveryAddress string `json:"delivery_address" example:"123 Main St, New York, NY"`
 
-	// Current status
-	// @example PENDING
-	Status string `json:"status" example:"PENDING"`
-
-	// Simplified delivery address
-	// @example "123 Main Street, New York, NY"
-	DeliveryAddress string `json:"delivery_address" example:"123 Main Street, New York, NY"`
-
-	// Simplified pickup address
-	// @example "456 Business Ave, Chicago, IL"
-	PickupAddress string `json:"pickup_address" example:"456 Business Ave, Chicago, IL"`
+	// Deadline for delivery
+	// @example 2023-05-15T16:30:00Z
+	DeliveryDeadline time.Time `json:"delivery_deadline" example:"2023-05-15T16:30:00Z" format:"date-time"`
 
 	// Price of the delivery
 	// @example 25.50
 	Price float64 `json:"price" example:"25.50"`
 
-	// Distance to be traveled
-	// @example 7.2
-	Distance float64 `json:"distance" example:"7.2"`
+	// Current status of the order
+	// @example PENDING
+	// @enum [PENDING,ACCEPTED,PICKED_UP,IN_TRANSIT,DELIVERED,CANCELLED]
+	Status string `json:"status" example:"PENDING" enums:"PENDING,ACCEPTED,PICKED_UP,IN_TRANSIT,DELIVERED,CANCELLED"`
+
+	// Driver ID assigned to the order (if any)
+	// @example d1e2f3g4-h5i6-j7k8-l9m0-n1o2p3q4r5s6
+	DriverID *string `json:"driver_id,omitempty" example:"d1e2f3g4-h5i6-j7k8-l9m0-n1o2p3q4r5s6"`
+
+	// Full name of the assigned driver
+	// @example "Michael Johnson"
+	DriverName string `json:"driver_name,omitempty" example:"Michael Johnson"`
 
 	// When the order was created
 	// @example 2023-05-15T10:30:00Z
 	CreatedAt time.Time `json:"created_at" example:"2023-05-15T10:30:00Z" format:"date-time"`
-
-	// Deadline for delivery
-	// @example 2023-05-15T16:30:00Z
-	DeliveryDeadline time.Time `json:"delivery_deadline" example:"2023-05-15T16:30:00Z" format:"date-time"`
 }
 
 // OrderStatusUpdateRequest represents the request to update an order's status

@@ -36,3 +36,15 @@ func (r *CompanyAddressRepository) GetCompanyAddressByID(ctx context.Context, id
 
 	return &companyAddress, nil
 }
+
+func (r *CompanyAddressRepository) GetCompanyAndBranchForUser(ctx context.Context, userID string) (string, string, error) {
+	var company entities.CompanyUser
+	err := r.db.WithContext(ctx).
+		Where("user_id = ?", userID).
+		First(&company).Error
+	if err != nil {
+		return "", "", err
+	}
+
+	return company.CompanyID, company.BranchID, nil
+}

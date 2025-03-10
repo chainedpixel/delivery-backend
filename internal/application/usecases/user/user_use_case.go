@@ -8,10 +8,10 @@ import (
 )
 
 type UserUseCase struct {
-	profileService interfaces.UserService
+	profileService interfaces.Userer
 }
 
-func NewUserProfileUseCase(profileService interfaces.UserService) appPorts.UserUseCase {
+func NewUserProfileUseCase(profileService interfaces.Userer) appPorts.UserUseCase {
 	return &UserUseCase{
 		profileService: profileService,
 	}

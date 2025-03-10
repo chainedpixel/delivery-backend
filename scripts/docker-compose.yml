@@ -1,19 +1,94 @@
 services:
+
+# Servicio de MySQL
   mysql:
     image: mysql:8.0
-    container_name: mysql-db
+    container_name: mysql-container
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: root_password
-      MYSQL_DATABASE: mi_base_datos
-      MYSQL_USER: usuario
-      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: root_password # Cambiar esto antes de lanzar los contenedores
+      MYSQL_DATABASE: delivery_db # Nombre de la base de datos, no cambiar este valor a menos que se cambie en el archivo .env
     ports:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --default-authentication-plugin=mysql_native_password
+    networks:
+      - delivery_network
+
+# Servicio de Redis
+  redis:
+    image: redis:7.4.2
+    container_name: redis-container
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server
+    networks:
+      - delivery_network
+
+# Servicio para producción
+  backend:
+    image: golang:1.23-alpine
+    container_name: delivery-backend
+    volumes:
+      - ../:/app
+    working_dir: /app
+    ports:
+      - "7319:7319"
+    command: sh -c "go run ./cmd/main.go"
+    depends_on:
+      - mysql
+      - redis
+    environment:
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_NAME=delivery_db
+      - DB_USER=root
+      - DB_PASSWORD=root_password
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=
+      - SERVER_PORT=7319
+    networks:
+      - delivery_network
+
+  # Servicio para desarrollo (Hot Reload)
+  backend-dev:
+    image: golang:1.23-alpine
+    container_name: delivery-backend-dev
+    volumes:
+      - ../:/app
+    working_dir: /app
+    ports:
+      - "7319:7319"
+    command: sh -c "go mod download && go run ./cmd/main.go"
+    depends_on:
+      - mysql
+      - redis
+    environment:
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_NAME=delivery_db
+      - DB_USER=root
+      - DB_PASSWORD=root_password
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=
+      - SERVER_PORT=7319
+    networks:
+      - delivery_network
+    profiles:
+      - dev
 
 volumes:
   mysql_data:
     driver: local
+  redis_data:
+    driver: local
+
+networks:
+  delivery_network:
+    driver: bridge

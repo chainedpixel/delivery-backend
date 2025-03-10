@@ -12,7 +12,7 @@ type userProfileService struct {
 	userRepo ports.UserRepository
 }
 
-func NewUserService(userRepo ports.UserRepository) interfaces.UserService {
+func NewUserService(userRepo ports.UserRepository) interfaces.Userer {
 	return &userProfileService{
 		userRepo: userRepo,
 	}

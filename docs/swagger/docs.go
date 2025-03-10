@@ -103,6 +103,94 @@ const docTemplate = `{
             }
         },
         "/api/v1/orders": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get orders by company",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orders"
+                ],
+                "summary": "This endpoint is used to get orders by company",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page size",
+                        "name": "page_size",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sort by",
+                        "name": "sort_by",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Tracking number",
+                        "name": "tracking_number",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Location like address, city, state, postal code, etc.",
+                        "name": "location",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sort order",
+                        "name": "sort_direction",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Order status",
+                        "name": "status",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Start date",
+                        "name": "start_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "End date",
+                        "name": "end_date",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.PaginatedResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responser.APIErrorResponse"
+                        }
+                    }
+                }
+            },
             "post": {
                 "security": [
                     {
@@ -134,6 +222,97 @@ const docTemplate = `{
                 "responses": {
                     "201": {
                         "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/dto.OrderResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responser.APIErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/orders/{order_id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get order by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orders"
+                ],
+                "summary": "This endpoint is used to get an order by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Order ID",
+                        "name": "order_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.OrderResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responser.APIErrorResponse"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Change order status",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orders"
+                ],
+                "summary": "This endpoint is used to change the status of an order",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Order ID",
+                        "name": "order_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "New status",
+                        "name": "status",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/dto.OrderResponse"
                         }
@@ -189,8 +368,6 @@ const docTemplate = `{
             "required": [
                 "address_line1",
                 "city",
-                "latitude",
-                "longitude",
                 "recipient_name",
                 "recipient_phone",
                 "state"
@@ -215,20 +392,6 @@ const docTemplate = `{
                     "description": "City name\n@example \"New York\"\n@required",
                     "type": "string",
                     "example": "New York"
-                },
-                "latitude": {
-                    "description": "Latitude coordinate\n@minimum -90\n@maximum 90\n@example 40.7128\n@required",
-                    "type": "number",
-                    "maximum": 90,
-                    "minimum": -90,
-                    "example": 40.7128
-                },
-                "longitude": {
-                    "description": "Longitude coordinate\n@minimum -180\n@maximum 180\n@example -74.0060\n@required",
-                    "type": "number",
-                    "maximum": 180,
-                    "minimum": -180,
-                    "example": -74.006
                 },
                 "postal_code": {
                     "description": "Postal or ZIP code\n@example \"10001\"",
@@ -266,20 +429,10 @@ const docTemplate = `{
                     "type": "string",
                     "example": "Apartment 4B"
                 },
-                "address_notes": {
-                    "description": "Additional notes about the address\n@example \"Ring doorbell twice\"",
-                    "type": "string",
-                    "example": "Ring doorbell twice"
-                },
                 "city": {
                     "description": "City name\n@example \"New York\"",
                     "type": "string",
                     "example": "New York"
-                },
-                "formatted_address": {
-                    "description": "Full formatted address\n@example \"123 Main Street, Apartment 4B, New York, NY 10001\"",
-                    "type": "string",
-                    "example": "123 Main Street, Apartment 4B, New York, NY 10001"
                 },
                 "latitude": {
                     "description": "Latitude coordinate\n@example 40.7128",
@@ -297,7 +450,7 @@ const docTemplate = `{
                     "example": "10001"
                 },
                 "recipient_name": {
-                    "description": "Name of the person receiving the package\n@example \"John Doe\"",
+                    "description": "Name of the recipient\n@example \"John Doe\"",
                     "type": "string",
                     "example": "John Doe"
                 },
@@ -348,9 +501,7 @@ const docTemplate = `{
             "description": "Request structure for creating a delivery order",
             "type": "object",
             "required": [
-                "branch_id",
                 "client_id",
-                "company_id",
                 "company_pickup_id",
                 "delivery_address",
                 "delivery_deadline",
@@ -362,20 +513,10 @@ const docTemplate = `{
                 "price"
             ],
             "properties": {
-                "branch_id": {
-                    "description": "Unique identifier of the company branch\n@example b5f8c3d1-2e59-4c4b-a6e8-e5f3c0c3d1b5\n@required",
-                    "type": "string",
-                    "example": "b5f8c3d1-2e59-4c4b-a6e8-e5f3c0c3d1b5"
-                },
                 "client_id": {
                     "description": "Unique identifier of the client\n@example c7d8e9f0-3f4a-5c6b-7d8e-9f0a1b2c3d4e\n@required",
                     "type": "string",
                     "example": "c7d8e9f0-3f4a-5c6b-7d8e-9f0a1b2c3d4e"
-                },
-                "company_id": {
-                    "description": "Unique identifier of the company\n@example a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\n@required",
-                    "type": "string",
-                    "example": "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"
                 },
                 "company_pickup_id": {
                     "description": "Unique identifier of the company pickup location\n@example a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\n@required",
@@ -599,6 +740,13 @@ const docTemplate = `{
                     "type": "string",
                     "example": "PENDING"
                 },
+                "status_history": {
+                    "description": "Order status history\n@example [{\"status\":\"PENDING\",\"description\":\"Order has been created\",\"updated_at\":\"2023-05-15T10:30:00Z\"}]",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.OrderStatusHistoryResponse"
+                    }
+                },
                 "tracking_number": {
                     "description": "Tracking number for the order\n@example DEL-230512-7890",
                     "type": "string",
@@ -609,6 +757,27 @@ const docTemplate = `{
                     "type": "string",
                     "format": "date-time",
                     "example": "2023-05-15T10:30:00Z"
+                }
+            }
+        },
+        "dto.OrderStatusHistoryResponse": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "description": "Description of the status change\n@example \"Driver has accepted the order and is heading to pickup location\"",
+                    "type": "string",
+                    "example": "Driver has accepted the order and is heading to pickup location"
+                },
+                "status": {
+                    "description": "Name of the status\n@example ACCEPTED",
+                    "type": "string",
+                    "example": "PENDING"
+                },
+                "updated_at": {
+                    "description": "Updated at time\n@example 2023-05-15T12:45:00Z",
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2023-05-15T12:45:00Z"
                 }
             }
         },
@@ -685,6 +854,35 @@ const docTemplate = `{
                     "description": "Weight of the package in kilograms\n@example 2.5",
                     "type": "number",
                     "example": 2.5
+                }
+            }
+        },
+        "dto.PaginatedResponse": {
+            "description": "Paginated data response with metadata about pagination",
+            "type": "object",
+            "properties": {
+                "data": {
+                    "description": "The actual data items\n@example [{\"id\":\"a1b2c3d4\",\"tracking_number\":\"DEL-230512-7890\"}]"
+                },
+                "page": {
+                    "description": "Current page number\n@example 1",
+                    "type": "integer",
+                    "example": 1
+                },
+                "page_size": {
+                    "description": "Number of items per page\n@example 20",
+                    "type": "integer",
+                    "example": 20
+                },
+                "total_items": {
+                    "description": "Total number of items across all pages\n@example 100",
+                    "type": "integer",
+                    "example": 100
+                },
+                "total_pages": {
+                    "description": "Total number of pages\n@example 5",
+                    "type": "integer",
+                    "example": 5
                 }
             }
         },

@@ -5,6 +5,6 @@ import (
 	"domain/delivery/models/entities"
 )
 
-type UserService interface {
+type Userer interface {
 	GetUserInfo(ctx context.Context, userID string) (*entities.User, error)
 }

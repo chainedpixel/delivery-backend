@@ -1,6 +1,7 @@
 package responser
 
 import (
+	domainErr "domain/error"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -44,7 +45,7 @@ func (w *ResponseWriter) Error(rw http.ResponseWriter, status int, message strin
 		Error: &APIError{
 			Message: message,
 			Details: details,
-			Code:    deriveErrorCode(status, message),
+			Code:    deriveErrorCode(status),
 		},
 	})
 }
@@ -95,6 +96,23 @@ func (w *ResponseWriter) handleBusinessError(rw http.ResponseWriter, err error) 
 		})
 		return
 	}
+
+	var domainErr *domainErr.DomainError
+	if errors.As(err, &domainErr) {
+		code := http.StatusBadRequest
+		if domainErr.IsNotFoundError() {
+			code = http.StatusNotFound
+		}
+		rw.WriteHeader(code)
+		json.NewEncoder(rw).Encode(APIResponse{
+			Success: false,
+			Error: &APIError{
+				Message: domainErr.Error(),
+				Code:    deriveErrorCode(code),
+			},
+		})
+		return
+	}
 }
 
 // handleSystemError maneja los errores de sistema y envía una respuesta de error con el código de estado y el mensaje correspondiente.
@@ -110,7 +128,7 @@ func (w *ResponseWriter) handleSystemError(rw http.ResponseWriter, err error) {
 }
 
 // deriveErrorCode deriva el código de error de acuerdo al estado y mensaje proporcionado.
-func deriveErrorCode(status int, message string) string {
+func deriveErrorCode(status int) string {
 	switch status {
 	case http.StatusBadRequest:
 		return "BAD_REQUEST"
@@ -132,7 +150,8 @@ func deriveErrorCode(status int, message string) string {
 // getErrorType obtiene el tipo de error de acuerdo al tipo de error proporcionado.
 func getErrorType(err error) errorType {
 	switch err.(type) {
-	case *errPackage.ServiceError:
+	case *errPackage.ServiceError,
+		*domainErr.DomainError:
 		return errorBusiness
 	default:
 		return errorSystem

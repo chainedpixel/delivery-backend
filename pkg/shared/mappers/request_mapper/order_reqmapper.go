@@ -16,8 +16,6 @@ func OrderRequestToOrder(req *dto.OrderCreateRequest, companyAddress *entities.C
 	// Crear objeto base del pedido
 	order := &entities.Order{
 		ID:        orderID,
-		CompanyID: req.CompanyID,
-		BranchID:  req.BranchID,
 		ClientID:  req.ClientID,
 		Status:    constants.OrderStatusPending,
 		CreatedAt: time.Now(),
