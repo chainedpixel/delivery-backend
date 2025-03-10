@@ -19,4 +19,6 @@ type OrderRepository interface {
 	DeleteOrder(ctx context.Context, id string) error
 	ChangeStatus(ctx context.Context, id string, status string) error
 	AssignDriverToOrder(ctx context.Context, orderID, driverID string) error
+	SoftDeleteOrder(ctx context.Context, id string) error
+	RestoreOrder(ctx context.Context, id string) error
 }

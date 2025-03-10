@@ -12,4 +12,6 @@ type OrdererUseCase interface {
 	GetOrdersByCompany(ctx context.Context, userID string, request *http.Request) ([]entities.Order, *entities.OrderQueryParams, int64, error)
 	GetOrderByID(ctx context.Context, orderID string) (*entities.Order, error)
 	ChangeStatus(ctx context.Context, id, status string) error
+	DeleteOrder(ctx context.Context, id string) error
+	RestoreOrder(ctx context.Context, id string) error
 }

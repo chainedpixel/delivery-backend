@@ -5,6 +5,10 @@ import "errors"
 var (
 	ErrFailedToParseJSON   = errors.New("failed to marshal content")
 	ErrFailedToUnparseJSON = errors.New("failed to unmarshal content")
+	ErrCannotDeleteOrder   = errors.New("the order cannot be deleted, only orders with status 'pending' or 'cancelled' or 'restored' can be deleted")
+	ErrOrderAlreadyDeleted = errors.New("the order has already been deleted")
+	ErrOrderNotDeleted     = errors.New("the order has not been deleted")
+	ErrOrderDeleted        = errors.New("the order has been deleted")
 
 	ErrFailedToSignToken       = errors.New("failed to sign token")
 	ErrUnexpectedSigningMethod = errors.New("unexpected signing method")

@@ -18,7 +18,7 @@ func (e *ServiceError) Error() string {
 	if err != nil {
 		return ""
 	}
-	if envConfig.Log.Level == "debug" {
+	if envConfig.Server.Debug {
 		return fmt.Sprintf("[%s] %s: | cause: %v", e.Type, e.Operation, e.Err.Error())
 	}
 

@@ -11,6 +11,8 @@ var (
 	OrderStatusReturned    = "RETURNED"
 	OrderStatusCompleted   = "COMPLETED"
 	OrderStatusLost        = "LOST"
+	OrderStatusDeleted     = "DELETED"
+	OrderStatusRestored    = "RESTORED"
 )
 
 var ValidOrderStatuses = []string{
@@ -24,4 +26,10 @@ var ValidOrderStatuses = []string{
 	OrderStatusReturned,
 	OrderStatusInTransit,
 	OrderStatusLost,
+}
+
+var AllowedStatesToDelete = map[string]bool{
+	OrderStatusPending:   true,
+	OrderStatusCancelled: true,
+	OrderStatusRestored:  true,
 }
