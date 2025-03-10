@@ -10,6 +10,9 @@ func RegisterOrderRoutes(router *mux.Router, orderHandler *handlers.OrderHandler
 	router.HandleFunc("/orders", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	}).Methods(http.MethodOptions)
+	router.HandleFunc("/orders/{order_id}", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	}).Methods(http.MethodOptions)
 
 	router.HandleFunc("/orders", orderHandler.CreateOrder).Methods(http.MethodPost)
 	router.HandleFunc("/orders", orderHandler.GetOrdersByCompany).Methods(http.MethodGet)
