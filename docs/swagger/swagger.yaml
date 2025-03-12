@@ -120,6 +120,58 @@ definitions:
         example: NY
         type: string
     type: object
+  dto.DeliveryAddressUpdateRequest:
+    description: Delivery destination address information for updates
+    properties:
+      address_line1:
+        description: |-
+          First line of the address
+          @example "123 Main Street"
+        example: 123 Main Street
+        type: string
+      address_line2:
+        description: |-
+          Second line of the address (optional)
+          @example "Apartment 4B"
+        example: Apartment 4B
+        type: string
+      address_notes:
+        description: |-
+          Additional notes about the address
+          @example "Ring doorbell twice"
+        example: Ring doorbell twice
+        type: string
+      city:
+        description: |-
+          City name
+          @example "New York"
+        example: New York
+        type: string
+      postal_code:
+        description: |-
+          Postal or ZIP code
+          @example "10001"
+        example: "10001"
+        type: string
+      recipient_name:
+        description: |-
+          Name of the person receiving the package
+          @example "John Doe"
+        example: John Doe
+        type: string
+      recipient_phone:
+        description: |-
+          Contact phone number of the recipient
+          @example "+1234567890"
+        example: "+1234567890"
+        type: string
+      state:
+        description: |-
+          State or province name
+          @example "NY"
+        example: NY
+        type: string
+    type: object
   dto.LoginRequest:
     properties:
       device_info:
@@ -451,6 +503,79 @@ definitions:
         format: date-time
         type: string
     type: object
+  dto.OrderUpdateRequest:
+    description: Request structure for updating a delivery order
+    properties:
+      delivery_address:
+        allOf:
+        - $ref: '#/definitions/dto.DeliveryAddressUpdateRequest'
+        description: Delivery destination address details
+      delivery_deadline:
+        description: |-
+          Deadline for delivery completion - only modifiable if order is still in PENDING state
+          @example 2023-05-15T16:30:00Z
+        example: "2023-05-15T16:30:00Z"
+        format: date-time
+        type: string
+      delivery_notes:
+        description: |-
+          Additional notes for the delivery
+          @example "Please call recipient 5 minutes before arrival"
+        example: Please call recipient 5 minutes before arrival
+        type: string
+      distance:
+        description: |-
+          Distance of the delivery in kilometers
+          @minimum 0
+          @example 7.2
+        example: 7.2
+        minimum: 0
+        type: number
+      package_details:
+        allOf:
+        - $ref: '#/definitions/dto.PackageDetailUpdateRequest'
+        description: Details about the package being delivered
+      pickup_contact_name:
+        description: |-
+          Pickup contact information and notes
+          Contact name for pickup location
+          @example "Jane Smith"
+        example: Jane Smith
+        type: string
+      pickup_contact_phone:
+        description: |-
+          Contact phone number for pickup location
+          @example "+0987654321"
+        example: "+0987654321"
+        type: string
+      pickup_notes:
+        description: |-
+          Important notes about the pickup location
+          @example "Enter through loading dock"
+        example: Enter through loading dock
+        type: string
+      pickup_time:
+        description: |-
+          Scheduled pickup time - only modifiable if order is still in PENDING state
+          @example 2023-05-15T14:30:00Z
+        example: "2023-05-15T14:30:00Z"
+        format: date-time
+        type: string
+      price:
+        description: |-
+          Price of the delivery in local currency
+          @minimum 0
+          @example 25.50
+        example: 25.5
+        minimum: 0
+        type: number
+      requires_signature:
+        description: |-
+          Whether recipient signature is required for delivery
+          @example false
+        example: false
+        type: boolean
+    type: object
   dto.PackageDetailRequest:
     description: Package characteristics and handling information
     properties:
@@ -537,6 +662,60 @@ definitions:
           Weight of the package in kilograms
           @example 2.5
         example: 2.5
+        type: number
+    type: object
+  dto.PackageDetailUpdateRequest:
+    description: Package characteristics and handling information for updates
+    properties:
+      height:
+        description: |-
+          Height of the package in centimeters
+          @minimum 0
+          @example 15
+        example: 15
+        minimum: 0
+        type: number
+      is_fragile:
+        description: |-
+          Whether the package contains fragile items
+          @example true
+        example: true
+        type: boolean
+      is_urgent:
+        description: |-
+          Whether the package requires urgent handling
+          @example false
+        example: false
+        type: boolean
+      length:
+        description: |-
+          Length of the package in centimeters
+          @minimum 0
+          @example 30
+        example: 30
+        minimum: 0
+        type: number
+      special_instructions:
+        description: |-
+          Special handling instructions
+          @example "Contains glass items, handle with care"
+        example: Contains glass items, handle with care
+        type: string
+      weight:
+        description: |-
+          Weight of the package in kilograms
+          @minimum 0
+          @example 2.5
+        example: 2.5
+        minimum: 0
+        type: number
+      width:
+        description: |-
+          Width of the package in centimeters
+          @minimum 0
+          @example 20
+        example: 20
+        minimum: 0
         type: number
     type: object
   dto.PaginatedResponse:
@@ -986,6 +1165,38 @@ paths:
       security:
       - BearerAuth: []
       summary: This endpoint is used to change the status of an order
+      tags:
+      - orders
+    put:
+      consumes:
+      - application/json
+      description: Update order by ID
+      parameters:
+      - description: Order ID
+        in: path
+        name: order_id
+        required: true
+        type: string
+      - description: Order information
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/dto.OrderUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Order updated successfully
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responser.APIErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: This endpoint is used to update an order by ID
       tags:
       - orders
   /api/v1/orders/recovery/{order_id}:
