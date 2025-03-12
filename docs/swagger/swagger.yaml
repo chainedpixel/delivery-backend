@@ -1,4 +1,22 @@
 definitions:
+  dto.ActivateUserDTO:
+    properties:
+      active:
+        description: |-
+          Active status of the user to be updated
+          @example true
+          @required
+        type: boolean
+    type: object
+  dto.AssignRoleDTO:
+    properties:
+      role_id:
+        description: |-
+          RoleID UUID of the user to be assigned
+          @example admin
+          @required
+        type: string
+    type: object
   dto.DeliveryAddressRequest:
     description: Delivery destination address information
     properties:
@@ -820,6 +838,149 @@ definitions:
         example: IL
         type: string
     type: object
+  dto.UpdateUserDTO:
+    properties:
+      active:
+        description: |-
+          Active status of the user to be updated
+          @example true
+        type: boolean
+      email:
+        description: |-
+          Email of the user to be updated
+          @example example@example.com
+        type: string
+      first_name:
+        description: |-
+          FirstName of the user to be updated
+          @example John
+        type: string
+      last_name:
+        description: |-
+          LastName of the user to be updated
+          @example Doe
+        type: string
+      password:
+        description: |-
+          Password of the user to be updated
+          @example password
+        type: string
+      phone:
+        description: |-
+          Phone of the user to be updated
+          @example 21212828
+        type: string
+      profile:
+        allOf:
+        - $ref: '#/definitions/dto.UpdateUserProfileDTO'
+        description: Profile of the user to be updated
+    type: object
+  dto.UpdateUserProfileDTO:
+    properties:
+      additional_info:
+        description: AdditionalInfo of the user to be updated
+        type: string
+      birth_date:
+        description: |-
+          BirthDate of the user to be updated
+          @example 1990-01-01
+        type: string
+      document_number:
+        description: |-
+          DocumentNumber of the user to be updated
+          @example 123456789
+        type: string
+      document_type:
+        description: |-
+          DocumentType of the user to be updated
+          @example DUI
+        type: string
+      emergency_contact_name:
+        description: |-
+          EmergencyContactName of the user to be updated
+          @example Jane Doe
+        type: string
+      emergency_contact_phone:
+        description: |-
+          EmergencyContactPhone of the user to be updated
+          @example 21212828
+        type: string
+    type: object
+  dto.UserDTO:
+    properties:
+      email:
+        description: |-
+          Email of the user to be created
+          @example example@example.com
+          @required
+        type: string
+      first_name:
+        description: |-
+          FirstName of the user to be created
+          @example John
+          @required
+        type: string
+      last_name:
+        description: |-
+          LastName of the user to be created
+          @example Doe
+          @required
+        type: string
+      password:
+        description: |-
+          Password of the user to be created
+          @example password
+          @required
+        type: string
+      phone:
+        description: |-
+          Phone number of the user to be created
+          @example 21212828
+          @required
+        type: string
+      profile:
+        allOf:
+        - $ref: '#/definitions/dto.UserProfileDTO'
+        description: |-
+          Profile of the user to be created
+          @required
+    type: object
+  dto.UserProfileDTO:
+    properties:
+      additional_info:
+        description: AdditionalInfo of the user to be created
+        type: string
+      birth_date:
+        description: |-
+          BirthDate of the user to be created
+          @example 1990-01-01
+          @required
+        type: string
+      document_number:
+        description: |-
+          DocumentNumber of the user to be created
+          @example 123456789
+          @required
+        type: string
+      document_type:
+        description: |-
+          DocumentType of the user to be created
+          @example DUI
+          @required
+        type: string
+      emergency_contact_name:
+        description: |-
+          EmergencyContactName of the user to be created
+          @example Jane Doe
+          @required
+        type: string
+      emergency_contact_phone:
+        description: |-
+          EmergencyContactPhone of the user to be created
+          @example 21212828
+          @required
+        type: string
+    type: object
   entities.Profile:
     properties:
       additional_info:
@@ -912,10 +1073,6 @@ definitions:
       ip_address:
         type: string
       last_activity:
-        type: string
-      token:
-        type: string
-      user_id:
         type: string
     type: object
   responser.APIError:
@@ -1226,6 +1383,184 @@ paths:
       summary: This endpoint is used to restore a deleted order
       tags:
       - orders
+  /api/v1/users:
+    post:
+      consumes:
+      - application/json
+      description: Create a new user
+      parameters:
+      - description: User object that needs to be created
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UserDTO'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: User created successfully
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responser.APIErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: This endpoint is used to create a new user
+      tags:
+      - users
+  /api/v1/users/{user_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a user by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User deleted successfully
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responser.APIErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: This endpoint is used to delete a user by ID
+      tags:
+      - users
+    get:
+      consumes:
+      - application/json
+      description: Get a user by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responser.APIErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: This endpoint is used to get a user by ID
+      tags:
+      - users
+    patch:
+      consumes:
+      - application/json
+      description: Activate or deactivate a user by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      - description: Activate or deactivate user
+        in: body
+        name: active
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ActivateUserDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User activated or deactivated successfully
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responser.APIErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: This endpoint is used to activate or deactivate a user by ID
+      tags:
+      - users
+    put:
+      consumes:
+      - application/json
+      description: Update a user by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      - description: User object that needs to be updated
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateUserDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User updated successfully
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responser.APIErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: This endpoint is used to update a user by ID
+      tags:
+      - users
+  /api/v1/users/{user_id}/roles:
+    post:
+      consumes:
+      - application/json
+      description: Assign a role to a user
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      - description: Role object that needs to be assigned
+        in: body
+        name: role
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AssignRoleDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Role assigned to user successfully
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responser.APIErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: This endpoint is used to assign a role to a user
+      tags:
+      - users
   /api/v1/users/profile:
     get:
       consumes:
@@ -1246,6 +1581,33 @@ paths:
       - BearerAuth: []
       summary: This endpoint is used to get the authenticated users profile information
         using the JWT token
+      tags:
+      - users
+  /api/v1/users/recover/{user_id}:
+    get:
+      consumes:
+      - application/json
+      description: Recover a user by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User recovered successfully
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responser.APIErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: This endpoint is used to recover a user by ID
       tags:
       - users
 swagger: "2.0"

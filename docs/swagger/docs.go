@@ -466,6 +466,51 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/users": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Create a new user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "This endpoint is used to create a new user",
+                "parameters": [
+                    {
+                        "description": "User object that needs to be created",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UserDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "User created successfully",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responser.APIErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/users/profile": {
             "get": {
                 "security": [
@@ -499,9 +544,306 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/api/v1/users/recover/{user_id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Recover a user by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "This endpoint is used to recover a user by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User recovered successfully",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responser.APIErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/users/{user_id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get a user by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "This endpoint is used to get a user by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entities.User"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responser.APIErrorResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Update a user by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "This endpoint is used to update a user by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "User object that needs to be updated",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateUserDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User updated successfully",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responser.APIErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Delete a user by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "This endpoint is used to delete a user by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User deleted successfully",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responser.APIErrorResponse"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Activate or deactivate a user by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "This endpoint is used to activate or deactivate a user by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Activate or deactivate user",
+                        "name": "active",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.ActivateUserDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User activated or deactivated successfully",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responser.APIErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/users/{user_id}/roles": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Assign a role to a user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "This endpoint is used to assign a role to a user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Role object that needs to be assigned",
+                        "name": "role",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AssignRoleDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Role assigned to user successfully",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responser.APIErrorResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
+        "dto.ActivateUserDTO": {
+            "type": "object",
+            "properties": {
+                "active": {
+                    "description": "Active status of the user to be updated\n@example true\n@required",
+                    "type": "boolean"
+                }
+            }
+        },
+        "dto.AssignRoleDTO": {
+            "type": "object",
+            "properties": {
+                "role_id": {
+                    "description": "RoleID UUID of the user to be assigned\n@example admin\n@required",
+                    "type": "string"
+                }
+            }
+        },
         "dto.DeliveryAddressRequest": {
             "description": "Delivery destination address information",
             "type": "object",
@@ -1249,6 +1591,134 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.UpdateUserDTO": {
+            "type": "object",
+            "properties": {
+                "active": {
+                    "description": "Active status of the user to be updated\n@example true",
+                    "type": "boolean"
+                },
+                "email": {
+                    "description": "Email of the user to be updated\n@example example@example.com",
+                    "type": "string"
+                },
+                "first_name": {
+                    "description": "FirstName of the user to be updated\n@example John",
+                    "type": "string"
+                },
+                "last_name": {
+                    "description": "LastName of the user to be updated\n@example Doe",
+                    "type": "string"
+                },
+                "password": {
+                    "description": "Password of the user to be updated\n@example password",
+                    "type": "string"
+                },
+                "phone": {
+                    "description": "Phone of the user to be updated\n@example 21212828",
+                    "type": "string"
+                },
+                "profile": {
+                    "description": "Profile of the user to be updated",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/dto.UpdateUserProfileDTO"
+                        }
+                    ]
+                }
+            }
+        },
+        "dto.UpdateUserProfileDTO": {
+            "type": "object",
+            "properties": {
+                "additional_info": {
+                    "description": "AdditionalInfo of the user to be updated",
+                    "type": "string"
+                },
+                "birth_date": {
+                    "description": "BirthDate of the user to be updated\n@example 1990-01-01",
+                    "type": "string"
+                },
+                "document_number": {
+                    "description": "DocumentNumber of the user to be updated\n@example 123456789",
+                    "type": "string"
+                },
+                "document_type": {
+                    "description": "DocumentType of the user to be updated\n@example DUI",
+                    "type": "string"
+                },
+                "emergency_contact_name": {
+                    "description": "EmergencyContactName of the user to be updated\n@example Jane Doe",
+                    "type": "string"
+                },
+                "emergency_contact_phone": {
+                    "description": "EmergencyContactPhone of the user to be updated\n@example 21212828",
+                    "type": "string"
+                }
+            }
+        },
+        "dto.UserDTO": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "description": "Email of the user to be created\n@example example@example.com\n@required",
+                    "type": "string"
+                },
+                "first_name": {
+                    "description": "FirstName of the user to be created\n@example John\n@required",
+                    "type": "string"
+                },
+                "last_name": {
+                    "description": "LastName of the user to be created\n@example Doe\n@required",
+                    "type": "string"
+                },
+                "password": {
+                    "description": "Password of the user to be created\n@example password\n@required",
+                    "type": "string"
+                },
+                "phone": {
+                    "description": "Phone number of the user to be created\n@example 21212828\n@required",
+                    "type": "string"
+                },
+                "profile": {
+                    "description": "Profile of the user to be created\n@required",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/dto.UserProfileDTO"
+                        }
+                    ]
+                }
+            }
+        },
+        "dto.UserProfileDTO": {
+            "type": "object",
+            "properties": {
+                "additional_info": {
+                    "description": "AdditionalInfo of the user to be created",
+                    "type": "string"
+                },
+                "birth_date": {
+                    "description": "BirthDate of the user to be created\n@example 1990-01-01\n@required",
+                    "type": "string"
+                },
+                "document_number": {
+                    "description": "DocumentNumber of the user to be created\n@example 123456789\n@required",
+                    "type": "string"
+                },
+                "document_type": {
+                    "description": "DocumentType of the user to be created\n@example DUI\n@required",
+                    "type": "string"
+                },
+                "emergency_contact_name": {
+                    "description": "EmergencyContactName of the user to be created\n@example Jane Doe\n@required",
+                    "type": "string"
+                },
+                "emergency_contact_phone": {
+                    "description": "EmergencyContactPhone of the user to be created\n@example 21212828\n@required",
+                    "type": "string"
+                }
+            }
+        },
         "entities.Profile": {
             "type": "object",
             "properties": {
@@ -1390,12 +1860,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "last_activity": {
-                    "type": "string"
-                },
-                "token": {
-                    "type": "string"
-                },
-                "user_id": {
                     "type": "string"
                 }
             }

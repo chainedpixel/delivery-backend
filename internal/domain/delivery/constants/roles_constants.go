@@ -6,4 +6,5 @@ var (
 	Driver         = "DRIVER"
 	WarehouseStaff = "WAREHOUSE_STAFF"
 	Collector      = "COLLECTOR"
+	FinalUser      = "FINAL_USER"
 )

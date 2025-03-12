@@ -5,6 +5,7 @@ import (
 	"domain/delivery/models/entities"
 	"domain/delivery/ports"
 	"gorm.io/gorm"
+	"time"
 )
 
 type userRepository struct {
@@ -20,19 +21,36 @@ func NewUserRepository(db *gorm.DB) ports.UserRepository {
 // Create inserta un nuevo usuario y su perfil si existe
 func (r *userRepository) Create(ctx context.Context, user *entities.User) error {
 	return r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+
 		if err := tx.Create(user).Error; err != nil {
 			return err
 		}
 
-		if user.Profile != nil {
-			user.Profile.UserID = user.ID
-			if err := tx.Create(user.Profile).Error; err != nil {
-				return err
-			}
-		}
-
 		return nil
 	})
+}
+
+func (r *userRepository) IsUserDeleted(ctx context.Context, userID string) (bool, error) {
+	var user entities.User
+	err := r.db.WithContext(ctx).
+		Select("deleted_at").
+		Where("deleted_at IS NULL").
+		First(&user, "id = ?", userID).Error
+	if err != nil {
+		return true, err
+	}
+	return false, nil
+}
+
+func (r *userRepository) IsUserActive(ctx context.Context, userID string) (bool, error) {
+	var user entities.User
+	err := r.db.WithContext(ctx).
+		Select("is_active").
+		First(&user, "id = ?", userID).Error
+	if err != nil {
+		return false, err
+	}
+	return user.IsActive, nil
 }
 
 // GetByID obtiene un usuario por ID incluyendo su perfil y roles activos
@@ -67,13 +85,67 @@ func (r *userRepository) GetByEmail(ctx context.Context, email string) (*entitie
 }
 
 // Update actualiza la información del usuario
-func (r *userRepository) Update(ctx context.Context, user *entities.User) error {
-	return r.db.WithContext(ctx).Save(user).Error
+func (r *userRepository) Update(ctx context.Context, id string, user *entities.User) error {
+	return r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		// 1. Actualizar usuario
+		if err := tx.Model(&entities.User{}).Where("id = ?", id).Updates(user).Error; err != nil {
+			return err
+		}
+
+		// 2. Actualizar perfil
+		if user.Profile != nil {
+			if err := tx.Model(&entities.Profile{}).Where("user_id = ?", id).Updates(user.Profile).Error; err != nil {
+				return err
+			}
+		}
+
+		// 3. Actualizar roles
+		if user.Roles != nil {
+			if err := tx.Where("user_id = ?", id).Delete(&entities.UserRole{}).Error; err != nil {
+				return err
+			}
+			for _, role := range user.Roles {
+				role.UserID = id
+				if err := tx.Create(role).Error; err != nil {
+					return err
+				}
+			}
+		}
+		return nil
+	})
 }
 
 // Delete realiza un soft delete del usuario
 func (r *userRepository) Delete(ctx context.Context, id string) error {
-	return r.db.WithContext(ctx).Delete(&entities.User{}, "id = ?", id).Error
+	now := time.Now()
+
+	return r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		if err := tx.Model(&entities.User{}).
+			Where("id = ?", id).
+			Updates(map[string]interface{}{
+				"is_active":  false,
+				"deleted_at": now,
+			}).Error; err != nil {
+			return err
+		}
+
+		return nil
+	})
+}
+
+func (r *userRepository) Recover(ctx context.Context, id string) error {
+	return r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		if err := tx.Model(&entities.User{}).
+			Where("id = ?", id).
+			Updates(map[string]interface{}{
+				"is_active":  true,
+				"deleted_at": nil,
+			}).Error; err != nil {
+			return err
+		}
+
+		return nil
+	})
 }
 
 // GetProfileByUserID obtiene el perfil de un usuario
@@ -140,8 +212,23 @@ func (r *userRepository) AssignRoleToUser(ctx context.Context, userID string, ro
 		UserID:     userID,
 		RoleID:     roleID,
 		AssignedBy: assignedBy,
+		AssignedAt: time.Now(),
+		IsActive:   true,
 	}
 	return r.db.WithContext(ctx).Create(&userRole).Error
+}
+
+// ActivateOrDeactivate activa o desactiva un usuario
+func (r *userRepository) ActivateOrDeactivate(ctx context.Context, id string, active bool) error {
+	return r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		if err := tx.Model(&entities.User{}).
+			Where("id = ?", id).
+			Update("is_active", active).Error; err != nil {
+			return err
+		}
+
+		return nil
+	})
 }
 
 // RemoveRoleFromUser remueve un rol de un usuario

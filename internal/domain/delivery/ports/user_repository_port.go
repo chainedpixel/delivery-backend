@@ -11,12 +11,18 @@ type UserRepository interface {
 	Create(ctx context.Context, user *entities.User) error
 	GetByID(ctx context.Context, id string) (*entities.User, error)
 	GetByEmail(ctx context.Context, email string) (*entities.User, error)
-	Update(ctx context.Context, user *entities.User) error
+	Update(ctx context.Context, id string, user *entities.User) error
 	Delete(ctx context.Context, id string) error
+	ActivateOrDeactivate(ctx context.Context, id string, active bool) error
 
 	// Operaciones de Perfil
 	GetProfileByUserID(ctx context.Context, userID string) (*entities.Profile, error)
 	UpdateProfile(ctx context.Context, profile *entities.Profile) error
+	Recover(ctx context.Context, id string) error
+
+	// Operaciones de Verificación
+	IsUserDeleted(ctx context.Context, userID string) (bool, error)
+	IsUserActive(ctx context.Context, userID string) (bool, error)
 
 	// Operaciones de Sesión
 	CreateSession(ctx context.Context, session *entities.UserSession) error

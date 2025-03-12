@@ -16,8 +16,13 @@ var (
 	ErrFailedLLen           = errors.New("failed to execute LLen command in redis")
 	ErrFailedLTrim          = errors.New("failed to execute LTrim command in redis")
 
-	ErrInvalidCredentials = errors.New("invalid email or password")
-	ErrInactiveUser       = errors.New("users is inactive")
+	ErrInvalidCredentials     = errors.New("invalid email or password")
+	ErrInactiveUser           = errors.New("users is inactive")
+	ErrInvalidUser            = errors.New("email, firstName, lastName, phone and password are required, please fill them")
+	ErrInvalidProfileUser     = errors.New("document type, document number, birth date, emergency contact and phone in profile section are required, please fill them")
+	ErrMissingProfileSection  = errors.New("profile section is required, please fill it")
+	ErrRoleMissing            = errors.New("role_id is required, provide them")
+	ErrReasonToDeactivateUser = errors.New("when you want deactivate user reason field must be provide")
 
 	ErrNilOrder = errors.New("order cannot be nil, please provide a valid order")
 	ErrNilQR    = errors.New("qr code cannot be nil")
