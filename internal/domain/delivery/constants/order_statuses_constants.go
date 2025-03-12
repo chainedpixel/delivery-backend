@@ -5,8 +5,8 @@ var (
 	OrderStatusAccepted    = "ACCEPTED"
 	OrderStatusCancelled   = "CANCELLED"
 	OrderStatusDelivered   = "DELIVERED"
-	OrderStatusPickedUp    = "PICKUP"
-	OrderStatusInWarehouse = "IN_WAREHOUSE"
+	OrderStatusPickedUp    = "PICKED_UP"
+	OrderStatusInWarehouse = "+"
 	OrderStatusInTransit   = "IN_TRANSIT"
 	OrderStatusReturned    = "RETURNED"
 	OrderStatusCompleted   = "COMPLETED"
@@ -32,4 +32,12 @@ var AllowedStatesToDelete = map[string]bool{
 	OrderStatusPending:   true,
 	OrderStatusCancelled: true,
 	OrderStatusRestored:  true,
+}
+
+var AllowedStatesToUpdate = map[string]bool{
+	OrderStatusPending:     true,
+	OrderStatusAccepted:    true,
+	OrderStatusPickedUp:    true,
+	OrderStatusInWarehouse: true,
+	OrderStatusInTransit:   true,
 }

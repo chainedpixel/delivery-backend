@@ -18,10 +18,10 @@ import (
 
 type authService struct {
 	userRepo     domainPorts.UserRepository
-	tokenService ports.TokenService
+	tokenService ports.TokenProvider
 }
 
-func NewAuthService(userRepo domainPorts.UserRepository, tokenService ports.TokenService) ports.AuthService {
+func NewAuthService(userRepo domainPorts.UserRepository, tokenService ports.TokenProvider) ports.Authenticator {
 	return &authService{
 		userRepo:     userRepo,
 		tokenService: tokenService,
@@ -36,7 +36,7 @@ func (s *authService) CreateSession(ctx context.Context, authUser *entities.User
 		logs.Error("Failed to get users roles", map[string]interface{}{
 			"error": err.Error(),
 		})
-		return "", errPackage.NewGeneralServiceError("AuthService", "CreateSession", err)
+		return "", errPackage.NewGeneralServiceError("Authenticator", "CreateSession", err)
 	}
 	var roleName string
 	if len(roles) > 0 {
@@ -54,7 +54,7 @@ func (s *authService) CreateSession(ctx context.Context, authUser *entities.User
 		logs.Error("Failed to generate token", map[string]interface{}{
 			"error": err.Error(),
 		})
-		return "", errPackage.NewGeneralServiceError("AuthService", "CreateSession", err)
+		return "", errPackage.NewGeneralServiceError("Authenticator", "CreateSession", err)
 	}
 
 	// 3. Crear sesion en base de datos
@@ -74,7 +74,7 @@ func (s *authService) CreateSession(ctx context.Context, authUser *entities.User
 		logs.Error("Failed to create session", map[string]interface{}{
 			"error": err.Error(),
 		})
-		return "", errPackage.NewGeneralServiceError("AuthService", "CreateSession", err)
+		return "", errPackage.NewGeneralServiceError("Authenticator", "CreateSession", err)
 	}
 
 	logs.Info("User logged in successfully", map[string]interface{}{
@@ -92,7 +92,7 @@ func (s *authService) ValidateCredentials(ctx context.Context, email, password s
 		logs.Error("Failed to get users by email", map[string]interface{}{
 			"error": err.Error(),
 		})
-		return nil, errPackage.NewGeneralServiceError("AuthService", "ValidateCredentials", errPackage.ErrInvalidCredentials)
+		return nil, errPackage.NewGeneralServiceError("Authenticator", "ValidateCredentials", errPackage.ErrInvalidCredentials)
 	}
 
 	// 2. Verificar si el usuario esta activo
@@ -100,7 +100,7 @@ func (s *authService) ValidateCredentials(ctx context.Context, email, password s
 		logs.Error("User is inactive", map[string]interface{}{
 			"email": email,
 		})
-		return nil, errPackage.NewGeneralServiceError("AuthService", "ValidateCredentials", errPackage.ErrInactiveUser)
+		return nil, errPackage.NewGeneralServiceError("Authenticator", "ValidateCredentials", errPackage.ErrInactiveUser)
 	}
 
 	// 3. Verificar contraseña
@@ -108,7 +108,7 @@ func (s *authService) ValidateCredentials(ctx context.Context, email, password s
 		logs.Error("Failed to compare password", map[string]interface{}{
 			"error": err.Error(),
 		})
-		return nil, errPackage.NewGeneralServiceError("AuthService", "ValidateCredentials", errPackage.ErrInvalidCredentials)
+		return nil, errPackage.NewGeneralServiceError("Authenticator", "ValidateCredentials", errPackage.ErrInvalidCredentials)
 	}
 
 	return authUser, nil
@@ -121,7 +121,7 @@ func (s *authService) InvalidateSession(ctx context.Context, token string) error
 		logs.Error("Failed to get session by token", map[string]interface{}{
 			"error": err.Error(),
 		})
-		return errPackage.NewGeneralServiceError("AuthService", "InvalidateSession", errPackage.ErrSessionNotFound)
+		return errPackage.NewGeneralServiceError("Authenticator", "InvalidateSession", errPackage.ErrSessionNotFound)
 	}
 
 	//2. Eliminar la sesion de la cache
@@ -129,7 +129,7 @@ func (s *authService) InvalidateSession(ctx context.Context, token string) error
 		logs.Error("Failed to revoke token", map[string]interface{}{
 			"error": err.Error(),
 		})
-		return errPackage.NewGeneralServiceError("AuthService", "InvalidateSession", err)
+		return errPackage.NewGeneralServiceError("Authenticator", "InvalidateSession", err)
 	}
 
 	// 3. Eliminar la sesion de la base de datos
@@ -139,7 +139,7 @@ func (s *authService) InvalidateSession(ctx context.Context, token string) error
 		})
 
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return errPackage.NewGeneralServiceError("AuthService", "InvalidateSession", errPackage.ErrSessionDBNotFound)
+			return errPackage.NewGeneralServiceError("Authenticator", "InvalidateSession", errPackage.ErrSessionDBNotFound)
 		}
 	}
 

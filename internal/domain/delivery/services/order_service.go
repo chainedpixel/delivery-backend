@@ -16,10 +16,10 @@ import (
 )
 
 type OrderService struct {
-	repo ports.OrderRepository
+	repo ports.OrdererRepository
 }
 
-func NewOrderService(repo ports.OrderRepository) interfaces.Orderer {
+func NewOrderService(repo ports.OrdererRepository) interfaces.Orderer {
 	return &OrderService{
 		repo: repo,
 	}
@@ -189,8 +189,18 @@ func (o OrderService) GetOrders(ctx context.Context) ([]entities.Order, error) {
 }
 
 func (o OrderService) UpdateOrder(ctx context.Context, orderID string, order *entities.Order) error {
-	// 1. Verificar si el pedido no esta eliminado
-	if o.OrderIsDeleted(ctx, orderID) {
+	// 1. Verificar si el pedido existe
+	dbOrder, err := o.GetOrderByID(ctx, orderID)
+	if err != nil {
+		logs.Error("Failed to get order by id", map[string]interface{}{
+			"orderID": orderID,
+			"error":   err.Error(),
+		})
+		return errPackage.NewDomainErrorWithCause("OrderService", "UpdateOrder", "dont update because the order doesnt exist", err)
+	}
+
+	// 2. Verificar si el pedido no esta eliminado
+	if dbOrder.DeletedAt != nil {
 		logs.Warn("Dont update order, order is deleted", map[string]interface{}{
 			"orderID": orderID,
 			"error":   errPackage.ErrOrderDeleted.Error(),
@@ -198,8 +208,18 @@ func (o OrderService) UpdateOrder(ctx context.Context, orderID string, order *en
 		return errPackage.NewDomainErrorWithCause("OrderService", "UpdateOrder", "order is deleted", errPackage.ErrOrderDeleted)
 	}
 
-	// 2. Verificar si el pedido esta en un estado que permite actualizacion
-	err := o.repo.UpdateOrder(ctx, orderID, order)
+	// 3. Verificar si el pedido esta en un estado que permite actualizacion
+	if order.Status != "" && !canUpdateOrder(order) {
+		logs.Warn("Dont update order, order is not available for update", map[string]interface{}{
+			"orderID": orderID,
+			"status":  order.Status,
+			"error":   errPackage.ErrCannotUpdateOrder.Error(),
+		})
+		return errPackage.NewDomainErrorWithCause("OrderService", "UpdateOrder", "order is not available for update", errPackage.ErrCannotUpdateOrder)
+	}
+
+	// 4. Actualizar pedido
+	err = o.repo.UpdateOrder(ctx, orderID, order)
 	if err != nil {
 		logs.Error("Failed to update order", map[string]interface{}{
 			"orderID": orderID,
@@ -272,7 +292,7 @@ func (o OrderService) RestoreOrder(ctx context.Context, id string) error {
 func (o OrderService) OrderIsDeleted(ctx context.Context, orderID string) bool {
 	order, err := o.GetOrderByID(ctx, orderID)
 	if err != nil {
-		logs.Error("Failed to get order by id in start of IsAvailableForDelete", map[string]interface{}{
+		logs.Error("Failed to get order by id in OrderIsDeleted method", map[string]interface{}{
 			"orderID": orderID,
 			"error":   err.Error(),
 		})
@@ -322,6 +342,10 @@ func generateQRCode(order entities.Order) *entities.QRCode {
 
 func canDeleteOrder(order *entities.Order) bool {
 	return constants.AllowedStatesToDelete[order.Status]
+}
+
+func canUpdateOrder(order *entities.Order) bool {
+	return constants.AllowedStatesToUpdate[order.Status]
 }
 
 func generateTrackingNumber() string {

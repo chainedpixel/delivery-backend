@@ -5,8 +5,8 @@ import (
 	"domain/delivery/models/entities"
 )
 
-// RoleRepository define las operaciones disponibles para la gestión de roles y permisos
-type RoleRepository interface {
+// RolerRepository define las operaciones disponibles para la gestión de roles y permisos
+type RolerRepository interface {
 	// Operaciones de Roles
 	CreateRole(ctx context.Context, role *entities.Role) error
 	GetRoleByID(ctx context.Context, id string) (*entities.Role, error)

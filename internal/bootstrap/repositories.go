@@ -9,9 +9,9 @@ import (
 type RepositoryContainer struct {
 	db *gorm.DB
 
-	roleRepo    ports.RoleRepository
+	roleRepo    ports.RolerRepository
 	userRepo    ports.UserRepository
-	orderRepo   ports.OrderRepository
+	orderRepo   ports.OrdererRepository
 	companyRepo ports.CompanyAddreser
 }
 
@@ -30,7 +30,7 @@ func (c *RepositoryContainer) Initialize() error {
 	return nil
 }
 
-func (c *RepositoryContainer) GetRoleRepository() ports.RoleRepository {
+func (c *RepositoryContainer) GetRoleRepository() ports.RolerRepository {
 	return c.roleRepo
 }
 
@@ -38,7 +38,7 @@ func (c *RepositoryContainer) GetUserRepository() ports.UserRepository {
 	return c.userRepo
 }
 
-func (c *RepositoryContainer) GetOrderRepository() ports.OrderRepository {
+func (c *RepositoryContainer) GetOrderRepository() ports.OrdererRepository {
 	return c.orderRepo
 }
 

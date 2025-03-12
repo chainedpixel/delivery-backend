@@ -18,7 +18,7 @@ type orderRepository struct {
 	db *gorm.DB
 }
 
-func NewOrderRepository(db *gorm.DB) ports.OrderRepository {
+func NewOrderRepository(db *gorm.DB) ports.OrdererRepository {
 	return &orderRepository{
 		db: db,
 	}
@@ -31,7 +31,7 @@ func (r *orderRepository) CreateOrder(ctx context.Context, order *entities.Order
 	}
 
 	jsonMess, _ := json.Marshal(order)
-	logs.Info("OrderRepository.CreateOrder", map[string]interface{}{
+	logs.Info("OrdererRepository.CreateOrder", map[string]interface{}{
 		"order": string(jsonMess),
 	})
 
@@ -223,16 +223,44 @@ func (r *orderRepository) UpdateOrder(ctx context.Context, orderID string, order
 		return errPackage.ErrNilOrder
 	}
 
-	err := r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
-		if order != nil {
-			if err := tx.Save(order).Where("id = ?", orderID).Error; err != nil {
+	return r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		// 1. Actualizar la tabla principal orders
+		if err := tx.Model(&entities.Order{}).Where("id = ?", orderID).Updates(map[string]interface{}{
+			"updated_at": order.UpdatedAt,
+		}).Error; err != nil {
+			return err
+		}
+
+		// 2. Actualizar detalles del pedido si existen
+		if order.Detail != nil {
+			if err := tx.Model(&entities.Details{}).Where("order_id = ?", orderID).Updates(order.Detail).Error; err != nil {
 				return err
 			}
 		}
+
+		// 3. Actualizar detalles del paquete si existen
+		if order.PackageDetail != nil {
+			if err := tx.Model(&entities.PackageDetail{}).Where("order_id = ?", orderID).Updates(order.PackageDetail).Error; err != nil {
+				return err
+			}
+		}
+
+		// 4. Actualizar dirección de entrega si existe
+		if order.DeliveryAddress != nil {
+			if err := tx.Model(&entities.DeliveryAddress{}).Where("order_id = ?", orderID).Updates(order.DeliveryAddress).Error; err != nil {
+				return err
+			}
+		}
+
+		// 5. Actualizar dirección de recogida si existe
+		if order.PickupAddress != nil {
+			if err := tx.Model(&entities.PickupAddress{}).Where("order_id = ?", orderID).Updates(order.PickupAddress).Error; err != nil {
+				return err
+			}
+		}
+
 		return nil
 	})
-
-	return err
 }
 
 // DeleteOrder elimina un pedido

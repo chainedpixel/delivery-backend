@@ -473,6 +473,147 @@ type OrderListResponse struct {
 	CreatedAt time.Time `json:"created_at" example:"2023-05-15T10:30:00Z" format:"date-time"`
 }
 
+// OrderDriverAssignRequest represents the request to assign a driver to an order
+// @Description Request to assign a driver to an order
+type OrderDriverAssignRequest struct {
+	// ID of the driver to assign
+	// @example d1e2f3g4-h5i6-j7k8-l9m0-n1o2p3q4r5s6
+	// @required
+	DriverID string `json:"driver_id" example:"d1e2f3g4-h5i6-j7k8-l9m0-n1o2p3q4r5s6" binding:"required,uuid"`
+}
+
+// OrderUpdateRequest represents the request body for updating an existing order
+// @Description Request structure for updating a delivery order
+type OrderUpdateRequest struct {
+	// Price of the delivery in local currency
+	// @minimum 0
+	// @example 25.50
+	Price float64 `json:"price,omitempty" example:"25.50" binding:"omitempty,min=0"`
+
+	// Distance of the delivery in kilometers
+	// @minimum 0
+	// @example 7.2
+	Distance float64 `json:"distance,omitempty" example:"7.2" binding:"omitempty,min=0"`
+
+	// Scheduled pickup time - only modifiable if order is still in PENDING state
+	// @example 2023-05-15T14:30:00Z
+	PickupTime *time.Time `json:"pickup_time,omitempty" example:"2023-05-15T14:30:00Z" format:"date-time"`
+
+	// Deadline for delivery completion - only modifiable if order is still in PENDING state
+	// @example 2023-05-15T16:30:00Z
+	DeliveryDeadline *time.Time `json:"delivery_deadline,omitempty" example:"2023-05-15T16:30:00Z" format:"date-time"`
+
+	// Whether recipient signature is required for delivery
+	// @example false
+	RequiresSignature *bool `json:"requires_signature,omitempty" example:"false"`
+
+	// Additional notes for the delivery
+	// @example "Please call recipient 5 minutes before arrival"
+	DeliveryNotes string `json:"delivery_notes,omitempty" example:"Please call recipient 5 minutes before arrival"`
+
+	// Details about the package being delivered
+	PackageDetails *PackageDetailUpdateRequest `json:"package_details,omitempty"`
+
+	// Delivery destination address details
+	DeliveryAddress *DeliveryAddressUpdateRequest `json:"delivery_address,omitempty"`
+
+	// Pickup contact information and notes
+	// Contact name for pickup location
+	// @example "Jane Smith"
+	PickupContactName string `json:"pickup_contact_name,omitempty" example:"Jane Smith"`
+
+	// Contact phone number for pickup location
+	// @example "+0987654321"
+	PickupContactPhone string `json:"pickup_contact_phone,omitempty" example:"+0987654321"`
+
+	// Important notes about the pickup location
+	// @example "Enter through loading dock"
+	PickupNotes string `json:"pickup_notes,omitempty" example:"Enter through loading dock"`
+}
+
+func (o *OrderUpdateRequest) Validate() error {
+	// Time validations - ensure delivery deadline is after pickup time if both are provided
+	if o.PickupTime != nil && o.DeliveryDeadline != nil {
+		if o.DeliveryDeadline.Before(*o.PickupTime) {
+			return error2.NewGeneralServiceError("OrderUpdateDTO", "Validate", errPackage.ErrDeliveryDeadlineBeforePickup)
+		}
+	}
+
+	return nil
+}
+
+// PackageDetailUpdateRequest contains details about the package for updates
+// @Description Package characteristics and handling information for updates
+type PackageDetailUpdateRequest struct {
+	// Whether the package contains fragile items
+	// @example true
+	IsFragile *bool `json:"is_fragile,omitempty" example:"true"`
+
+	// Whether the package requires urgent handling
+	// @example false
+	IsUrgent *bool `json:"is_urgent,omitempty" example:"false"`
+
+	// Weight of the package in kilograms
+	// @minimum 0
+	// @example 2.5
+	Weight *float64 `json:"weight,omitempty" example:"2.5" binding:"omitempty,min=0"`
+
+	// Special handling instructions
+	// @example "Contains glass items, handle with care"
+	SpecialInstructions string `json:"special_instructions,omitempty" example:"Contains glass items, handle with care"`
+
+	// Length of the package in centimeters
+	// @minimum 0
+	// @example 30
+	Length *float64 `json:"length,omitempty" example:"30" binding:"omitempty,min=0"`
+
+	// Width of the package in centimeters
+	// @minimum 0
+	// @example 20
+	Width *float64 `json:"width,omitempty" example:"20" binding:"omitempty,min=0"`
+
+	// Height of the package in centimeters
+	// @minimum 0
+	// @example 15
+	Height *float64 `json:"height,omitempty" example:"15" binding:"omitempty,min=0"`
+}
+
+// DeliveryAddressUpdateRequest contains the destination address details for updates
+// @Description Delivery destination address information for updates
+type DeliveryAddressUpdateRequest struct {
+	// Name of the person receiving the package
+	// @example "John Doe"
+	RecipientName string `json:"recipient_name,omitempty" example:"John Doe"`
+
+	// Contact phone number of the recipient
+	// @example "+1234567890"
+	RecipientPhone string `json:"recipient_phone,omitempty" example:"+1234567890"`
+
+	// First line of the address
+	// @example "123 Main Street"
+	AddressLine1 string `json:"address_line1,omitempty" example:"123 Main Street"`
+
+	// Second line of the address (optional)
+	// @example "Apartment 4B"
+	AddressLine2 string `json:"address_line2,omitempty" example:"Apartment 4B"`
+
+	// City name
+	// @example "New York"
+	City string `json:"city,omitempty" example:"New York"`
+
+	// State or province name
+	// @example "NY"
+	State string `json:"state,omitempty" example:"NY"`
+
+	// Postal or ZIP code
+	// @example "10001"
+	PostalCode string `json:"postal_code,omitempty" example:"10001"`
+
+	// Additional notes about the address
+	// @example "Ring doorbell twice"
+	AddressNotes string `json:"address_notes,omitempty" example:"Ring doorbell twice"`
+}
+
 // OrderStatusUpdateRequest represents the request to update an order's status
 // @Description Request to change the status of an order
 type OrderStatusUpdateRequest struct {
@@ -485,13 +626,4 @@ type OrderStatusUpdateRequest struct {
 	// Optional description about the status change
 	// @example "Driver has accepted the order and is heading to pickup location"
 	Description string `json:"description,omitempty" example:"Driver has accepted the order and is heading to pickup location"`
-}
-
-// OrderDriverAssignRequest represents the request to assign a driver to an order
-// @Description Request to assign a driver to an order
-type OrderDriverAssignRequest struct {
-	// ID of the driver to assign
-	// @example d1e2f3g4-h5i6-j7k8-l9m0-n1o2p3q4r5s6
-	// @required
-	DriverID string `json:"driver_id" example:"d1e2f3g4-h5i6-j7k8-l9m0-n1o2p3q4r5s6" binding:"required,uuid"`
 }

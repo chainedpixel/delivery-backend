@@ -14,10 +14,10 @@ import (
 type JWTService struct {
 	secretKey    string
 	tokenTTL     time.Duration
-	cacheService ports.CacheService
+	cacheService ports.Cacher
 }
 
-func NewJWTService(secretKey string, cache ports.CacheService) *JWTService {
+func NewJWTService(secretKey string, cache ports.Cacher) *JWTService {
 	return &JWTService{
 		secretKey:    secretKey,
 		tokenTTL:     15 * 24 * time.Hour,

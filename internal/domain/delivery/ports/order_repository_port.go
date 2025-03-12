@@ -5,7 +5,7 @@ import (
 	"domain/delivery/models/entities"
 )
 
-type OrderRepository interface {
+type OrdererRepository interface {
 	CreateOrder(ctx context.Context, order *entities.Order) error
 	CreateQRData(ctx context.Context, qr *entities.QRCode) error
 	GetOrderByID(ctx context.Context, id string) (*entities.Order, error)

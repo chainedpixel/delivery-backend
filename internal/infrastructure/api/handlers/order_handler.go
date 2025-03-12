@@ -68,6 +68,47 @@ func (h *OrderHandler) CreateOrder(w http.ResponseWriter, r *http.Request) {
 	h.respWriter.Success(w, http.StatusCreated, "Order created successfully")
 }
 
+// UpdateOrder godoc
+// @Summary      This endpoint is used to update an order by ID
+// @Description  Update order by ID
+// @Tags         orders
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        order_id path string true "Order ID"
+// @Param        order body dto.OrderUpdateRequest true "Order information"
+// @Success      200  {object}  string "Order updated successfully"
+// @Failure      400  {object}  responser.APIErrorResponse
+// @Router       /api/v1/orders/{order_id} [put]
+func (h *OrderHandler) UpdateOrder(w http.ResponseWriter, r *http.Request) {
+	// 1. Extraer ID del pedido
+	vars := mux.Vars(r)
+	orderID := vars["order_id"]
+
+	// 2. Decodificar solicitud
+	var requestDTO dto.OrderUpdateRequest
+	if err := json.NewDecoder(r.Body).Decode(&requestDTO); err != nil {
+		h.respWriter.HandleError(w, err)
+		return
+	}
+
+	// 3. Verificar si la solicitud es válida
+	if err := requestDTO.Validate(); err != nil {
+		h.respWriter.HandleError(w, err)
+		return
+	}
+
+	// 4. Llamar al caso de uso
+	err := h.useCase.UpdateOrder(r.Context(), orderID, &requestDTO)
+	if err != nil {
+		h.respWriter.HandleError(w, err)
+		return
+	}
+
+	// 5. Responder
+	h.respWriter.Success(w, http.StatusOK, "Order updated successfully")
+}
+
 // GetOrderByID godoc
 // @Summary      This endpoint is used to get an order by ID
 // @Description  Get order by ID

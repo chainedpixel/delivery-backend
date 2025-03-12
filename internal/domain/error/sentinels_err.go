@@ -3,12 +3,14 @@ package error
 import "errors"
 
 var (
-	ErrFailedToParseJSON   = errors.New("failed to marshal content")
-	ErrFailedToUnparseJSON = errors.New("failed to unmarshal content")
-	ErrCannotDeleteOrder   = errors.New("the order cannot be deleted, only orders with status 'pending' or 'cancelled' or 'restored' can be deleted")
-	ErrOrderAlreadyDeleted = errors.New("the order has already been deleted")
-	ErrOrderNotDeleted     = errors.New("the order has not been deleted")
-	ErrOrderDeleted        = errors.New("the order has been deleted")
+	ErrFailedToParseJSON            = errors.New("failed to marshal content")
+	ErrFailedToUnparseJSON          = errors.New("failed to unmarshal content")
+	ErrCannotDeleteOrder            = errors.New("the order cannot be deleted, only orders with status 'pending', 'cancelled' or 'restored' can be deleted")
+	ErrCannotUpdateOrder            = errors.New("the order cannot be updated, only orders with status 'pending', 'completed', 'picked up', 'in transit or 'in warehouse' can be updated")
+	ErrOrderAlreadyDeleted          = errors.New("the order has already been deleted")
+	ErrOrderNotDeleted              = errors.New("the order has not been deleted")
+	ErrOrderDeleted                 = errors.New("the order has been deleted")
+	ErrDeliveryDeadlineBeforePickup = errors.New("delivery deadline must be after pickup deadline")
 
 	ErrFailedToSignToken       = errors.New("failed to sign token")
 	ErrUnexpectedSigningMethod = errors.New("unexpected signing method")

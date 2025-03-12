@@ -11,11 +11,11 @@ import (
 )
 
 type AuthMiddleware struct {
-	tokenService ports.TokenService
+	tokenService ports.TokenProvider
 	respWriter   *responser.ResponseWriter
 }
 
-func NewAuthMiddleware(tokenService ports.TokenService) *AuthMiddleware {
+func NewAuthMiddleware(tokenService ports.TokenProvider) *AuthMiddleware {
 	return &AuthMiddleware{
 		tokenService: tokenService,
 		respWriter:   responser.NewResponseWriter(),
