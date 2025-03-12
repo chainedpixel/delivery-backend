@@ -315,6 +315,56 @@
                     }
                 }
             },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Update order by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orders"
+                ],
+                "summary": "This endpoint is used to update an order by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Order ID",
+                        "name": "order_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Order information",
+                        "name": "order",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.OrderUpdateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Order updated successfully",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responser.APIErrorResponse"
+                        }
+                    }
+                }
+            },
             "delete": {
                 "security": [
                     {
@@ -530,6 +580,52 @@
                 },
                 "recipient_name": {
                     "description": "Name of the recipient\n@example \"John Doe\"",
+                    "type": "string",
+                    "example": "John Doe"
+                },
+                "recipient_phone": {
+                    "description": "Contact phone number of the recipient\n@example \"+1234567890\"",
+                    "type": "string",
+                    "example": "+1234567890"
+                },
+                "state": {
+                    "description": "State or province name\n@example \"NY\"",
+                    "type": "string",
+                    "example": "NY"
+                }
+            }
+        },
+        "dto.DeliveryAddressUpdateRequest": {
+            "description": "Delivery destination address information for updates",
+            "type": "object",
+            "properties": {
+                "address_line1": {
+                    "description": "First line of the address\n@example \"123 Main Street\"",
+                    "type": "string",
+                    "example": "123 Main Street"
+                },
+                "address_line2": {
+                    "description": "Second line of the address (optional)\n@example \"Apartment 4B\"",
+                    "type": "string",
+                    "example": "Apartment 4B"
+                },
+                "address_notes": {
+                    "description": "Additional notes about the address\n@example \"Ring doorbell twice\"",
+                    "type": "string",
+                    "example": "Ring doorbell twice"
+                },
+                "city": {
+                    "description": "City name\n@example \"New York\"",
+                    "type": "string",
+                    "example": "New York"
+                },
+                "postal_code": {
+                    "description": "Postal or ZIP code\n@example \"10001\"",
+                    "type": "string",
+                    "example": "10001"
+                },
+                "recipient_name": {
+                    "description": "Name of the person receiving the package\n@example \"John Doe\"",
                     "type": "string",
                     "example": "John Doe"
                 },
@@ -860,6 +956,77 @@
                 }
             }
         },
+        "dto.OrderUpdateRequest": {
+            "description": "Request structure for updating a delivery order",
+            "type": "object",
+            "properties": {
+                "delivery_address": {
+                    "description": "Delivery destination address details",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/dto.DeliveryAddressUpdateRequest"
+                        }
+                    ]
+                },
+                "delivery_deadline": {
+                    "description": "Deadline for delivery completion - only modifiable if order is still in PENDING state\n@example 2023-05-15T16:30:00Z",
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2023-05-15T16:30:00Z"
+                },
+                "delivery_notes": {
+                    "description": "Additional notes for the delivery\n@example \"Please call recipient 5 minutes before arrival\"",
+                    "type": "string",
+                    "example": "Please call recipient 5 minutes before arrival"
+                },
+                "distance": {
+                    "description": "Distance of the delivery in kilometers\n@minimum 0\n@example 7.2",
+                    "type": "number",
+                    "minimum": 0,
+                    "example": 7.2
+                },
+                "package_details": {
+                    "description": "Details about the package being delivered",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/dto.PackageDetailUpdateRequest"
+                        }
+                    ]
+                },
+                "pickup_contact_name": {
+                    "description": "Pickup contact information and notes\nContact name for pickup location\n@example \"Jane Smith\"",
+                    "type": "string",
+                    "example": "Jane Smith"
+                },
+                "pickup_contact_phone": {
+                    "description": "Contact phone number for pickup location\n@example \"+0987654321\"",
+                    "type": "string",
+                    "example": "+0987654321"
+                },
+                "pickup_notes": {
+                    "description": "Important notes about the pickup location\n@example \"Enter through loading dock\"",
+                    "type": "string",
+                    "example": "Enter through loading dock"
+                },
+                "pickup_time": {
+                    "description": "Scheduled pickup time - only modifiable if order is still in PENDING state\n@example 2023-05-15T14:30:00Z",
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2023-05-15T14:30:00Z"
+                },
+                "price": {
+                    "description": "Price of the delivery in local currency\n@minimum 0\n@example 25.50",
+                    "type": "number",
+                    "minimum": 0,
+                    "example": 25.5
+                },
+                "requires_signature": {
+                    "description": "Whether recipient signature is required for delivery\n@example false",
+                    "type": "boolean",
+                    "example": false
+                }
+            }
+        },
         "dto.PackageDetailRequest": {
             "description": "Package characteristics and handling information",
             "type": "object",
@@ -933,6 +1100,51 @@
                     "description": "Weight of the package in kilograms\n@example 2.5",
                     "type": "number",
                     "example": 2.5
+                }
+            }
+        },
+        "dto.PackageDetailUpdateRequest": {
+            "description": "Package characteristics and handling information for updates",
+            "type": "object",
+            "properties": {
+                "height": {
+                    "description": "Height of the package in centimeters\n@minimum 0\n@example 15",
+                    "type": "number",
+                    "minimum": 0,
+                    "example": 15
+                },
+                "is_fragile": {
+                    "description": "Whether the package contains fragile items\n@example true",
+                    "type": "boolean",
+                    "example": true
+                },
+                "is_urgent": {
+                    "description": "Whether the package requires urgent handling\n@example false",
+                    "type": "boolean",
+                    "example": false
+                },
+                "length": {
+                    "description": "Length of the package in centimeters\n@minimum 0\n@example 30",
+                    "type": "number",
+                    "minimum": 0,
+                    "example": 30
+                },
+                "special_instructions": {
+                    "description": "Special handling instructions\n@example \"Contains glass items, handle with care\"",
+                    "type": "string",
+                    "example": "Contains glass items, handle with care"
+                },
+                "weight": {
+                    "description": "Weight of the package in kilograms\n@minimum 0\n@example 2.5",
+                    "type": "number",
+                    "minimum": 0,
+                    "example": 2.5
+                },
+                "width": {
+                    "description": "Width of the package in centimeters\n@minimum 0\n@example 20",
+                    "type": "number",
+                    "minimum": 0,
+                    "example": 20
                 }
             }
         },
