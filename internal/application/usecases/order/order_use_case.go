@@ -8,6 +8,7 @@ import (
 	"infrastructure/api/dto"
 	error2 "infrastructure/error"
 	"net/http"
+	"shared/logs"
 	"shared/mappers/request_mapper"
 	"strconv"
 	"time"
@@ -49,6 +50,27 @@ func (uc *OrderUseCase) CreateOrder(ctx context.Context, authUserID string, reqO
 	err = uc.orderService.CreateOrder(ctx, order)
 	if err != nil {
 		return err
+	}
+
+	return nil
+}
+
+// UpdateOrder actualiza un pedido
+func (uc *OrderUseCase) UpdateOrder(ctx context.Context, orderID string, reqOrder *dto.OrderUpdateRequest) error {
+	// 1. Usar el mapper para convertir el dto a entidad
+	order, err := request_mapper.UpdateOrderFromRequest(orderID, reqOrder)
+	if err != nil {
+		return err
+	}
+
+	logs.Info("order to update", map[string]interface{}{
+		"deliveryNotesReq":   reqOrder.DeliveryNotes,
+		"orderDeliveryNotes": order.Detail.DeliveryNotes,
+	})
+
+	// 2. Actualizar el pedido
+	if err = uc.orderService.UpdateOrder(ctx, orderID, order); err != nil {
+		return error2.NewGeneralServiceError("OrderUseCase", "UpdateOrderByID", err)
 	}
 
 	return nil

@@ -12,11 +12,11 @@ import (
 )
 
 type AuthHandler struct {
-	authUseCase ports.AuthUseCase
+	authUseCase ports.AuthenticatorUseCase
 	respWriter  *responser.ResponseWriter
 }
 
-func NewAuthHandler(authUseCase ports.AuthUseCase) *AuthHandler {
+func NewAuthHandler(authUseCase ports.AuthenticatorUseCase) *AuthHandler {
 	return &AuthHandler{
 		authUseCase: authUseCase,
 		respWriter:  responser.NewResponseWriter(),

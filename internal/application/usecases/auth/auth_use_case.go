@@ -7,10 +7,10 @@ import (
 )
 
 type AuthUseCase struct {
-	authService ports.AuthService
+	authService ports.Authenticator
 }
 
-func NewAuthUseCase(authService ports.AuthService) *AuthUseCase {
+func NewAuthUseCase(authService ports.Authenticator) *AuthUseCase {
 	return &AuthUseCase{
 		authService: authService,
 	}

@@ -10,7 +10,7 @@ import (
 type UseCaseContainer struct {
 	services *ServiceContainer
 
-	authUseCase  ports.AuthUseCase
+	authUseCase  ports.AuthenticatorUseCase
 	userUseCase  ports.UserUseCase
 	orderUseCase ports.OrdererUseCase
 }
@@ -29,7 +29,7 @@ func (c *UseCaseContainer) Initialize() error {
 	return nil
 }
 
-func (c *UseCaseContainer) GetAuthUseCase() ports.AuthUseCase {
+func (c *UseCaseContainer) GetAuthUseCase() ports.AuthenticatorUseCase {
 	return c.authUseCase
 }
 

@@ -14,9 +14,9 @@ type ServiceContainer struct {
 	repositories *RepositoryContainer
 	config       *config.EnvConfig
 
-	jwtService     ports.TokenService
-	cacheService   ports.CacheService
-	authService    ports.AuthService
+	jwtService     ports.TokenProvider
+	cacheService   ports.Cacher
+	authService    ports.Authenticator
 	userService    domainPorts.Userer
 	orderService   domainPorts.Orderer
 	companyService domainPorts.Companyrer
@@ -46,15 +46,15 @@ func (c *ServiceContainer) Initialize() error {
 	return nil
 }
 
-func (c *ServiceContainer) GetTokenService() ports.TokenService {
+func (c *ServiceContainer) GetTokenService() ports.TokenProvider {
 	return c.jwtService
 }
 
-func (c *ServiceContainer) GetCacheService() ports.CacheService {
+func (c *ServiceContainer) GetCacheService() ports.Cacher {
 	return c.cacheService
 }
 
-func (c *ServiceContainer) GetAuthService() ports.AuthService {
+func (c *ServiceContainer) GetAuthService() ports.Authenticator {
 	return c.authService
 }
 
