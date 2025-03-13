@@ -4,6 +4,7 @@ import (
 	"application/ports"
 	"application/usecases/auth"
 	"application/usecases/order"
+	"application/usecases/role"
 	"application/usecases/user"
 )
 
@@ -13,6 +14,7 @@ type UseCaseContainer struct {
 	authUseCase  ports.AuthenticatorUseCase
 	userUseCase  ports.UserUseCase
 	orderUseCase ports.OrdererUseCase
+	roleUseCase  ports.RolerUseCase
 }
 
 func NewUseCaseContainer(services *ServiceContainer) *UseCaseContainer {
@@ -23,8 +25,13 @@ func NewUseCaseContainer(services *ServiceContainer) *UseCaseContainer {
 
 func (c *UseCaseContainer) Initialize() error {
 	c.authUseCase = auth.NewAuthUseCase(c.services.GetAuthService())
-	c.userUseCase = user.NewUserProfileUseCase(c.services.GetUserService())
+	c.userUseCase = user.NewUserProfileUseCase(c.services.GetUserService(),
+		c.services.GetRoleService(),
+		c.services.GetCompanyService(),
+		c.services.GetTokenService(),
+	)
 	c.orderUseCase = order.NewOrderUseCase(c.services.GetOrderService(), c.services.GetCompanyService())
+	c.roleUseCase = role.NewRolerUseCase(c.services.GetRoleService())
 
 	return nil
 }
@@ -39,4 +46,8 @@ func (c *UseCaseContainer) GetUserUseCase() ports.UserUseCase {
 
 func (c *UseCaseContainer) GetOrderUseCase() ports.OrdererUseCase {
 	return c.orderUseCase
+}
+
+func (c *UseCaseContainer) GetRoleUseCase() ports.RolerUseCase {
+	return c.roleUseCase
 }

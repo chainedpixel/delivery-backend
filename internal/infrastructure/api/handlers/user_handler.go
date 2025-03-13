@@ -9,6 +9,7 @@ import (
 	errPackage "infrastructure/error"
 	"net/http"
 	"shared/mappers/request_mapper"
+	"shared/mappers/response_mapper"
 )
 
 type UserHandler struct {
@@ -125,6 +126,41 @@ func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	h.respWriter.Success(w, http.StatusOK, "User updated successfully")
+}
+
+// GetAllUsers godoc
+// @Summary      This endpoint is used to get all users
+// @Description  Get all users
+// @Tags         users
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        company_id query string false "Company ID"
+// @Param        page query int false "Page number"
+// @Param page_size query int false "Page size"
+// @Param        sort_by query string false "Sort by"
+// @Param        sort_direction query string false "Order by"
+// @Param status query string false "Status"
+// @Param creation_date query string false "Creation date"
+// @Param include_deleted query string false "Include deleted"
+// @Param 	  name query string false "Name"
+// @Param 	  email query string false "Email"
+// @Param 	  phone query string false "Phone"
+// @Success      200  {object}  dto.PaginatedResponse
+// @Failure      400  {object}  responser.APIErrorResponse
+// @Router       /api/v1/users [get]
+func (h *UserHandler) GetAllUsers(w http.ResponseWriter, r *http.Request) {
+	// 1. Ejectuar el caso de uso
+	users, params, total, err := h.useCase.GetAllUsers(r.Context(), r)
+	if err != nil {
+		h.respWriter.HandleError(w, err)
+		return
+	}
+
+	// 2. Mapear a DTO
+	response := response_mapper.MapUsersToResponse(users, params, total)
+
+	h.respWriter.Success(w, http.StatusOK, response)
 }
 
 // GetUserByID godoc
@@ -250,7 +286,7 @@ func (h *UserHandler) ActivateOrDeactivateUser(w http.ResponseWriter, r *http.Re
 // @Param        role body dto.AssignRoleDTO true "Role object that needs to be assigned"
 // @Success      200  string  "Role assigned to user successfully"
 // @Failure      400  {object}  responser.APIErrorResponse
-// @Router       /api/v1/users/{user_id}/roles [post]
+// @Router       /api/v1/users/roles/{user_id} [post]
 func (h *UserHandler) AssignRoleToUser(w http.ResponseWriter, r *http.Request) {
 	// 1. Extraer ID del usuario
 	vars := mux.Vars(r)
@@ -263,7 +299,13 @@ func (h *UserHandler) AssignRoleToUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// 3. Ejecutar el caso de uso
+	// 3. Verificar si la solicitud es válida
+	if err := req.Validate(); err != nil {
+		h.respWriter.HandleError(w, err)
+		return
+	}
+
+	// 4. Ejecutar el caso de uso
 	err := h.useCase.AssignRoleToUser(r.Context(), userID, req.Role)
 	if err != nil {
 		h.respWriter.HandleError(w, err)
@@ -271,4 +313,96 @@ func (h *UserHandler) AssignRoleToUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	h.respWriter.Success(w, http.StatusOK, "Role assigned to user successfully")
+}
+
+// GetUserRoles godoc
+// @Summary      This endpoint is used to get all roles of a user
+// @Description  Get all roles of a user
+// @Tags         users
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        user_id path string true "User ID"
+// @Success      200  {array}  entities.Role
+// @Failure      400  {object}  responser.APIErrorResponse
+// @Router       /api/v1/users/roles/{user_id} [get]
+func (h *UserHandler) GetUserRoles(w http.ResponseWriter, r *http.Request) {
+	// 1. Extraer ID del usuario
+	vars := mux.Vars(r)
+	userID := vars["user_id"]
+
+	// 2. Ejecutar el caso de uso
+	roles, err := h.useCase.GetUserRoles(r.Context(), userID)
+	if err != nil {
+		h.respWriter.HandleError(w, err)
+		return
+	}
+
+	h.respWriter.Success(w, http.StatusOK, roles)
+}
+
+// UnassignRole godoc
+// @Summary      This endpoint is used to unassign a role from a user
+// @Description  Unassign a role from a user
+// @Tags         users
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        user_id path string true "User ID"
+// @Param        role body dto.AssignRoleDTO true "Role object that needs to be unassigned"
+// @Success      200  string  "Role unassigned from user successfully"
+// @Failure      400  {object}  responser.APIErrorResponse
+// @Router       /api/v1/users/roles/{user_id} [delete]
+func (h *UserHandler) UnassignRole(w http.ResponseWriter, r *http.Request) {
+	// 1. Extraer ID del usuario
+	vars := mux.Vars(r)
+	userID := vars["user_id"]
+
+	// 2. Decodificar solicitud
+	var req dto.AssignRoleDTO
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		h.respWriter.HandleError(w, err)
+		return
+	}
+
+	// 3. Verificar si la solicitud es válida
+	if err := req.Validate(); err != nil {
+		h.respWriter.HandleError(w, err)
+		return
+	}
+
+	// 4. Ejecutar el caso de uso
+	err := h.useCase.UnassignRole(r.Context(), userID, req.Role)
+	if err != nil {
+		h.respWriter.HandleError(w, err)
+		return
+	}
+
+	h.respWriter.Success(w, http.StatusOK, "Role unassigned from user successfully")
+}
+
+// CleanAllSessions godoc
+// @Summary      This endpoint is used to clean all sessions of a user
+// @Description  Clean all sessions of a user
+// @Tags         users
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        user_id path string true "User ID"
+// @Success      200  string  "Sessions cleaned successfully"
+// @Failure      400  {object}  responser.APIErrorResponse
+// @Router       /api/v1/users/sessions/{user_id} [delete]
+func (h *UserHandler) CleanAllSessions(w http.ResponseWriter, r *http.Request) {
+	// 1. Extraer ID del usuario
+	vars := mux.Vars(r)
+	userID := vars["user_id"]
+
+	// 2. Ejecutar el caso de uso
+	err := h.useCase.CleanAllSessions(r.Context(), userID)
+	if err != nil {
+		h.respWriter.HandleError(w, err)
+		return
+	}
+
+	h.respWriter.Success(w, http.StatusOK, "Sessions cleaned successfully")
 }

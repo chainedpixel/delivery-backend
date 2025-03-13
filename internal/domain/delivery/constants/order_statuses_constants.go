@@ -6,7 +6,7 @@ var (
 	OrderStatusCancelled   = "CANCELLED"
 	OrderStatusDelivered   = "DELIVERED"
 	OrderStatusPickedUp    = "PICKED_UP"
-	OrderStatusInWarehouse = "+"
+	OrderStatusInWarehouse = "IN_WAREHOUSE"
 	OrderStatusInTransit   = "IN_TRANSIT"
 	OrderStatusReturned    = "RETURNED"
 	OrderStatusCompleted   = "COMPLETED"

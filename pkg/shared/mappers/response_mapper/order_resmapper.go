@@ -1,6 +1,7 @@
 package response_mapper
 
 import (
+	"domain/delivery/constants"
 	"domain/delivery/models/entities"
 	"infrastructure/api/dto"
 )
@@ -127,6 +128,36 @@ func MapOrdersToResponse(orders []entities.Order, params *entities.OrderQueryPar
 			DriverID:         order.DriverID,
 			DriverName:       driverName,
 			CreatedAt:        order.CreatedAt,
+		}
+	}
+
+	return &dto.PaginatedResponse{
+		Data:       response,
+		TotalItems: total,
+		Page:       params.Page,
+		PageSize:   params.PageSize,
+		TotalPages: calculateTotalPages(total, params.PageSize),
+	}
+}
+
+// MapUsersToResponse mapea los usuarios a DTOs de respuesta
+func MapUsersToResponse(users []entities.User, params *entities.UserQueryParams, total int64) *dto.PaginatedResponse {
+	response := make([]dto.UserListResponse, len(users))
+
+	for i, user := range users {
+		response[i] = dto.UserListResponse{
+			ID:             user.ID,
+			FullName:       user.FullName,
+			Email:          user.Email,
+			Phone:          user.Phone,
+			DocumentType:   user.Profile.DocumentType,
+			DocumentNumber: user.Profile.DocumentNumber,
+			CreatedAt:      user.CreatedAt,
+		}
+
+		response[i].Role = constants.FinalUser
+		if len(user.Roles) != 0 {
+			response[i].Role = user.Roles[0].Role.Name
 		}
 	}
 

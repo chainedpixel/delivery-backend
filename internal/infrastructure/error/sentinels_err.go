@@ -22,7 +22,9 @@ var (
 	ErrInvalidProfileUser     = errors.New("document type, document number, birth date, emergency contact and phone in profile section are required, please fill them")
 	ErrMissingProfileSection  = errors.New("profile section is required, please fill it")
 	ErrRoleMissing            = errors.New("role_id is required, provide them")
+	ErrInvalidRole            = errors.New("role is invalid, please provide a valid role")
 	ErrReasonToDeactivateUser = errors.New("when you want deactivate user reason field must be provide")
+	ErrMissingRoles           = errors.New("at least one role is required, please provide them")
 
 	ErrNilOrder = errors.New("order cannot be nil, please provide a valid order")
 	ErrNilQR    = errors.New("qr code cannot be nil")

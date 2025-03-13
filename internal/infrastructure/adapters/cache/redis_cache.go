@@ -105,8 +105,7 @@ func (c *RedisTokenCache) Get(key string) (string, error) {
 }
 
 // Delete elimina un token de Redis
-func (c *RedisTokenCache) Delete(token string) error {
-	key := "token:" + token
+func (c *RedisTokenCache) Delete(key string) error {
 	err := c.client.Del(c.ctx, key).Err()
 	if err != nil {
 		logs.Error("Failed to delete token from Redis", map[string]interface{}{

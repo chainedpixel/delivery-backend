@@ -17,11 +17,6 @@ func NewRoleRepository(db *gorm.DB) ports.RolerRepository {
 	}
 }
 
-// CreateRole crea un nuevo rol
-func (r *roleRepository) CreateRole(ctx context.Context, role *entities.Role) error {
-	return r.db.WithContext(ctx).Create(role).Error
-}
-
 // GetRoleByID obtiene un rol por su ID incluyendo sus permisos
 func (r *roleRepository) GetRoleByID(ctx context.Context, id string) (*entities.Role, error) {
 	var role entities.Role
@@ -69,6 +64,49 @@ func (r *roleRepository) ListRoles(ctx context.Context) ([]entities.Role, error)
 		return nil, err
 	}
 	return roles, nil
+}
+
+// GetRoleByIDOrName obtiene un rol por su ID o nombre
+func (r *roleRepository) GetRoleByIDOrName(ctx context.Context, param string) (*entities.Role, error) {
+	var role entities.Role
+	err := r.db.WithContext(ctx).
+		Preload("Permissions").
+		First(&role, "id = ? OR name = ?", param, param).Error
+	if err != nil {
+		return nil, err
+	}
+	return &role, nil
+}
+
+// IsRoleExist verifica si un rol existe, ya sea por su ID o nombre
+func (r *roleRepository) IsRoleExist(ctx context.Context, param string) (bool, error) {
+	var role entities.Role
+	err := r.db.WithContext(ctx).
+		First(&role, "id = ? OR name = ?", param, param).Error
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
+// DeactivateRole desactiva un rol
+func (r *roleRepository) DeactivateRole(ctx context.Context, id string) error {
+	return r.db.WithContext(ctx).
+		Model(&entities.Role{}).
+		Where("id = ?", id).
+		Update("is_active", false).Error
+}
+
+// IsRoleActive verifica si un rol está activo
+func (r *roleRepository) IsRoleActive(ctx context.Context, param string) (bool, error) {
+	var role entities.Role
+	err := r.db.WithContext(ctx).
+		Select("is_active").
+		First(&role, "id = ? OR name = ?", param, param).Error
+	if err != nil {
+		return false, err
+	}
+	return role.IsActive, nil
 }
 
 // CreatePermission crea un nuevo permiso

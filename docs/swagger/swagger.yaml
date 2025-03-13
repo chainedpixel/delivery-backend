@@ -4,17 +4,17 @@ definitions:
       active:
         description: |-
           Active status of the user to be updated
-          @example true
           @required
+        example: true
         type: boolean
     type: object
   dto.AssignRoleDTO:
     properties:
-      role_id:
+      role:
         description: |-
-          RoleID UUID of the user to be assigned
-          @example admin
+          RoleID or RoleName of the role to be assigned to the user
           @required
+        example: admin or 3fa85f64-5717-4562-b3fc-2c963f66afa6
         type: string
     type: object
   dto.DeliveryAddressRequest:
@@ -23,53 +23,42 @@ definitions:
       address_line1:
         description: |-
           First line of the address
-          @example "123 Main Street"
           @required
         example: 123 Main Street
         type: string
       address_line2:
-        description: |-
-          Second line of the address (optional)
-          @example "Apartment 4B"
+        description: Second line of the address (optional)
         example: Apartment 4B
         type: string
       address_notes:
-        description: |-
-          Additional notes about the address
-          @example "Ring doorbell twice"
+        description: Additional notes about the address
         example: Ring doorbell twice
         type: string
       city:
         description: |-
           City name
-          @example "New York"
           @required
         example: New York
         type: string
       postal_code:
-        description: |-
-          Postal or ZIP code
-          @example "10001"
+        description: Postal or ZIP code
         example: "10001"
         type: string
       recipient_name:
         description: |-
           Name of the person receiving the package
-          @example "John Doe"
           @required
         example: John Doe
         type: string
       recipient_phone:
         description: |-
           Contact phone number of the recipient
-          @example "+1234567890"
           @required
         example: "+1234567890"
         type: string
       state:
         description: |-
           State or province name
-          @example "NY"
           @required
         example: NY
         type: string
@@ -84,57 +73,39 @@ definitions:
     description: Delivery address information
     properties:
       address_line1:
-        description: |-
-          First line of the address
-          @example "123 Main Street"
+        description: First line of the address
         example: 123 Main Street
         type: string
       address_line2:
-        description: |-
-          Second line of the address (optional)
-          @example "Apartment 4B"
+        description: Second line of the address (optional)
         example: Apartment 4B
         type: string
       city:
-        description: |-
-          City name
-          @example "New York"
+        description: City name
         example: New York
         type: string
       latitude:
-        description: |-
-          Latitude coordinate
-          @example 40.7128
+        description: Latitude coordinate
         example: 40.7128
         type: number
       longitude:
-        description: |-
-          Longitude coordinate
-          @example -74.0060
+        description: Longitude coordinate
         example: -74.006
         type: number
       postal_code:
-        description: |-
-          Postal or ZIP code
-          @example "10001"
+        description: Postal or ZIP code
         example: "10001"
         type: string
       recipient_name:
-        description: |-
-          Name of the recipient
-          @example "John Doe"
+        description: Name of the recipient
         example: John Doe
         type: string
       recipient_phone:
-        description: |-
-          Contact phone number of the recipient
-          @example "+1234567890"
+        description: Contact phone number of the recipient
         example: "+1234567890"
         type: string
       state:
-        description: |-
-          State or province name
-          @example "NY"
+        description: State or province name
         example: NY
         type: string
     type: object
@@ -142,51 +113,35 @@ definitions:
     description: Delivery destination address information for updates
     properties:
       address_line1:
-        description: |-
-          First line of the address
-          @example "123 Main Street"
+        description: First line of the address
         example: 123 Main Street
         type: string
       address_line2:
-        description: |-
-          Second line of the address (optional)
-          @example "Apartment 4B"
+        description: Second line of the address (optional)
         example: Apartment 4B
         type: string
       address_notes:
-        description: |-
-          Additional notes about the address
-          @example "Ring doorbell twice"
+        description: Additional notes about the address
         example: Ring doorbell twice
         type: string
       city:
-        description: |-
-          City name
-          @example "New York"
+        description: City name
         example: New York
         type: string
       postal_code:
-        description: |-
-          Postal or ZIP code
-          @example "10001"
+        description: Postal or ZIP code
         example: "10001"
         type: string
       recipient_name:
-        description: |-
-          Name of the person receiving the package
-          @example "John Doe"
+        description: Name of the person receiving the package
         example: John Doe
         type: string
       recipient_phone:
-        description: |-
-          Contact phone number of the recipient
-          @example "+1234567890"
+        description: Contact phone number of the recipient
         example: "+1234567890"
         type: string
       state:
-        description: |-
-          State or province name
-          @example "NY"
+        description: State or province name
         example: NY
         type: string
     type: object
@@ -197,14 +152,10 @@ definitions:
         description: Device information
         type: object
       email:
-        description: |-
-          User email
-          @example users@example.com
+        description: User email
         type: string
       password:
-        description: |-
-          User password
-          @example mySecurePassword123
+        description: User password
         type: string
     required:
     - email
@@ -213,9 +164,7 @@ definitions:
   dto.LoginResponse:
     properties:
       token:
-        description: |-
-          JWT Token
-          @example eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        description: JWT Token
         type: string
     type: object
   dto.OrderCreateRequest:
@@ -224,14 +173,12 @@ definitions:
       client_id:
         description: |-
           Unique identifier of the client
-          @example c7d8e9f0-3f4a-5c6b-7d8e-9f0a1b2c3d4e
           @required
         example: c7d8e9f0-3f4a-5c6b-7d8e-9f0a1b2c3d4e
         type: string
       company_pickup_id:
         description: |-
           Unique identifier of the company pickup location
-          @example a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
           @required
         example: a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
         type: string
@@ -244,22 +191,18 @@ definitions:
       delivery_deadline:
         description: |-
           Deadline for delivery completion
-          @example 2023-05-15T16:30:00Z
           @required
         example: "2023-05-15T16:30:00Z"
         format: date-time
         type: string
       delivery_notes:
-        description: |-
-          Additional notes for the delivery
-          @example "Please call recipient 5 minutes before arrival"
+        description: Additional notes for the delivery
         example: Please call recipient 5 minutes before arrival
         type: string
       distance:
         description: |-
           Distance of the delivery in kilometers
           @minimum 0
-          @example 7.2
           @required
         example: 7.2
         minimum: 0
@@ -273,25 +216,21 @@ definitions:
       pickup_contact_name:
         description: |-
           Contact name for pickup location
-          @example "Jane Smith"
           @required
         type: string
       pickup_contact_phone:
         description: |-
           Contact phone number for pickup location
-          @example "+0987654321"
           @required
         type: string
       pickup_notes:
         description: |-
           Important notes about the pickup location
-          @example "Enter through loading dock"
           @required
         type: string
       pickup_time:
         description: |-
           Scheduled pickup time
-          @example 2023-05-15T14:30:00Z
           @required
         example: "2023-05-15T14:30:00Z"
         format: date-time
@@ -300,15 +239,12 @@ definitions:
         description: |-
           Price of the delivery in local currency
           @minimum 0
-          @example 25.50
           @required
         example: 25.5
         minimum: 0
         type: number
       requires_signature:
-        description: |-
-          Whether recipient signature is required for delivery
-          @example false
+        description: Whether recipient signature is required for delivery
         example: false
         type: boolean
     required:
@@ -327,48 +263,34 @@ definitions:
     description: Order details including price, schedule and delivery requirements
     properties:
       delivered_at:
-        description: |-
-          When the order was actually delivered
-          @example 2023-05-15T16:15:00Z
+        description: When the order was actually delivered
         example: "2023-05-15T16:15:00Z"
         format: date-time
         type: string
       delivery_deadline:
-        description: |-
-          Deadline for delivery
-          @example 2023-05-15T16:30:00Z
+        description: Deadline for delivery
         example: "2023-05-15T16:30:00Z"
         format: date-time
         type: string
       delivery_notes:
-        description: |-
-          Additional notes for delivery
-          @example "Please call recipient 5 minutes before arrival"
+        description: Additional notes for delivery
         example: Please call recipient 5 minutes before arrival
         type: string
       distance:
-        description: |-
-          Distance to be traveled in kilometers
-          @example 7.2
+        description: Distance to be traveled in kilometers
         example: 7.2
         type: number
       pickup_time:
-        description: |-
-          Scheduled pickup time
-          @example 2023-05-15T14:30:00Z
+        description: Scheduled pickup time
         example: "2023-05-15T14:30:00Z"
         format: date-time
         type: string
       price:
-        description: |-
-          Price of the delivery
-          @example 25.50
+        description: Price of the delivery
         example: 25.5
         type: number
       requires_signature:
-        description: |-
-          Whether recipient signature is required
-          @example false
+        description: Whether recipient signature is required
         example: false
         type: boolean
     type: object
@@ -376,52 +298,36 @@ definitions:
     description: Order information with all related details
     properties:
       branch_id:
-        description: |-
-          Branch ID where the order originated
-          @example b5f8c3d1-2e59-4c4b-a6e8-e5f3c0c3d1b5
+        description: Branch ID where the order originated
         example: b5f8c3d1-2e59-4c4b-a6e8-e5f3c0c3d1b5
         type: string
       branch_name:
-        description: |-
-          Branch name
-          @example "Downtown Branch"
+        description: Branch name
         example: Downtown Branch
         type: string
       client_id:
-        description: |-
-          Client ID who placed the order
-          @example c7d8e9f0-3f4a-5c6b-7d8e-9f0a1b2c3d4e
+        description: Client ID who placed the order
         example: c7d8e9f0-3f4a-5c6b-7d8e-9f0a1b2c3d4e
         type: string
       client_name:
-        description: |-
-          Client full name
-          @example "John Smith"
+        description: Client full name
         example: John Smith
         type: string
       company_id:
-        description: |-
-          Company ID that owns the order
-          @example a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
+        description: Company ID that owns the order
         example: a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
         type: string
       company_name:
-        description: |-
-          Company name
-          @example "Express Delivery Inc."
+        description: Company name
         example: Express Delivery Inc.
         type: string
       created_at:
-        description: |-
-          When the order was created
-          @example 2023-05-15T10:30:00Z
+        description: When the order was created
         example: "2023-05-15T10:30:00Z"
         format: date-time
         type: string
       current_status:
-        description: |-
-          Current tracking status
-          @example IN_TRANSIT
+        description: Current tracking status
         example: IN_TRANSIT
         type: string
       delivery_address:
@@ -433,34 +339,24 @@ definitions:
         - $ref: '#/definitions/dto.OrderDetailResponse'
         description: Details of the order
       driver_id:
-        description: |-
-          Driver ID assigned to the order
-          @example d1e2f3g4-h5i6-j7k8-l9m0-n1o2p3q4r5s6
+        description: Driver ID assigned to the order
         example: d1e2f3g4-h5i6-j7k8-l9m0-n1o2p3q4r5s6
         type: string
       driver_name:
-        description: |-
-          Driver full name
-          @example "Michael Johnson"
+        description: Driver full name
         example: Michael Johnson
         type: string
       estimated_arrival:
-        description: |-
-          Estimated time of arrival
-          @example 2023-05-15T16:30:00Z
+        description: Estimated time of arrival
         example: "2023-05-15T16:30:00Z"
         format: date-time
         type: string
       id:
-        description: |-
-          Unique identifier of the order
-          @example a1b2c3d4-e5f6-7g8h-9i0j-k1l2m3n4o5p6
+        description: Unique identifier of the order
         example: a1b2c3d4-e5f6-7g8h-9i0j-k1l2m3n4o5p6
         type: string
       last_updated:
-        description: |-
-          Last time the order status was updated
-          @example 2023-05-15T12:45:00Z
+        description: Last time the order status was updated
         example: "2023-05-15T12:45:00Z"
         format: date-time
         type: string
@@ -473,28 +369,20 @@ definitions:
         - $ref: '#/definitions/dto.PickupAddressResponse'
         description: Pickup origin address
       status:
-        description: |-
-          Current status of the order
-          @example PENDING
+        description: Current status of the order
         example: PENDING
         type: string
       status_history:
-        description: |-
-          Order status history
-          @example [{"status":"PENDING","description":"Order has been created","updated_at":"2023-05-15T10:30:00Z"}]
+        description: Order status history
         items:
           $ref: '#/definitions/dto.OrderStatusHistoryResponse'
         type: array
       tracking_number:
-        description: |-
-          Tracking number for the order
-          @example DEL-230512-7890
+        description: Tracking number for the order
         example: DEL-230512-7890
         type: string
       updated_at:
-        description: |-
-          When the order was last updated
-          @example 2023-05-15T10:30:00Z
+        description: When the order was last updated
         example: "2023-05-15T10:30:00Z"
         format: date-time
         type: string
@@ -502,21 +390,15 @@ definitions:
   dto.OrderStatusHistoryResponse:
     properties:
       description:
-        description: |-
-          Description of the status change
-          @example "Driver has accepted the order and is heading to pickup location"
+        description: Description of the status change
         example: Driver has accepted the order and is heading to pickup location
         type: string
       status:
-        description: |-
-          Name of the status
-          @example ACCEPTED
+        description: Name of the status
         example: PENDING
         type: string
       updated_at:
-        description: |-
-          Updated at time
-          @example 2023-05-15T12:45:00Z
+        description: Updated at time
         example: "2023-05-15T12:45:00Z"
         format: date-time
         type: string
@@ -529,23 +411,19 @@ definitions:
         - $ref: '#/definitions/dto.DeliveryAddressUpdateRequest'
         description: Delivery destination address details
       delivery_deadline:
-        description: |-
-          Deadline for delivery completion - only modifiable if order is still in PENDING state
-          @example 2023-05-15T16:30:00Z
+        description: Deadline for delivery completion - only modifiable if order is
+          still in PENDING state
         example: "2023-05-15T16:30:00Z"
         format: date-time
         type: string
       delivery_notes:
-        description: |-
-          Additional notes for the delivery
-          @example "Please call recipient 5 minutes before arrival"
+        description: Additional notes for the delivery
         example: Please call recipient 5 minutes before arrival
         type: string
       distance:
         description: |-
           Distance of the delivery in kilometers
           @minimum 0
-          @example 7.2
         example: 7.2
         minimum: 0
         type: number
@@ -557,25 +435,19 @@ definitions:
         description: |-
           Pickup contact information and notes
           Contact name for pickup location
-          @example "Jane Smith"
         example: Jane Smith
         type: string
       pickup_contact_phone:
-        description: |-
-          Contact phone number for pickup location
-          @example "+0987654321"
+        description: Contact phone number for pickup location
         example: "+0987654321"
         type: string
       pickup_notes:
-        description: |-
-          Important notes about the pickup location
-          @example "Enter through loading dock"
+        description: Important notes about the pickup location
         example: Enter through loading dock
         type: string
       pickup_time:
-        description: |-
-          Scheduled pickup time - only modifiable if order is still in PENDING state
-          @example 2023-05-15T14:30:00Z
+        description: Scheduled pickup time - only modifiable if order is still in
+          PENDING state
         example: "2023-05-15T14:30:00Z"
         format: date-time
         type: string
@@ -583,14 +455,11 @@ definitions:
         description: |-
           Price of the delivery in local currency
           @minimum 0
-          @example 25.50
         example: 25.5
         minimum: 0
         type: number
       requires_signature:
-        description: |-
-          Whether recipient signature is required for delivery
-          @example false
+        description: Whether recipient signature is required for delivery
         example: false
         type: boolean
     type: object
@@ -601,41 +470,32 @@ definitions:
         description: |-
           Height of the package in centimeters
           @minimum 0
-          @example 15
         example: 15
         minimum: 0
         type: number
       is_fragile:
-        description: |-
-          Whether the package contains fragile items
-          @example true
+        description: Whether the package contains fragile items
         example: true
         type: boolean
       is_urgent:
-        description: |-
-          Whether the package requires urgent handling
-          @example false
+        description: Whether the package requires urgent handling
         example: false
         type: boolean
       length:
         description: |-
           Length of the package in centimeters
           @minimum 0
-          @example 30
         example: 30
         minimum: 0
         type: number
       special_instructions:
-        description: |-
-          Special handling instructions
-          @example "Contains glass items, handle with care"
+        description: Special handling instructions
         example: Contains glass items, handle with care
         type: string
       weight:
         description: |-
           Weight of the package in kilograms
           @minimum 0
-          @example 2.5
         example: 2.5
         minimum: 0
         type: number
@@ -643,7 +503,6 @@ definitions:
         description: |-
           Width of the package in centimeters
           @minimum 0
-          @example 20
         example: 20
         minimum: 0
         type: number
@@ -652,33 +511,23 @@ definitions:
     description: Package characteristics and handling requirements
     properties:
       dimensions:
-        description: |-
-          Package dimensions in JSON format
-          @example {"length":30,"width":20,"height":15,"unit":"cm"}
+        description: Package dimensions in JSON format
         example: '{"length":30,"width":20,"height":15,"unit":"cm"}'
         type: string
       is_fragile:
-        description: |-
-          Whether the package contains fragile items
-          @example true
+        description: Whether the package contains fragile items
         example: true
         type: boolean
       is_urgent:
-        description: |-
-          Whether the package requires urgent handling
-          @example false
+        description: Whether the package requires urgent handling
         example: false
         type: boolean
       special_instructions:
-        description: |-
-          Special handling instructions
-          @example "Contains glass items, handle with care"
+        description: Special handling instructions
         example: Contains glass items, handle with care
         type: string
       weight:
-        description: |-
-          Weight of the package in kilograms
-          @example 2.5
+        description: Weight of the package in kilograms
         example: 2.5
         type: number
     type: object
@@ -689,41 +538,32 @@ definitions:
         description: |-
           Height of the package in centimeters
           @minimum 0
-          @example 15
         example: 15
         minimum: 0
         type: number
       is_fragile:
-        description: |-
-          Whether the package contains fragile items
-          @example true
+        description: Whether the package contains fragile items
         example: true
         type: boolean
       is_urgent:
-        description: |-
-          Whether the package requires urgent handling
-          @example false
+        description: Whether the package requires urgent handling
         example: false
         type: boolean
       length:
         description: |-
           Length of the package in centimeters
           @minimum 0
-          @example 30
         example: 30
         minimum: 0
         type: number
       special_instructions:
-        description: |-
-          Special handling instructions
-          @example "Contains glass items, handle with care"
+        description: Special handling instructions
         example: Contains glass items, handle with care
         type: string
       weight:
         description: |-
           Weight of the package in kilograms
           @minimum 0
-          @example 2.5
         example: 2.5
         minimum: 0
         type: number
@@ -731,7 +571,6 @@ definitions:
         description: |-
           Width of the package in centimeters
           @minimum 0
-          @example 20
         example: 20
         minimum: 0
         type: number
@@ -740,31 +579,21 @@ definitions:
     description: Paginated data response with metadata about pagination
     properties:
       data:
-        description: |-
-          The actual data items
-          @example [{"id":"a1b2c3d4","tracking_number":"DEL-230512-7890"}]
+        description: The actual data items (array of objects)
       page:
-        description: |-
-          Current page number
-          @example 1
+        description: Current page number
         example: 1
         type: integer
       page_size:
-        description: |-
-          Number of items per page
-          @example 20
+        description: Number of items per page
         example: 20
         type: integer
       total_items:
-        description: |-
-          Total number of items across all pages
-          @example 100
+        description: Total number of items across all pages
         example: 100
         type: integer
       total_pages:
-        description: |-
-          Total number of pages
-          @example 5
+        description: Total number of pages
         example: 5
         type: integer
     type: object
@@ -772,138 +601,112 @@ definitions:
     description: Pickup address information
     properties:
       address_line1:
-        description: |-
-          First line of the address
-          @example "456 Business Ave"
+        description: First line of the address
         example: 456 Business Ave
         type: string
       address_line2:
-        description: |-
-          Second line of the address (optional)
-          @example "Suite 300"
+        description: Second line of the address (optional)
         example: Suite 300
         type: string
       address_notes:
-        description: |-
-          Additional notes about the address
-          @example "Enter through loading dock"
+        description: Additional notes about the address
         example: Enter through loading dock
         type: string
       city:
-        description: |-
-          City name
-          @example "Chicago"
+        description: City name
         example: Chicago
         type: string
       contact_name:
-        description: |-
-          Name of the contact person at pickup location
-          @example "Jane Smith"
+        description: Name of the contact person at pickup location
         example: Jane Smith
         type: string
       contact_phone:
-        description: |-
-          Contact phone number at pickup location
-          @example "+0987654321"
+        description: Contact phone number at pickup location
         example: "+0987654321"
         type: string
       formatted_address:
-        description: |-
-          Full formatted address
-          @example "456 Business Ave, Suite 300, Chicago, IL 60606"
+        description: Full formatted address
         example: 456 Business Ave, Suite 300, Chicago, IL 60606
         type: string
       latitude:
-        description: |-
-          Latitude coordinate
-          @example 41.8781
+        description: Latitude coordinate
         example: 41.8781
         type: number
       longitude:
-        description: |-
-          Longitude coordinate
-          @example -87.6298
+        description: Longitude coordinate
         example: -87.6298
         type: number
       postal_code:
-        description: |-
-          Postal or ZIP code
-          @example "60606"
+        description: Postal or ZIP code
         example: "60606"
         type: string
       state:
-        description: |-
-          State or province name
-          @example "IL"
+        description: State or province name
         example: IL
         type: string
     type: object
   dto.UpdateUserDTO:
     properties:
       active:
-        description: |-
-          Active status of the user to be updated
-          @example true
+        description: Active status of the user to be updated
+        example: true
         type: boolean
       email:
-        description: |-
-          Email of the user to be updated
-          @example example@example.com
+        description: Email of the user to be updated
+        example: example@example.com
         type: string
       first_name:
-        description: |-
-          FirstName of the user to be updated
-          @example John
+        description: FirstName of the user to be updated
+        example: John
         type: string
       last_name:
-        description: |-
-          LastName of the user to be updated
-          @example Doe
+        description: LastName of the user to be updated
+        example: Doe
         type: string
       password:
-        description: |-
-          Password of the user to be updated
-          @example password
+        description: Password of the user to be updated
+        example: password
         type: string
       phone:
-        description: |-
-          Phone of the user to be updated
-          @example 21212828
+        description: Phone of the user to be updated
+        example: "21212828"
         type: string
       profile:
         allOf:
         - $ref: '#/definitions/dto.UpdateUserProfileDTO'
         description: Profile of the user to be updated
+      roles:
+        example:
+        - '["admin"]'
+        items:
+          type: string
+        type: array
     type: object
   dto.UpdateUserProfileDTO:
     properties:
       additional_info:
         description: AdditionalInfo of the user to be updated
+        example: Additional information
         type: string
       birth_date:
-        description: |-
-          BirthDate of the user to be updated
-          @example 1990-01-01
+        description: BirthDate of the user to be updated
+        example: 01-01-1990 or 01/01/1990
         type: string
       document_number:
-        description: |-
-          DocumentNumber of the user to be updated
-          @example 123456789
+        description: DocumentNumber of the user to be updated
+        example: "12345678"
         type: string
       document_type:
-        description: |-
-          DocumentType of the user to be updated
-          @example DUI
+        description: DocumentType of the user to be updated
+        example: DNI
         type: string
       emergency_contact_name:
-        description: |-
-          EmergencyContactName of the user to be updated
-          @example Jane Doe
+        description: EmergencyContactName of the user to be updated
+        example: John Doe
         type: string
       emergency_contact_phone:
-        description: |-
-          EmergencyContactPhone of the user to be updated
-          @example 21212828
+        description: EmergencyContactPhone of the user to be updated
+        example: "21212828"
         type: string
     type: object
   dto.UserDTO:
@@ -911,32 +714,32 @@ definitions:
       email:
         description: |-
           Email of the user to be created
-          @example example@example.com
           @required
+        example: example@example.com
         type: string
       first_name:
         description: |-
           FirstName of the user to be created
-          @example John
           @required
+        example: John
         type: string
       last_name:
         description: |-
           LastName of the user to be created
-          @example Doe
           @required
+        example: Doe
         type: string
       password:
         description: |-
           Password of the user to be created
-          @example password
           @required
+        example: password
         type: string
       phone:
         description: |-
           Phone number of the user to be created
-          @example 21212828
           @required
+        example: "21212828"
         type: string
       profile:
         allOf:
@@ -944,94 +747,627 @@ definitions:
         description: |-
           Profile of the user to be created
           @required
+      roles:
+        description: |-
+          Roles of the user to be created
+          @required
+        example:
+        - '["admin"]'
+        items:
+          type: string
+        type: array
     type: object
   dto.UserProfileDTO:
     properties:
       additional_info:
         description: AdditionalInfo of the user to be created
+        example: Additional information
         type: string
       birth_date:
         description: |-
           BirthDate of the user to be created
-          @example 1990-01-01
           @required
+        example: 01-01-1990 or 01/01/1990
         type: string
       document_number:
         description: |-
           DocumentNumber of the user to be created
-          @example 123456789
           @required
+        example: "12345678"
         type: string
       document_type:
         description: |-
           DocumentType of the user to be created
-          @example DUI
           @required
+        example: DNI
         type: string
       emergency_contact_name:
         description: |-
           EmergencyContactName of the user to be created
-          @example Jane Doe
           @required
+        example: John Doe
         type: string
       emergency_contact_phone:
         description: |-
           EmergencyContactPhone of the user to be created
-          @example 21212828
           @required
+        example: "21212828"
+        type: string
+    type: object
+  entities.Availability:
+    properties:
+      activeOrders:
+        type: integer
+      canTakeOrders:
+        type: boolean
+      currentLocation:
+        items:
+          type: integer
+        type: array
+      currentZoneID:
+        type: string
+      driver:
+        allOf:
+        - $ref: '#/definitions/entities.Driver'
+        description: Inverse Relationships
+      driverID:
+        type: string
+      lastUpdate:
+        type: string
+      shiftEnd:
+        type: string
+      shiftStart:
+        type: string
+      status:
+        type: string
+      zone:
+        $ref: '#/definitions/entities.Zone'
+    type: object
+  entities.Branch:
+    properties:
+      code:
+        type: string
+      company:
+        allOf:
+        - $ref: '#/definitions/entities.Company'
+        description: Inverse Relationships
+      companyID:
+        type: string
+      contactEmail:
+        type: string
+      contactName:
+        type: string
+      contactPhone:
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: string
+      isActive:
+        type: boolean
+      name:
+        type: string
+      operatingHours:
+        type: string
+      orders:
+        description: Relationships
+        items:
+          $ref: '#/definitions/entities.Order'
+        type: array
+      updatedAt:
+        type: string
+      zone:
+        $ref: '#/definitions/entities.Zone'
+      zoneID:
+        type: string
+    type: object
+  entities.Company:
+    properties:
+      address:
+        allOf:
+        - $ref: '#/definitions/entities.CompanyAddress'
+        description: Relationships
+      branches:
+        items:
+          $ref: '#/definitions/entities.Branch'
+        type: array
+      contactEmail:
+        type: string
+      contactPhone:
+        type: string
+      contractDetails:
+        type: string
+      contractEndDate:
+        type: string
+      contractStartDate:
+        type: string
+      createdAt:
+        type: string
+      deliveryRate:
+        type: number
+      id:
+        type: string
+      isActive:
+        type: boolean
+      legalName:
+        type: string
+      logoURL:
+        type: string
+      name:
+        type: string
+      orders:
+        items:
+          $ref: '#/definitions/entities.Order'
+        type: array
+      taxID:
+        type: string
+      updatedAt:
+        type: string
+      website:
+        type: string
+    type: object
+  entities.CompanyAddress:
+    properties:
+      addressLine1:
+        type: string
+      addressLine2:
+        type: string
+      city:
+        type: string
+      company:
+        allOf:
+        - $ref: '#/definitions/entities.Company'
+        description: Inverse relationships
+      companyID:
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: string
+      isMain:
+        type: boolean
+      latitude:
+        type: number
+      location:
+        items:
+          type: integer
+        type: array
+      longitude:
+        type: number
+      postalCode:
+        type: string
+      state:
+        type: string
+    type: object
+  entities.DeliveryAddress:
+    properties:
+      addressLine1:
+        type: string
+      addressLine2:
+        type: string
+      addressNotes:
+        type: string
+      city:
+        type: string
+      createdAt:
+        type: string
+      latitude:
+        type: number
+      location:
+        items:
+          type: integer
+        type: array
+      longitude:
+        type: number
+      order:
+        allOf:
+        - $ref: '#/definitions/entities.Order'
+        description: Inverse Relationships
+      orderID:
+        type: string
+      postalCode:
+        type: string
+      recipientName:
+        type: string
+      recipientPhone:
+        type: string
+      state:
+        type: string
+    type: object
+  entities.Details:
+    properties:
+      createdAt:
+        type: string
+      deliveredAt:
+        type: string
+      deliveryDeadline:
+        type: string
+      deliveryNotes:
+        type: string
+      distance:
+        type: number
+      order:
+        allOf:
+        - $ref: '#/definitions/entities.Order'
+        description: Inverse Relationships
+      orderID:
+        type: string
+      pickupTime:
+        type: string
+      price:
+        type: number
+      requiresSignature:
+        type: boolean
+      updatedAt:
+        type: string
+    type: object
+  entities.Driver:
+    properties:
+      availability:
+        $ref: '#/definitions/entities.Availability'
+      completedDeliveries:
+        type: integer
+      createdAt:
+        type: string
+      documentation:
+        type: string
+      driverZones:
+        description: Relationships
+        items:
+          $ref: '#/definitions/entities.DriverZone'
+        type: array
+      isActive:
+        type: boolean
+      lastDelivery:
+        type: string
+      licenseExpiry:
+        type: string
+      licenseNumber:
+        type: string
+      orders:
+        items:
+          $ref: '#/definitions/entities.Order'
+        type: array
+      rating:
+        type: number
+      updatedAt:
+        type: string
+      user:
+        allOf:
+        - $ref: '#/definitions/entities.User'
+        description: Inverse Relationships
+      userID:
+        type: string
+      vehicleColor:
+        type: string
+      vehicleDetails:
+        type: string
+      vehicleModel:
+        type: string
+      vehiclePlate:
+        type: string
+      vehicleType:
+        type: string
+    type: object
+  entities.DriverZone:
+    properties:
+      createdAt:
+        type: string
+      deliveriesCompleted:
+        type: integer
+      driver:
+        allOf:
+        - $ref: '#/definitions/entities.Driver'
+        description: Inverse Relationships
+      driverID:
+        type: string
+      efficiencyRating:
+        type: number
+      isActive:
+        type: boolean
+      isPrimary:
+        type: boolean
+      lastDelivery:
+        type: string
+      zone:
+        $ref: '#/definitions/entities.Zone'
+      zoneID:
+        type: string
+    type: object
+  entities.Inventory:
+    properties:
+      createdAt:
+        type: string
+      dispatchedAt:
+        type: string
+      id:
+        type: string
+      order:
+        $ref: '#/definitions/entities.Order'
+      orderID:
+        type: string
+      receivedAt:
+        type: string
+      shelfLocation:
+        type: string
+      status:
+        type: string
+      warehouse:
+        allOf:
+        - $ref: '#/definitions/entities.Warehouse'
+        description: Inverse Relationships
+      warehouseID:
+        type: string
+    type: object
+  entities.Order:
+    properties:
+      branch:
+        $ref: '#/definitions/entities.Branch'
+      branchID:
+        type: string
+      client:
+        $ref: '#/definitions/entities.User'
+      clientID:
+        type: string
+      company:
+        allOf:
+        - $ref: '#/definitions/entities.Company'
+        description: Inverse Relationships
+      companyID:
+        type: string
+      createdAt:
+        type: string
+      deletedAt:
+        type: string
+      deliveryAddress:
+        $ref: '#/definitions/entities.DeliveryAddress'
+      detail:
+        allOf:
+        - $ref: '#/definitions/entities.Details'
+        description: Relationships one to one
+      driver:
+        $ref: '#/definitions/entities.Driver'
+      driverID:
+        type: string
+      id:
+        type: string
+      packageDetail:
+        $ref: '#/definitions/entities.PackageDetail'
+      pickupAddress:
+        $ref: '#/definitions/entities.PickupAddress'
+      qrcode:
+        $ref: '#/definitions/entities.QRCode'
+      status:
+        type: string
+      statusHistory:
+        description: Relationships one to many
+        items:
+          $ref: '#/definitions/entities.StatusHistory'
+        type: array
+      tracking:
+        $ref: '#/definitions/entities.Tracking'
+      trackingNumber:
+        type: string
+      updatedAt:
+        type: string
+      warehouseInventory:
+        items:
+          $ref: '#/definitions/entities.Inventory'
+        type: array
+      warehouseTrackings:
+        items:
+          $ref: '#/definitions/entities.PackageTracking'
+        type: array
+    type: object
+  entities.PackageDetail:
+    properties:
+      createdAt:
+        type: string
+      dimensions:
+        type: string
+      isFragile:
+        type: boolean
+      isUrgent:
+        type: boolean
+      order:
+        allOf:
+        - $ref: '#/definitions/entities.Order'
+        description: Inverse Relationships
+      orderID:
+        type: string
+      specialInstructions:
+        type: string
+      weight:
+        type: number
+    type: object
+  entities.PackageTracking:
+    properties:
+      collectedAt:
+        type: string
+      collector:
+        $ref: '#/definitions/entities.User'
+      collectorID:
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: string
+      notes:
+        type: string
+      order:
+        allOf:
+        - $ref: '#/definitions/entities.Order'
+        description: Inverse Relationships
+      orderID:
+        type: string
+      status:
+        type: string
+      warehouse:
+        $ref: '#/definitions/entities.Warehouse'
+      warehouseID:
+        type: string
+    type: object
+  entities.PickupAddress:
+    properties:
+      addressLine1:
+        type: string
+      addressLine2:
+        type: string
+      addressNotes:
+        type: string
+      city:
+        type: string
+      contactName:
+        type: string
+      contactPhone:
+        type: string
+      createdAt:
+        type: string
+      latitude:
+        type: number
+      location:
+        items:
+          type: integer
+        type: array
+      longitude:
+        type: number
+      order:
+        allOf:
+        - $ref: '#/definitions/entities.Order'
+        description: Inverse Relationships
+      orderID:
+        type: string
+      postalCode:
+        type: string
+      state:
         type: string
     type: object
   entities.Profile:
     properties:
       additional_info:
+        example: Additional information
         type: string
       birth_date:
+        example: "2021-01-01"
         type: string
       document_number:
+        example: "000000000"
         type: string
       document_type:
+        example: DNI
         type: string
       emergency_contact_name:
+        example: John Doe
         type: string
       emergency_contact_phone:
+        example: "21212828"
         type: string
       profile_picture_url:
         type: string
       user_id:
+        example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        type: string
+    type: object
+  entities.QRCode:
+    properties:
+      createdAt:
+        type: string
+      order:
+        allOf:
+        - $ref: '#/definitions/entities.Order'
+        description: Inverse Relationships
+      orderID:
+        type: string
+      qrdata:
         type: string
     type: object
   entities.Role:
     properties:
       created_at:
+        example: "2021-01-01T00:00:00Z"
+        type: string
+      description:
+        example: Administrator role
+        type: string
+      id:
+        example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        type: string
+      is_active:
+        example: true
+        type: boolean
+      name:
+        example: admin
+        type: string
+    type: object
+  entities.StatusHistory:
+    properties:
+      createdAt:
         type: string
       description:
         type: string
       id:
         type: string
-      is_active:
-        type: boolean
-      name:
+      order:
+        allOf:
+        - $ref: '#/definitions/entities.Order'
+        description: Inverse Relationships
+      orderID:
+        type: string
+      status:
+        type: string
+    type: object
+  entities.Tracking:
+    properties:
+      createdAt:
+        type: string
+      currentLocation:
+        items:
+          type: string
+        type: array
+      currentStatus:
+        type: string
+      lastUpdated:
+        type: string
+      order:
+        allOf:
+        - $ref: '#/definitions/entities.Order'
+        description: Inverse Relationships
+      orderID:
         type: string
     type: object
   entities.User:
     properties:
+      company:
+        $ref: '#/definitions/entities.Company'
+      company_id:
+        example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        type: string
       created_at:
+        example: "2021-01-01T00:00:00Z"
         type: string
       deleted_at:
+        example: "2021-01-01T00:00:00Z"
         type: string
       email:
+        example: example@example.com
         type: string
       email_verified_at:
+        example: "2021-01-01T00:00:00Z"
         type: string
       full_name:
+        example: John Doe
         type: string
       id:
+        example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
         type: string
       is_active:
+        example: true
         type: boolean
       phone:
+        example: "21212828"
         type: string
       phone_verified_at:
+        example: "2021-01-01T00:00:00Z"
         type: string
       profile:
         $ref: '#/definitions/entities.Profile'
@@ -1044,35 +1380,105 @@ definitions:
         items:
           $ref: '#/definitions/entities.UserSession'
         type: array
+      updated_at:
+        example: "2021-01-01T00:00:00Z"
+        type: string
     type: object
   entities.UserRole:
     properties:
       assigned_at:
+        example: "2021-01-01T00:00:00Z"
         type: string
       assigned_by:
+        example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
         type: string
       auth:
         allOf:
         - $ref: '#/definitions/entities.Role'
         description: Relationships
       role_id:
+        example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
         type: string
       user_id:
+        example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
         type: string
     type: object
   entities.UserSession:
     properties:
       created_at:
+        example: "2021-01-01T00:00:00Z"
         type: string
       device_info:
+        example: '{"os":"android","version":"10"}'
         type: string
       expires_at:
+        example: "2021-01-01T00:00:00Z"
+        type: string
+      id:
+        example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        type: string
+      ip_address:
+        example: 200.43.52.1
+        type: string
+      last_activity:
+        example: "2021-01-01T00:00:00Z"
+        type: string
+    type: object
+  entities.Warehouse:
+    properties:
+      address:
+        type: string
+      createdAt:
         type: string
       id:
         type: string
-      ip_address:
+      inventory:
+        items:
+          $ref: '#/definitions/entities.Inventory'
+        type: array
+      isActive:
+        type: boolean
+      location:
+        items:
+          type: integer
+        type: array
+      name:
         type: string
-      last_activity:
+      packageTrackings:
+        description: Relationships
+        items:
+          $ref: '#/definitions/entities.PackageTracking'
+        type: array
+      zone:
+        allOf:
+        - $ref: '#/definitions/entities.Zone'
+        description: Inverse Relationships
+      zoneID:
+        type: string
+    type: object
+  entities.Zone:
+    properties:
+      base_rate:
+        type: number
+      boundaries:
+        type: string
+      center_point:
+        type: string
+      code:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: string
+      is_active:
+        type: boolean
+      max_delivery_time:
+        type: integer
+      name:
+        type: string
+      priority_level:
+        type: integer
+      updated_at:
         type: string
     type: object
   responser.APIError:
@@ -1383,7 +1789,122 @@ paths:
       summary: This endpoint is used to restore a deleted order
       tags:
       - orders
+  /api/v1/roles:
+    get:
+      consumes:
+      - application/json
+      description: Get all roles
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entities.Role'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responser.APIErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get all roles
+      tags:
+      - roles
+  /api/v1/roles/{role}:
+    get:
+      consumes:
+      - application/json
+      description: Get role by ID or name
+      parameters:
+      - description: Role ID or name
+        in: path
+        name: role
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.Role'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responser.APIErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get role by ID or name
+      tags:
+      - roles
   /api/v1/users:
+    get:
+      consumes:
+      - application/json
+      description: Get all users
+      parameters:
+      - description: Company ID
+        in: query
+        name: company_id
+        type: string
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Page size
+        in: query
+        name: page_size
+        type: integer
+      - description: Sort by
+        in: query
+        name: sort_by
+        type: string
+      - description: Order by
+        in: query
+        name: sort_direction
+        type: string
+      - description: Status
+        in: query
+        name: status
+        type: string
+      - description: Creation date
+        in: query
+        name: creation_date
+        type: string
+      - description: Include deleted
+        in: query
+        name: include_deleted
+        type: string
+      - description: Name
+        in: query
+        name: name
+        type: string
+      - description: Email
+        in: query
+        name: email
+        type: string
+      - description: Phone
+        in: query
+        name: phone
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.PaginatedResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responser.APIErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: This endpoint is used to get all users
+      tags:
+      - users
     post:
       consumes:
       - application/json
@@ -1528,39 +2049,6 @@ paths:
       summary: This endpoint is used to update a user by ID
       tags:
       - users
-  /api/v1/users/{user_id}/roles:
-    post:
-      consumes:
-      - application/json
-      description: Assign a role to a user
-      parameters:
-      - description: User ID
-        in: path
-        name: user_id
-        required: true
-        type: string
-      - description: Role object that needs to be assigned
-        in: body
-        name: role
-        required: true
-        schema:
-          $ref: '#/definitions/dto.AssignRoleDTO'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Role assigned to user successfully
-          schema:
-            type: string
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/responser.APIErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: This endpoint is used to assign a role to a user
-      tags:
-      - users
   /api/v1/users/profile:
     get:
       consumes:
@@ -1608,6 +2096,126 @@ paths:
       security:
       - BearerAuth: []
       summary: This endpoint is used to recover a user by ID
+      tags:
+      - users
+  /api/v1/users/roles/{user_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Unassign a role from a user
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      - description: Role object that needs to be unassigned
+        in: body
+        name: role
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AssignRoleDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Role unassigned from user successfully
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responser.APIErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: This endpoint is used to unassign a role from a user
+      tags:
+      - users
+    get:
+      consumes:
+      - application/json
+      description: Get all roles of a user
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entities.Role'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responser.APIErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: This endpoint is used to get all roles of a user
+      tags:
+      - users
+    post:
+      consumes:
+      - application/json
+      description: Assign a role to a user
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      - description: Role object that needs to be assigned
+        in: body
+        name: role
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AssignRoleDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Role assigned to user successfully
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responser.APIErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: This endpoint is used to assign a role to a user
+      tags:
+      - users
+  /api/v1/users/sessions/{user_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Clean all sessions of a user
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Sessions cleaned successfully
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responser.APIErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: This endpoint is used to clean all sessions of a user
       tags:
       - users
 swagger: "2.0"

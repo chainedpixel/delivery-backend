@@ -1,32 +1,35 @@
 package dto
 
-import error2 "infrastructure/error"
+import (
+	"domain/delivery/constants"
+	error2 "infrastructure/error"
+	"strings"
+)
 
 type UserDTO struct {
 	// Email of the user to be created
-	// @example example@example.com
 	// @required
-	Email string `json:"email"`
+	Email string `json:"email" example:"example@example.com"`
 
 	// FirstName of the user to be created
-	// @example John
 	// @required
-	FirstName string `json:"first_name"`
+	FirstName string `json:"first_name" example:"John"`
 
 	// LastName of the user to be created
-	// @example Doe
 	// @required
-	LastName string `json:"last_name"`
+	LastName string `json:"last_name" example:"Doe"`
 
 	// Phone number of the user to be created
-	// @example 21212828
 	// @required
-	Phone string `json:"phone"`
+	Phone string `json:"phone" example:"21212828"`
 
 	// Password of the user to be created
-	// @example password
 	// @required
-	Password string `json:"password"`
+	Password string `json:"password" example:"password"`
+
+	// Roles of the user to be created
+	// @required
+	Roles []string `json:"roles" example:"[\"admin\"]"`
 
 	// Profile of the user to be created
 	// @required
@@ -35,37 +38,46 @@ type UserDTO struct {
 
 type UserProfileDTO struct {
 	// DocumentType of the user to be created
-	// @example DUI
 	// @required
-	DocumentType string `json:"document_type"`
+	DocumentType string `json:"document_type" example:"DNI"`
 
 	// DocumentNumber of the user to be created
-	// @example 123456789
 	// @required
-	DocumentNumber string `json:"document_number"`
+	DocumentNumber string `json:"document_number" example:"12345678"`
 
 	// BirthDate of the user to be created
-	// @example 1990-01-01
 	// @required
-	BirthDate string `json:"birth_date"`
+	BirthDate string `json:"birth_date" example:"01-01-1990 or 01/01/1990"`
 
 	// EmergencyContactName of the user to be created
-	// @example Jane Doe
 	// @required
-	EmergencyContactName string `json:"emergency_contact_name"`
+	EmergencyContactName string `json:"emergency_contact_name" example:"John Doe"`
 
 	// EmergencyContactPhone of the user to be created
-	// @example 21212828
 	// @required
-	EmergencyContactPhone string `json:"emergency_contact_phone"`
+	EmergencyContactPhone string `json:"emergency_contact_phone" example:"21212828"`
 
 	// AdditionalInfo of the user to be created
-	AdditionalInfo string `json:"additional_info"`
+	AdditionalInfo string `json:"additional_info" example:"Additional information"`
 }
 
 func (u *UserDTO) Validate() error {
 	if u.Email == "" || u.FirstName == "" || u.LastName == "" || u.Phone == "" || u.Password == "" {
 		return error2.NewGeneralServiceError("UserDTO", "Validate", error2.ErrInvalidUser)
+	}
+
+	if len(u.Roles) == 0 {
+		return error2.NewGeneralServiceError("UserDTO", "Validate", error2.ErrMissingRoles)
+	}
+
+	for _, role := range u.Roles {
+		if role == "" {
+			return error2.NewGeneralServiceError("UserDTO", "Validate", error2.ErrRoleMissing)
+		}
+
+		if !constants.ValidRoles[strings.ToUpper(role)] {
+			return error2.NewGeneralServiceError("UserDTO", "Validate", error2.ErrInvalidRole)
+		}
 	}
 
 	if u.Profile == nil {
@@ -80,10 +92,9 @@ func (u *UserDTO) Validate() error {
 }
 
 type AssignRoleDTO struct {
-	// RoleID UUID of the user to be assigned
-	// @example admin
+	// RoleID or RoleName of the role to be assigned to the user
 	// @required
-	Role string `json:"role_id"`
+	Role string `json:"role" example:"admin or 3fa85f64-5717-4562-b3fc-2c963f66afa6"`
 }
 
 func (r *AssignRoleDTO) Validate() error {
@@ -96,35 +107,30 @@ func (r *AssignRoleDTO) Validate() error {
 
 type ActivateUserDTO struct {
 	// Active status of the user to be updated
-	// @example true
 	// @required
-	Active bool `json:"active"`
+	Active bool `json:"active" example:"true"`
 }
 
 type UpdateUserDTO struct {
 	// Email of the user to be updated
-	// @example example@example.com
-	Email string `json:"email"`
+	Email string `json:"email" example:"example@example.com"`
 
 	// FirstName of the user to be updated
-	// @example John
-	FirstName string `json:"first_name"`
+	FirstName string `json:"first_name" example:"John"`
 
 	// LastName of the user to be updated
-	// @example Doe
-	LastName string `json:"last_name"`
+	LastName string `json:"last_name" example:"Doe"`
 
 	// Phone of the user to be updated
-	// @example 21212828
-	Phone string `json:"phone"`
+	Phone string `json:"phone" example:"21212828"`
 
 	// Active status of the user to be updated
-	// @example true
-	Active bool `json:"active"`
+	Active bool `json:"active" example:"true"`
 
 	// Password of the user to be updated
-	// @example password
-	Password string `json:"password"`
+	Password string `json:"password" example:"password"`
+
+	Roles []string `json:"roles" example:"[\"admin\"]"`
 
 	// Profile of the user to be updated
 	Profile *UpdateUserProfileDTO `json:"profile"`
@@ -132,25 +138,20 @@ type UpdateUserDTO struct {
 
 type UpdateUserProfileDTO struct {
 	// DocumentType of the user to be updated
-	// @example DUI
-	DocumentType string `json:"document_type"`
+	DocumentType string `json:"document_type" example:"DNI"`
 
 	// DocumentNumber of the user to be updated
-	// @example 123456789
-	DocumentNumber string `json:"document_number"`
+	DocumentNumber string `json:"document_number" example:"12345678"`
 
 	// BirthDate of the user to be updated
-	// @example 1990-01-01
-	BirthDate string `json:"birth_date"`
+	BirthDate string `json:"birth_date" example:"01-01-1990 or 01/01/1990"`
 
 	// EmergencyContactName of the user to be updated
-	// @example Jane Doe
-	EmergencyContactName string `json:"emergency_contact_name"`
+	EmergencyContactName string `json:"emergency_contact_name" example:"John Doe"`
 
 	// EmergencyContactPhone of the user to be updated
-	// @example 21212828
-	EmergencyContactPhone string `json:"emergency_contact_phone"`
+	EmergencyContactPhone string `json:"emergency_contact_phone" example:"21212828"`
 
 	// AdditionalInfo of the user to be updated
-	AdditionalInfo string `json:"additional_info"`
+	AdditionalInfo string `json:"additional_info" example:"Additional information"`
 }

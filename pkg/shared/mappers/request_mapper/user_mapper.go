@@ -1,6 +1,7 @@
 package request_mapper
 
 import (
+	"domain/delivery/constants"
 	"domain/delivery/models/entities"
 	"domain/delivery/value_objects"
 	"errors"
@@ -9,6 +10,7 @@ import (
 	"infrastructure/api/dto"
 	error2 "infrastructure/error"
 	"shared/logs"
+	"strings"
 	"time"
 )
 
@@ -38,7 +40,7 @@ func UserRequestToModel(req *dto.UserDTO) (*entities.User, error) {
 		return nil, error2.NewGeneralServiceError("UserMapper", "UserRequestToModel", errors.New("error hashing password"))
 	}
 
-	return &entities.User{
+	user := &entities.User{
 		ID:           userID,
 		Email:        req.Email,
 		FullName:     req.FirstName + " " + req.LastName,
@@ -46,8 +48,19 @@ func UserRequestToModel(req *dto.UserDTO) (*entities.User, error) {
 		IsActive:     true,
 		PasswordHash: string(password),
 		Profile:      profile,
-	}, nil
+	}
 
+	var roles []entities.UserRole
+	for _, role := range req.Roles {
+		roles = append(roles, entities.UserRole{
+			Role: &entities.Role{
+				Name: strings.ToUpper(role),
+			},
+		})
+	}
+	user.Roles = roles
+
+	return user, nil
 }
 
 func userProfileToModel(req *dto.UserProfileDTO, id string) (*entities.Profile, error) {
@@ -137,6 +150,30 @@ func UpdateUserRequestToModel(req *dto.UpdateUserDTO) (*entities.User, error) {
 		Phone:        req.Phone,
 		IsActive:     req.Active,
 		PasswordHash: string(password),
+	}
+
+	if req.Roles != nil {
+		if len(req.Roles) == 0 {
+			return nil, error2.NewGeneralServiceError("UpdateUserDTO", "Validate", error2.ErrMissingRoles)
+		}
+
+		var roles []entities.UserRole
+		for _, role := range req.Roles {
+			if role == "" {
+				return nil, error2.NewGeneralServiceError("UpdateUserDTO", "Validate", error2.ErrRoleMissing)
+			}
+
+			if !constants.ValidRoles[strings.ToUpper(role)] {
+				return nil, error2.NewGeneralServiceError("UpdateUserDTO", "Validate", error2.ErrInvalidRole)
+			}
+
+			roles = append(roles, entities.UserRole{
+				Role: &entities.Role{
+					Name: strings.ToUpper(role),
+				},
+			})
+		}
+		user.Roles = roles
 	}
 
 	if req.FirstName != "" && req.LastName != "" {

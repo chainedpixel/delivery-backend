@@ -23,6 +23,10 @@ var (
 	ErrUserAlreadyActiveOrInactive          = errors.New("user is already active or inactive")
 	ErrUserNotDeleted                       = errors.New("user is not deleted")
 
+	ErrRoleIsNotActive     = errors.New("role is not active")
+	ErrUserAlreadyHasRole  = errors.New("user already has the role")
+	ErrUserDoesNotHaveRole = errors.New("user does not have the role")
+
 	ErrInvalidEmail               = errors.New("invalid email format")
 	ErrInvalidPassword            = errors.New("invalid password format, minimum 8 characters, at least one uppercase letter, one lowercase letter, one number and one special character")
 	ErrValidationErrorsFound      = errors.New("validation errors has been found")

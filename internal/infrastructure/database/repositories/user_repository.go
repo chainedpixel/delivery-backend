@@ -99,18 +99,6 @@ func (r *userRepository) Update(ctx context.Context, id string, user *entities.U
 			}
 		}
 
-		// 3. Actualizar roles
-		if user.Roles != nil {
-			if err := tx.Where("user_id = ?", id).Delete(&entities.UserRole{}).Error; err != nil {
-				return err
-			}
-			for _, role := range user.Roles {
-				role.UserID = id
-				if err := tx.Create(role).Error; err != nil {
-					return err
-				}
-			}
-		}
 		return nil
 	})
 }
@@ -201,9 +189,10 @@ func (r *userRepository) DeleteSession(ctx context.Context, sessionID string) er
 }
 
 // CleanExpiredSessions elimina todas las sesiones expiradas
-func (r *userRepository) CleanExpiredSessions(ctx context.Context) error {
+func (r *userRepository) CleanExpiredSessions(ctx context.Context, id string) error {
 	return r.db.WithContext(ctx).
-		Delete(&entities.UserSession{}, "expires_at <= NOW()").Error
+		Model(&entities.UserSession{}).
+		Update("expires_at", time.Now()).Error
 }
 
 // AssignRoleToUser asigna un rol a un usuario
@@ -216,6 +205,103 @@ func (r *userRepository) AssignRoleToUser(ctx context.Context, userID string, ro
 		IsActive:   true,
 	}
 	return r.db.WithContext(ctx).Create(&userRole).Error
+}
+
+// UpdateRolesToUser actualiza los roles de un usuario
+func (r *userRepository) UpdateRolesToUser(ctx context.Context, userID string, loggedUserID string, roles []entities.Role) error {
+	// Obtenemos TODOS los roles del usuario (tanto activos como inactivos)
+	var allUserRoles []entities.UserRole
+	if err := r.db.WithContext(ctx).Where("user_id = ?", userID).Find(&allUserRoles).Error; err != nil {
+		return err
+	}
+
+	// Creamos mapas para procesamiento eficiente
+	activeRoleIDs := make(map[string]bool)      // Roles actualmente activos
+	inactiveRoleIDs := make(map[string]bool)    // Roles actualmente inactivos
+	allExistingRoleIDs := make(map[string]bool) // Todos los roles (activos e inactivos)
+
+	for _, userRole := range allUserRoles {
+		allExistingRoleIDs[userRole.RoleID] = true
+		if userRole.IsActive {
+			activeRoleIDs[userRole.RoleID] = true
+		} else {
+			inactiveRoleIDs[userRole.RoleID] = true
+		}
+	}
+
+	// Roles que queremos mantener según el array de entrada
+	rolesToKeep := make(map[string]bool)
+	for _, role := range roles {
+		rolesToKeep[role.ID] = true
+	}
+
+	// Iniciamos una transacción
+	tx := r.db.WithContext(ctx).Begin()
+	if tx.Error != nil {
+		return tx.Error
+	}
+
+	// 1. Desactivar roles que ya no están en la lista
+	for roleID := range activeRoleIDs {
+		if !rolesToKeep[roleID] {
+			// El rol ya no debe estar asignado, lo desactivamos
+			if err := tx.Model(&entities.UserRole{}).
+				Where("user_id = ? AND role_id = ?", userID, roleID).
+				Updates(map[string]interface{}{"is_active": false}).Error; err != nil {
+				tx.Rollback()
+				return err
+			}
+		}
+	}
+
+	// 2. Reactivar roles que existían pero estaban inactivos
+	for _, role := range roles {
+		if inactiveRoleIDs[role.ID] {
+			// Reactivamos el rol
+			if err := tx.Model(&entities.UserRole{}).
+				Where("user_id = ? AND role_id = ?", userID, role.ID).
+				Updates(map[string]interface{}{
+					"is_active":   true,
+					"assigned_at": time.Now(),
+					"assigned_by": loggedUserID,
+				}).Error; err != nil {
+				tx.Rollback()
+				return err
+			}
+		}
+	}
+
+	// 3. Agregar roles completamente nuevos
+	for _, role := range roles {
+		// Solo si el rol no existe en absoluto (ni activo ni inactivo)
+		if !allExistingRoleIDs[role.ID] {
+			// Creamos un nuevo UserRole
+			newUserRole := entities.UserRole{
+				UserID:     userID,
+				RoleID:     role.ID,
+				AssignedAt: time.Now(),
+				AssignedBy: loggedUserID,
+				IsActive:   true,
+				CreatedAt:  time.Now(),
+			}
+
+			// Insertamos el nuevo registro
+			if err := tx.Create(&newUserRole).Error; err != nil {
+				tx.Rollback()
+				return err
+			}
+		}
+	}
+
+	// Confirmamos la transacción
+	return tx.Commit().Error
+}
+
+func (r *userRepository) UnassignRole(ctx context.Context, userID string, roleID string) error {
+	return r.db.WithContext(ctx).
+		Model(&entities.UserRole{}).
+		Where("user_id = ? AND role_id = ?", userID, roleID).
+		Update("is_active", false).Error
 }
 
 // ActivateOrDeactivate activa o desactiva un usuario
@@ -234,9 +320,59 @@ func (r *userRepository) ActivateOrDeactivate(ctx context.Context, id string, ac
 // RemoveRoleFromUser remueve un rol de un usuario
 func (r *userRepository) RemoveRoleFromUser(ctx context.Context, userID string, roleID string) error {
 	return r.db.WithContext(ctx).
-		Model(&entities.Role{}).
+		Model(&entities.UserRole{}).
 		Where("user_id = ? AND role_id = ?", userID, roleID).
 		Update("is_active", false).Error
+}
+
+// GetAllUsersFromCompany obtiene todos los usuarios de una empresa
+func (r *userRepository) GetAllUsersFromCompany(ctx context.Context, companyID string, params *entities.UserQueryParams) ([]entities.User, int64, error) {
+	var users []entities.User
+	query := r.db.WithContext(ctx).
+		Preload("Profile").
+		Preload("Roles", "is_active = ?", true).
+		Preload("Roles.Role").
+		Where("company_id = ?", companyID)
+
+	if params.IncludeDeleted {
+		query = query.Unscoped()
+	}
+
+	if params.Status {
+		query = query.Where("is_active = ?", params.Status)
+	}
+
+	if params.CreationDate != nil {
+		query = query.Where("created_at BETWEEN ? AND ?", *params.CreationDate, params.CreationDate.AddDate(0, 0, 1))
+	}
+
+	if params.Phone != "" {
+		query = query.Where("phone = ?", params.Phone)
+	}
+
+	if params.Name != "" {
+		query = query.Where("full_name LIKE ?", "%"+params.Name+"%")
+	}
+
+	if params.Email != "" {
+		query = query.Where("email = ?", params.Email)
+	}
+
+	// Paginación
+	var total int64
+	if err := query.Model(&entities.User{}).Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+
+	if err := query.
+		Preload("Profile").
+		Preload("Roles", "is_active = ?", true).
+		Preload("Roles.Role").
+		Find(&users).Error; err != nil {
+		return nil, 0, err
+	}
+
+	return users, total, nil
 }
 
 // GetUserRoles obtiene todos los roles de un usuario
