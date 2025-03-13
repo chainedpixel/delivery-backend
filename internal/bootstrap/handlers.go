@@ -8,6 +8,7 @@ type HandlerContainer struct {
 	authHandler  *handlers.AuthHandler
 	userHandler  *handlers.UserHandler
 	orderHandler *handlers.OrderHandler
+	roleHandler  *handlers.RoleHandler
 }
 
 func NewHandlerContainer(userCases *UseCaseContainer) *HandlerContainer {
@@ -20,6 +21,7 @@ func (c *HandlerContainer) Initialize() error {
 	c.authHandler = handlers.NewAuthHandler(c.usesCases.GetAuthUseCase())
 	c.userHandler = handlers.NewUserHandler(c.usesCases.GetUserUseCase())
 	c.orderHandler = handlers.NewOrderHandler(c.usesCases.GetOrderUseCase())
+	c.roleHandler = handlers.NewRoleHandler(c.usesCases.GetRoleUseCase())
 
 	return nil
 }
@@ -34,4 +36,8 @@ func (c *HandlerContainer) GetUserHandler() *handlers.UserHandler {
 
 func (c *HandlerContainer) GetOrderHandler() *handlers.OrderHandler {
 	return c.orderHandler
+}
+
+func (c *HandlerContainer) GetRoleHandler() *handlers.RoleHandler {
+	return c.roleHandler
 }

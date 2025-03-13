@@ -20,6 +20,7 @@ type ServiceContainer struct {
 	userService    domainPorts.Userer
 	orderService   domainPorts.Orderer
 	companyService domainPorts.Companyrer
+	roleService    domainPorts.Roler
 }
 
 func NewServiceContainer(repositories *RepositoryContainer, config *config.EnvConfig) *ServiceContainer {
@@ -42,6 +43,7 @@ func (c *ServiceContainer) Initialize() error {
 	c.userService = services.NewUserService(c.repositories.GetUserRepository())
 	c.orderService = services.NewOrderService(c.repositories.GetOrderRepository())
 	c.companyService = services.NewCompanyService(c.repositories.GetCompanyAddressRepository())
+	c.roleService = services.NewRoleService(c.repositories.GetRoleRepository())
 
 	return nil
 }
@@ -68,4 +70,8 @@ func (c *ServiceContainer) GetOrderService() domainPorts.Orderer {
 
 func (c *ServiceContainer) GetCompanyService() domainPorts.Companyrer {
 	return c.companyService
+}
+
+func (c *ServiceContainer) GetRoleService() domainPorts.Roler {
+	return c.roleService
 }

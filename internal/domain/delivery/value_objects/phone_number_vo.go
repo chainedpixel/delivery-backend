@@ -17,7 +17,7 @@ func NewPhoneNumber(value string) *PhoneNumber {
 
 func (p *PhoneNumber) IsValid() bool {
 	// Permitimos números internacionales de hasta 15 dígitos
-	return len(p.value) >= 7 && len(p.value) <= 15
+	return len(p.value) >= 8 && len(p.value) <= 15
 }
 
 func (p *PhoneNumber) ToString() string {

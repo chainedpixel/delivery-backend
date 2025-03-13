@@ -11,11 +11,17 @@ type OrderQueryParams struct {
 	EndDate        *time.Time `json:"end_date,omitempty"`
 	IncludeDeleted bool       `json:"include_deleted,omitempty"`
 
-	// Paginación
-	Page     int `json:"page,omitempty"`
-	PageSize int `json:"page_size,omitempty"`
+	PaginationQueryParams
+}
 
-	// Ordenamiento
-	SortBy        string `json:"sort_by,omitempty"`
-	SortDirection string `json:"sort_direction,omitempty"`
+type UserQueryParams struct {
+	// Filtros
+	Status         bool       `json:"status,omitempty"`
+	CreationDate   *time.Time `json:"creation_date,omitempty"`
+	Phone          string     `json:"phone,omitempty"`
+	Name           string     `json:"name,omitempty"`
+	Email          string     `json:"email,omitempty"`
+	IncludeDeleted bool       `json:"include_deleted,omitempty"`
+
+	PaginationQueryParams
 }

@@ -10,10 +10,8 @@ import (
 
 type LoginRequest struct {
 	// User email
-	// @example users@example.com
 	Email string `json:"email" validate:"required,email"`
 	// User password
-	// @example mySecurePassword123
 	Password string `json:"password" validate:"required"`
 	// Device information
 	DeviceInfo map[string]interface{} `json:"device_info,omitempty"`
@@ -22,7 +20,6 @@ type LoginRequest struct {
 // LoginResponse representa la estructura de la respuesta de login
 type LoginResponse struct {
 	// JWT Token
-	// @example eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 	Token string `json:"token"`
 }
 
