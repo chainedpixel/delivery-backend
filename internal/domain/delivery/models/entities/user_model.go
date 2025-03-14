@@ -18,7 +18,7 @@ type User struct {
 
 	// Relationships
 	Sessions []UserSession `gorm:"foreignKey:UserID" json:"sessions,omitempty"`
-	Company  *Company      `gorm:"foreignKey:CompanyID" json:"company,omitempty"`
+	Company  *Company      `gorm:"foreignKey:CompanyID" json:"-"`
 
 	Roles   []UserRole `gorm:"foreignKey:UserID" json:"roles,omitempty"`
 	Profile *Profile   `gorm:"foreignKey:UserID" json:"profile,omitempty"`
