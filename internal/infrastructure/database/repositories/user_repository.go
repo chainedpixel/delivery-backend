@@ -192,6 +192,7 @@ func (r *userRepository) DeleteSession(ctx context.Context, sessionID string) er
 func (r *userRepository) CleanExpiredSessions(ctx context.Context, id string) error {
 	return r.db.WithContext(ctx).
 		Model(&entities.UserSession{}).
+		Where("user_id = ? AND expires_at < NOW()", id).
 		Update("expires_at", time.Now()).Error
 }
 
