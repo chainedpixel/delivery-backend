@@ -51,7 +51,7 @@ func (m *CorsMiddleware) Handler(next http.Handler) http.Handler {
 		}
 
 		// Handle preflight requests
-		if r.Method == "OPTIONS" {
+		if r.Method == http.MethodOptions {
 			w.WriteHeader(http.StatusOK)
 			return
 		}

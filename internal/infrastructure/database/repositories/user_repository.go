@@ -336,6 +336,8 @@ func (r *userRepository) GetAllUsersFromCompany(ctx context.Context, companyID s
 
 	if params.IncludeDeleted {
 		query = query.Unscoped()
+	} else {
+		query = query.Where("deleted_at IS NULL AND is_active = ?", true)
 	}
 
 	if params.Status {
