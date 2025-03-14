@@ -55,8 +55,9 @@ func (s *Server) Start() error {
 }
 
 func (s *Server) configureRoutes() {
-	s.configureGlobalMiddlewares(s.router)
+	s.configureGlobalMiddlewares()
 	routes.RegisterSwaggerRoutes(s.router)
+	s.configureGlobalOptions()
 
 	public := s.router.PathPrefix(s.publicPath).Subrouter()
 	private := s.router.PathPrefix(s.privatePath).Subrouter()
@@ -84,9 +85,14 @@ func (s *Server) configureProtectedRoutes(router *mux.Router) {
 	routes.RegisterRoleRoutes(router, s.container.GetHandlerContainer().GetRoleHandler())
 }
 
-func (s *Server) configureGlobalMiddlewares(router *mux.Router) {
-	router.Use(s.container.GetMiddlewareContainer().GetErrorMiddleware().Handler)
-	router.Use(s.container.GetMiddlewareContainer().GetCorsMiddleware().Handler)
+func (s *Server) configureGlobalOptions() {
+	s.router.Methods(http.MethodOptions).HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	})
+}
+func (s *Server) configureGlobalMiddlewares() {
+	s.router.Use(s.container.GetMiddlewareContainer().GetCorsMiddleware().Handler)
+	s.router.Use(s.container.GetMiddlewareContainer().GetErrorMiddleware().Handler)
 }
 
 func (s *Server) configureProtectedMiddlewares(router *mux.Router) {

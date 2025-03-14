@@ -94,6 +94,8 @@ func (r *orderRepository) GetOrdersByCompany(ctx context.Context, companyID stri
 
 		if params.IncludeDeleted {
 			query = query.Unscoped()
+		} else {
+			query = query.Where("deleted_at IS NULL")
 		}
 
 		if params.TrackingNumber != "" {
