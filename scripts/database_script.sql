@@ -276,13 +276,13 @@ VALUES
 INSERT INTO users
 (id, email, password_hash, full_name, phone, is_active, email_verified_at, phone_verified_at, created_at, updated_at, deleted_at, company_id)
 VALUES
-    ('b2c3d4e5-f6a7-8b9c-0d1e-2f3a4b5c6d7e', 'marlon.hg2003@gmail.com',
-     '$2a$10$tg2Nk6phZ8/CRVm9RyMTueUKMF0EK7RB2mjpNjoC6Ld4vL8hbMyyW', 'Marlon Hernandez', '21212828', true, NULL, NULL,
+    ('b2c3d4e5-f6a7-8b9c-0d1e-2f3a4b5c6d7e', 'empresauser@empresa.com',
+     '$2a$10$tg2Nk6phZ8/CRVm9RyMTueUKMF0EK7RB2mjpNjoC6Ld4vL8hbMyyW', 'Usuario de empresa', '21212828', true, NULL, NULL,
      '2025-03-04 01:54:46', '2025-03-12 01:34:34', NULL, 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11');
 
 INSERT INTO user_profiles
 (user_id, document_type, document_number, birth_date, profile_picture_url, emergency_contact_name, emergency_contact_phone, additional_info, created_at, updated_at)
-VALUES ('b2c3d4e5-f6a7-8b9c-0d1e-2f3a4b5c6d7e', 'DUI', '066119477', '2003-11-25', NULL, 'Ana Mayra', '70111813', NULL,
+VALUES ('b2c3d4e5-f6a7-8b9c-0d1e-2f3a4b5c6d7e', 'DUI', '21212828', '2003-11-25', NULL, 'Ejemplo de contacto', '21212828', NULL,
         '2025-03-04 01:54:46', '2025-03-12 01:34:11');
 
 INSERT INTO user_roles
@@ -328,4 +328,11 @@ INSERT INTO company_users
 VALUES
     ('b2c3d4e5-f6a7-8b9c-0d1e-2f3a4b5c6d7e', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
      'Gerente de Operaciones', 'Operaciones', NULL, true, '2025-03-04 03:53:32', '2025-03-04 03:53:32',
+     'b5f8c3d1-2e59-4c4b-a6e8-e5f3c0c3d1b5');
+
+INSERT INTO company_users
+(user_id, company_id, position, department, permissions, can_create_orders, created_at, updated_at, branch_id)
+VALUES
+    ('a1b2c3d4-e5f6-7890-a1b2-c3d4e5f6g7h8', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
+     'Jefe de empresa', 'Operaciones', NULL, true, '2025-03-04 03:53:32', '2025-03-04 03:53:32',
      'b5f8c3d1-2e59-4c4b-a6e8-e5f3c0c3d1b5');
