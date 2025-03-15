@@ -13,7 +13,7 @@ type CorsMiddleware struct {
 
 func NewCorsMiddleware(origins, methods, headers []string) *CorsMiddleware {
 	if len(methods) == 0 {
-		methods = []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}
+		methods = []string{http.MethodGet, http.MethodPost, http.MethodPut, http.MethodPatch, http.MethodDelete, http.MethodOptions}
 	}
 	if len(headers) == 0 {
 		headers = []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"}
@@ -48,12 +48,6 @@ func (m *CorsMiddleware) Handler(next http.Handler) http.Handler {
 			w.Header().Set("Access-Control-Allow-Methods", strings.Join(m.allowedMethods, ", "))
 			w.Header().Set("Access-Control-Allow-Headers", strings.Join(m.allowedHeaders, ", "))
 			w.Header().Set("Access-Control-Allow-Credentials", "true")
-		}
-
-		// Handle preflight requests
-		if r.Method == http.MethodOptions {
-			w.WriteHeader(http.StatusOK)
-			return
 		}
 
 		next.ServeHTTP(w, r)

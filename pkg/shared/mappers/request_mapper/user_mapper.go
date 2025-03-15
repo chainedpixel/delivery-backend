@@ -43,7 +43,7 @@ func UserRequestToModel(req *dto.UserDTO) (*entities.User, error) {
 	user := &entities.User{
 		ID:           userID,
 		Email:        req.Email,
-		FullName:     req.FirstName + " " + req.LastName,
+		FullName:     req.FullName,
 		Phone:        req.Phone,
 		IsActive:     true,
 		PasswordHash: string(password),
@@ -141,8 +141,8 @@ func UpdateUserRequestToModel(req *dto.UpdateUserDTO) (*entities.User, error) {
 		}
 	}
 
-	if req.FirstName != "" && req.LastName == "" || req.FirstName == "" && req.LastName != "" {
-		return nil, error2.NewGeneralServiceError("UserMapper", "UpdateUserRequestToModel", errors.New("missing first name or last name"))
+	if req.FullName != "" {
+		return nil, error2.NewGeneralServiceError("UserMapper", "UpdateUserRequestToModel", errors.New("missing user full name"))
 	}
 
 	user := &entities.User{
@@ -176,8 +176,8 @@ func UpdateUserRequestToModel(req *dto.UpdateUserDTO) (*entities.User, error) {
 		user.Roles = roles
 	}
 
-	if req.FirstName != "" && req.LastName != "" {
-		user.FullName = req.FirstName + " " + req.LastName
+	if req.FullName != "" {
+		user.FullName = req.FullName
 	}
 
 	if req.Profile != nil {
