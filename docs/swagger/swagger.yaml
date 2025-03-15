@@ -655,13 +655,9 @@ definitions:
         description: Email of the user to be updated
         example: example@example.com
         type: string
-      first_name:
-        description: FirstName of the user to be updated
-        example: John
-        type: string
-      last_name:
-        description: LastName of the user to be updated
-        example: Doe
+      full_name:
+        description: Fullname of the user to be updated
+        example: John Doe
         type: string
       password:
         description: Password of the user to be updated
@@ -717,17 +713,11 @@ definitions:
           @required
         example: example@example.com
         type: string
-      first_name:
+      full_name:
         description: |-
-          FirstName of the user to be created
+          Fullname of the user to be created
           @required
-        example: John
-        type: string
-      last_name:
-        description: |-
-          LastName of the user to be created
-          @required
-        example: Doe
+        example: John Doe
         type: string
       password:
         description: |-

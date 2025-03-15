@@ -1923,15 +1923,10 @@ const docTemplate = `{
                     "type": "string",
                     "example": "example@example.com"
                 },
-                "first_name": {
-                    "description": "FirstName of the user to be updated",
+                "full_name": {
+                    "description": "Fullname of the user to be updated",
                     "type": "string",
-                    "example": "John"
-                },
-                "last_name": {
-                    "description": "LastName of the user to be updated",
-                    "type": "string",
-                    "example": "Doe"
+                    "example": "John Doe"
                 },
                 "password": {
                     "description": "Password of the user to be updated",
@@ -2005,15 +2000,10 @@ const docTemplate = `{
                     "type": "string",
                     "example": "example@example.com"
                 },
-                "first_name": {
-                    "description": "FirstName of the user to be created\n@required",
+                "full_name": {
+                    "description": "Fullname of the user to be created\n@required",
                     "type": "string",
-                    "example": "John"
-                },
-                "last_name": {
-                    "description": "LastName of the user to be created\n@required",
-                    "type": "string",
-                    "example": "Doe"
+                    "example": "John Doe"
                 },
                 "password": {
                     "description": "Password of the user to be created\n@required",

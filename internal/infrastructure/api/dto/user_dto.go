@@ -11,13 +11,9 @@ type UserDTO struct {
 	// @required
 	Email string `json:"email" example:"example@example.com"`
 
-	// FirstName of the user to be created
+	// Fullname of the user to be created
 	// @required
-	FirstName string `json:"first_name" example:"John"`
-
-	// LastName of the user to be created
-	// @required
-	LastName string `json:"last_name" example:"Doe"`
+	FullName string `json:"full_name" example:"John Doe"`
 
 	// Phone number of the user to be created
 	// @required
@@ -62,7 +58,7 @@ type UserProfileDTO struct {
 }
 
 func (u *UserDTO) Validate() error {
-	if u.Email == "" || u.FirstName == "" || u.LastName == "" || u.Phone == "" || u.Password == "" {
+	if u.Email == "" || u.FullName == "" || u.Phone == "" || u.Password == "" {
 		return error2.NewGeneralServiceError("UserDTO", "Validate", error2.ErrInvalidUser)
 	}
 
@@ -115,11 +111,8 @@ type UpdateUserDTO struct {
 	// Email of the user to be updated
 	Email string `json:"email" example:"example@example.com"`
 
-	// FirstName of the user to be updated
-	FirstName string `json:"first_name" example:"John"`
-
-	// LastName of the user to be updated
-	LastName string `json:"last_name" example:"Doe"`
+	// Fullname of the user to be updated
+	FullName string `json:"full_name" example:"John Doe"`
 
 	// Phone of the user to be updated
 	Phone string `json:"phone" example:"21212828"`
