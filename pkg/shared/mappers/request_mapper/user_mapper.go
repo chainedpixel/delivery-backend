@@ -141,10 +141,6 @@ func UpdateUserRequestToModel(req *dto.UpdateUserDTO) (*entities.User, error) {
 		}
 	}
 
-	if req.FullName != "" {
-		return nil, error2.NewGeneralServiceError("UserMapper", "UpdateUserRequestToModel", errors.New("missing user full name"))
-	}
-
 	user := &entities.User{
 		Email:        req.Email,
 		Phone:        req.Phone,
