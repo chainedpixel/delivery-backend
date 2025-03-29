@@ -1,9 +1,9 @@
 package bootstrap
 
 import (
-	"domain/delivery/ports"
+	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/ports"
+	"github.com/MarlonG1/delivery-backend/internal/infrastructure/database/repositories"
 	"gorm.io/gorm"
-	"infrastructure/database/repositories"
 )
 
 type RepositoryContainer struct {

@@ -1,15 +1,16 @@
 package handlers
 
 import (
-	"application/ports"
 	"encoding/json"
 	"github.com/gorilla/mux"
-	"infrastructure/api/dto"
-	"infrastructure/api/responser"
-	errPackage "infrastructure/error"
 	"net/http"
-	"shared/mappers/request_mapper"
-	"shared/mappers/response_mapper"
+
+	"github.com/MarlonG1/delivery-backend/internal/application/ports"
+	"github.com/MarlonG1/delivery-backend/internal/infrastructure/api/dto"
+	"github.com/MarlonG1/delivery-backend/internal/infrastructure/api/responser"
+	errPackage "github.com/MarlonG1/delivery-backend/internal/infrastructure/error"
+	"github.com/MarlonG1/delivery-backend/pkg/shared/mappers/request_mapper"
+	"github.com/MarlonG1/delivery-backend/pkg/shared/mappers/response_mapper"
 )
 
 type UserHandler struct {

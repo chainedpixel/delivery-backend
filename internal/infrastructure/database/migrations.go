@@ -1,11 +1,11 @@
 package database
 
 import (
-	"domain/delivery/models/entities"
 	"fmt"
+	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/models/entities"
+	"github.com/MarlonG1/delivery-backend/pkg/shared/logs"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
-	"shared/logs"
 )
 
 // RunMigrations ejecuta todas las migraciones de la base de datos

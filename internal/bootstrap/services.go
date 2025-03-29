@@ -1,13 +1,13 @@
 package bootstrap
 
 import (
-	"application/ports"
-	"config"
-	domainPorts "domain/delivery/interfaces"
-	"domain/delivery/services"
-	"infrastructure/adapters/auth"
-	"infrastructure/adapters/cache"
-	"infrastructure/adapters/token"
+	"github.com/MarlonG1/delivery-backend/configs"
+	"github.com/MarlonG1/delivery-backend/internal/application/ports"
+	domainPorts "github.com/MarlonG1/delivery-backend/internal/domain/delivery/interfaces"
+	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/services"
+	"github.com/MarlonG1/delivery-backend/internal/infrastructure/adapters/auth"
+	"github.com/MarlonG1/delivery-backend/internal/infrastructure/adapters/cache"
+	"github.com/MarlonG1/delivery-backend/internal/infrastructure/adapters/token"
 )
 
 type ServiceContainer struct {

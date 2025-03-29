@@ -1,13 +1,14 @@
 package cache
 
 import (
-	"config"
 	"context"
 	"errors"
 	"github.com/go-redis/redis/v8"
-	errPackage "infrastructure/error"
-	"shared/logs"
 	"time"
+
+	"github.com/MarlonG1/delivery-backend/configs"
+	errPackage "github.com/MarlonG1/delivery-backend/internal/infrastructure/error"
+	"github.com/MarlonG1/delivery-backend/pkg/shared/logs"
 )
 
 type RedisTokenCache struct {

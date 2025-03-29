@@ -2,14 +2,14 @@ package order
 
 import (
 	"context"
-	"domain/delivery/interfaces"
-	"domain/delivery/models/entities"
-	errPackage "domain/error"
-	"infrastructure/api/dto"
-	error2 "infrastructure/error"
+	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/interfaces"
+	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/models/entities"
+	errPackage "github.com/MarlonG1/delivery-backend/internal/domain/error"
+	"github.com/MarlonG1/delivery-backend/internal/infrastructure/api/dto"
+	error2 "github.com/MarlonG1/delivery-backend/internal/infrastructure/error"
+	"github.com/MarlonG1/delivery-backend/pkg/shared/logs"
+	"github.com/MarlonG1/delivery-backend/pkg/shared/mappers/request_mapper"
 	"net/http"
-	"shared/logs"
-	"shared/mappers/request_mapper"
 	"strconv"
 	"time"
 )

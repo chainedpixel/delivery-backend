@@ -1,14 +1,15 @@
 package token
 
 import (
-	"application/ports"
-	"domain/delivery/models/auth"
-	errPackage "domain/error"
 	"encoding/json"
 	"fmt"
 	"github.com/golang-jwt/jwt"
-	"shared/logs"
 	"time"
+
+	"github.com/MarlonG1/delivery-backend/internal/application/ports"
+	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/models/auth"
+	errPackage "github.com/MarlonG1/delivery-backend/internal/domain/error"
+	"github.com/MarlonG1/delivery-backend/pkg/shared/logs"
 )
 
 type JWTService struct {

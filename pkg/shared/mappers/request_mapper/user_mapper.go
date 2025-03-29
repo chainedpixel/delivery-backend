@@ -1,15 +1,15 @@
 package request_mapper
 
 import (
-	"domain/delivery/constants"
-	"domain/delivery/models/entities"
-	"domain/delivery/value_objects"
 	"errors"
+	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/constants"
+	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/models/entities"
+	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/value_objects"
+	"github.com/MarlonG1/delivery-backend/internal/infrastructure/api/dto"
+	error2 "github.com/MarlonG1/delivery-backend/internal/infrastructure/error"
+	"github.com/MarlonG1/delivery-backend/pkg/shared/logs"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
-	"infrastructure/api/dto"
-	error2 "infrastructure/error"
-	"shared/logs"
 	"strings"
 	"time"
 )

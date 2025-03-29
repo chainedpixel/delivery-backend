@@ -1,12 +1,12 @@
 package server
 
 import (
-	"bootstrap"
-	"config"
+	"github.com/MarlonG1/delivery-backend/configs"
+	"github.com/MarlonG1/delivery-backend/internal/bootstrap"
+	"github.com/MarlonG1/delivery-backend/internal/infrastructure/api/routes"
+	"github.com/MarlonG1/delivery-backend/pkg/shared/logs"
 	"github.com/gorilla/mux"
-	"infrastructure/api/routes"
 	"net/http"
-	"shared/logs"
 	"time"
 )
 

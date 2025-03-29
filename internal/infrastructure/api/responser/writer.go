@@ -1,14 +1,15 @@
 package responser
 
 import (
-	domainErr "domain/error"
 	"encoding/json"
 	"errors"
 	"fmt"
-	errPackage "infrastructure/error"
 	"net/http"
-	"shared/logs"
 	"strings"
+
+	domainErr "github.com/MarlonG1/delivery-backend/internal/domain/error"
+	errPackage "github.com/MarlonG1/delivery-backend/internal/infrastructure/error"
+	"github.com/MarlonG1/delivery-backend/pkg/shared/logs"
 )
 
 type errorType string

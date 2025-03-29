@@ -2,7 +2,7 @@ package ports
 
 import (
 	"context"
-	"domain/delivery/models/entities"
+	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/models/entities"
 )
 
 // UserRepository define las operaciones disponibles para la persistencia de usuarios y sus relaciones

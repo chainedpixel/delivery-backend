@@ -1,10 +1,10 @@
 package role
 
 import (
-	"application/ports"
 	"context"
-	"domain/delivery/interfaces"
-	"domain/delivery/models/entities"
+	"github.com/MarlonG1/delivery-backend/internal/application/ports"
+	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/interfaces"
+	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/models/entities"
 )
 
 type RolerUseCase struct {

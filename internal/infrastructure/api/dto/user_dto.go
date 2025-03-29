@@ -1,8 +1,8 @@
 package dto
 
 import (
-	"domain/delivery/constants"
-	error2 "infrastructure/error"
+	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/constants"
+	errPackage "github.com/MarlonG1/delivery-backend/internal/infrastructure/error"
 	"strings"
 )
 
@@ -59,29 +59,29 @@ type UserProfileDTO struct {
 
 func (u *UserDTO) Validate() error {
 	if u.Email == "" || u.FullName == "" || u.Phone == "" || u.Password == "" {
-		return error2.NewGeneralServiceError("UserDTO", "Validate", error2.ErrInvalidUser)
+		return errPackage.NewGeneralServiceError("UserDTO", "Validate", errPackage.ErrInvalidUser)
 	}
 
 	if len(u.Roles) == 0 {
-		return error2.NewGeneralServiceError("UserDTO", "Validate", error2.ErrMissingRoles)
+		return errPackage.NewGeneralServiceError("UserDTO", "Validate", errPackage.ErrMissingRoles)
 	}
 
 	for _, role := range u.Roles {
 		if role == "" {
-			return error2.NewGeneralServiceError("UserDTO", "Validate", error2.ErrRoleMissing)
+			return errPackage.NewGeneralServiceError("UserDTO", "Validate", errPackage.ErrRoleMissing)
 		}
 
 		if !constants.ValidRoles[strings.ToUpper(role)] {
-			return error2.NewGeneralServiceError("UserDTO", "Validate", error2.ErrInvalidRole)
+			return errPackage.NewGeneralServiceError("UserDTO", "Validate", errPackage.ErrInvalidRole)
 		}
 	}
 
 	if u.Profile == nil {
-		return error2.NewGeneralServiceError("UserDTO", "Validate", error2.ErrMissingProfileSection)
+		return errPackage.NewGeneralServiceError("UserDTO", "Validate", errPackage.ErrMissingProfileSection)
 	}
 
 	if u.Profile.DocumentType == "" || u.Profile.DocumentNumber == "" || u.Profile.BirthDate == "" || u.Profile.EmergencyContactName == "" || u.Profile.EmergencyContactPhone == "" {
-		return error2.NewGeneralServiceError("UserDTO", "Validate", error2.ErrInvalidProfileUser)
+		return errPackage.NewGeneralServiceError("UserDTO", "Validate", errPackage.ErrInvalidProfileUser)
 	}
 
 	return nil
@@ -95,7 +95,7 @@ type AssignRoleDTO struct {
 
 func (r *AssignRoleDTO) Validate() error {
 	if r.Role == "" {
-		return error2.NewGeneralServiceError("AssignRoleDTO", "Validate", error2.ErrRoleMissing)
+		return errPackage.NewGeneralServiceError("AssignRoleDTO", "Validate", errPackage.ErrRoleMissing)
 	}
 
 	return nil

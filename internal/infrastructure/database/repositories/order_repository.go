@@ -2,15 +2,15 @@ package repositories
 
 import (
 	"context"
-	"domain/delivery/constants"
-	"domain/delivery/models/entities"
-	"domain/delivery/ports"
 	"encoding/json"
 	"fmt"
+	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/constants"
+	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/models/entities"
+	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/ports"
+	errPackage "github.com/MarlonG1/delivery-backend/internal/infrastructure/error"
+	"github.com/MarlonG1/delivery-backend/pkg/shared/logs"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
-	errPackage "infrastructure/error"
-	"shared/logs"
 	"time"
 )
 

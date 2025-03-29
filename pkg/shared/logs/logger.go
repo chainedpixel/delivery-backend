@@ -1,14 +1,14 @@
 package logs
 
 import (
-	"config"
 	"fmt"
+	"github.com/MarlonG1/delivery-backend/configs"
+	errPackage "github.com/MarlonG1/delivery-backend/pkg/shared/error"
 	"github.com/sirupsen/logrus"
 	"io"
 	"os"
 	"path/filepath"
 	"runtime"
-	errPackage "shared/error"
 	"strings"
 )
 

@@ -2,13 +2,14 @@ package services
 
 import (
 	"context"
-	"domain/delivery/interfaces"
-	"domain/delivery/models/entities"
-	"domain/delivery/ports"
-	errPackage "domain/error"
 	"errors"
 	"gorm.io/gorm"
-	"shared/logs"
+
+	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/interfaces"
+	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/models/entities"
+	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/ports"
+	errPackage "github.com/MarlonG1/delivery-backend/internal/domain/error"
+	"github.com/MarlonG1/delivery-backend/pkg/shared/logs"
 )
 
 type CompanyService struct {

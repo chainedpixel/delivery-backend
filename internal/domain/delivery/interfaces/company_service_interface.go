@@ -2,7 +2,8 @@ package interfaces
 
 import (
 	"context"
-	"domain/delivery/models/entities"
+
+	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/models/entities"
 )
 
 type Companyrer interface {

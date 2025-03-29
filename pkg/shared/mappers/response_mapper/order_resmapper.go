@@ -1,9 +1,9 @@
 package response_mapper
 
 import (
-	"domain/delivery/constants"
-	"domain/delivery/models/entities"
-	"infrastructure/api/dto"
+	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/constants"
+	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/models/entities"
+	"github.com/MarlonG1/delivery-backend/internal/infrastructure/api/dto"
 )
 
 // OrderToResponseDTO - Mapper esencial para respuestas

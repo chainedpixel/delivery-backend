@@ -2,8 +2,8 @@ package ports
 
 import (
 	"context"
-	"domain/delivery/models/entities"
-	"infrastructure/api/dto"
+	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/models/entities"
+	"github.com/MarlonG1/delivery-backend/internal/infrastructure/api/dto"
 	"net/http"
 )
 

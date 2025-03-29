@@ -1,7 +1,7 @@
 package ports
 
 import (
-	"domain/delivery/models/auth"
+	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/models/auth"
 	"github.com/go-redis/redis/v8"
 	"time"
 )

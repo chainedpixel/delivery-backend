@@ -1,19 +1,20 @@
 package auth
 
 import (
-	"application/ports"
 	"context"
-	"domain/delivery/models/auth"
-	"domain/delivery/models/entities"
-	domainPorts "domain/delivery/ports"
 	"encoding/json"
 	"errors"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
-	errPackage "infrastructure/error"
-	"shared/logs"
 	"time"
+
+	"github.com/MarlonG1/delivery-backend/internal/application/ports"
+	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/models/auth"
+	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/models/entities"
+	domainPorts "github.com/MarlonG1/delivery-backend/internal/domain/delivery/ports"
+	errPackage "github.com/MarlonG1/delivery-backend/internal/infrastructure/error"
+	"github.com/MarlonG1/delivery-backend/pkg/shared/logs"
 )
 
 type authService struct {
@@ -89,7 +90,7 @@ func (s *authService) ValidateCredentials(ctx context.Context, email, password s
 	// 1. Buscar usuario por email
 	authUser, err := s.userRepo.GetByEmail(ctx, email)
 	if err != nil {
-		logs.Error("Failed to get users by email", map[string]interface{}{
+		logs.Error("Failed to get user by email", map[string]interface{}{
 			"error": err.Error(),
 		})
 		return nil, errPackage.NewGeneralServiceError("Authenticator", "ValidateCredentials", errPackage.ErrInvalidCredentials)

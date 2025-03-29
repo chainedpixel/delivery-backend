@@ -1,8 +1,8 @@
 package dto
 
 import (
-	errPackage "domain/error"
-	error2 "infrastructure/error"
+	domainErr "github.com/MarlonG1/delivery-backend/internal/domain/error"
+	infraErr "github.com/MarlonG1/delivery-backend/internal/infrastructure/error"
 	"time"
 )
 
@@ -64,11 +64,11 @@ type OrderCreateRequest struct {
 
 func (o *OrderCreateRequest) Validate() error {
 	if o.CompanyPickUpID == "" {
-		return error2.NewGeneralServiceError("OrderDTO", "Validate", errPackage.ErrCompanyPickUpIDRequired)
+		return infraErr.NewGeneralServiceError("OrderDTO", "Validate", domainErr.ErrCompanyPickUpIDRequired)
 	}
 
 	if o.ClientID == "" {
-		return error2.NewGeneralServiceError("OrderDTO", "Validate", errPackage.ErrClientIDRequired)
+		return infraErr.NewGeneralServiceError("OrderDTO", "Validate", domainErr.ErrClientIDRequired)
 	}
 
 	return nil
@@ -458,7 +458,7 @@ func (o *OrderUpdateRequest) Validate() error {
 	// Time validations - ensure delivery deadline is after pickup time if both are provided
 	if o.PickupTime != nil && o.DeliveryDeadline != nil {
 		if o.DeliveryDeadline.Before(*o.PickupTime) {
-			return error2.NewGeneralServiceError("OrderUpdateDTO", "Validate", errPackage.ErrDeliveryDeadlineBeforePickup)
+			return infraErr.NewGeneralServiceError("OrderUpdateDTO", "Validate", domainErr.ErrDeliveryDeadlineBeforePickup)
 		}
 	}
 

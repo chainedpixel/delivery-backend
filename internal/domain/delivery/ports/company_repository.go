@@ -2,7 +2,7 @@ package ports
 
 import (
 	"context"
-	"domain/delivery/models/entities"
+	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/models/entities"
 )
 
 type CompanyAddreser interface {

@@ -1,11 +1,11 @@
 package bootstrap
 
 import (
-	"application/ports"
-	"application/usecases/auth"
-	"application/usecases/order"
-	"application/usecases/role"
-	"application/usecases/user"
+	"github.com/MarlonG1/delivery-backend/internal/application/ports"
+	"github.com/MarlonG1/delivery-backend/internal/application/usecases/auth"
+	"github.com/MarlonG1/delivery-backend/internal/application/usecases/order"
+	"github.com/MarlonG1/delivery-backend/internal/application/usecases/role"
+	"github.com/MarlonG1/delivery-backend/internal/application/usecases/user"
 )
 
 type UseCaseContainer struct {

@@ -1,8 +1,9 @@
 package unit
 
 import (
+	config "github.com/MarlonG1/delivery-backend/configs"
+	"github.com/MarlonG1/delivery-backend/pkg/shared/logs"
 	"github.com/sirupsen/logrus"
-	"shared/logs"
 	"testing"
 )
 

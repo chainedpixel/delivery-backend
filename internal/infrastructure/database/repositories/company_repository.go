@@ -2,8 +2,8 @@ package repositories
 
 import (
 	"context"
-	"domain/delivery/models/entities"
-	"domain/delivery/ports"
+	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/models/entities"
+	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/ports"
 	"gorm.io/gorm"
 )
 

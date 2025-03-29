@@ -1,6 +1,6 @@
 package bootstrap
 
-import "infrastructure/api/handlers"
+import "github.com/MarlonG1/delivery-backend/internal/infrastructure/api/handlers"
 
 type HandlerContainer struct {
 	usesCases *UseCaseContainer

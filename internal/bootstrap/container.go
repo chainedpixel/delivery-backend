@@ -1,7 +1,7 @@
 package bootstrap
 
 import (
-	"config"
+	"github.com/MarlonG1/delivery-backend/configs"
 	"gorm.io/gorm"
 	"sync"
 )

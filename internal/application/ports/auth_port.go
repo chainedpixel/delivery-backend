@@ -2,8 +2,8 @@ package ports
 
 import (
 	"context"
-	"domain/delivery/models/auth"
-	"domain/delivery/models/entities"
+	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/models/auth"
+	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/models/entities"
 )
 
 type Authenticator interface {
