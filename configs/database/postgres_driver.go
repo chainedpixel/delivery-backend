@@ -1,8 +1,8 @@
 package database
 
 import (
-	"config"
 	"fmt"
+	"github.com/MarlonG1/delivery-backend/configs"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )

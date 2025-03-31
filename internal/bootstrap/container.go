@@ -58,7 +58,7 @@ func (c *Container) Initialize() error {
 		return err
 	}
 
-	c.handlers = NewHandlerContainer(c.useCases)
+	c.handlers = NewHandlerContainer(c.useCases, c.services)
 	if err := c.handlers.Initialize(); err != nil {
 		return err
 	}

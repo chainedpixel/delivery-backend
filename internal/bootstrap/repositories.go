@@ -12,7 +12,8 @@ type RepositoryContainer struct {
 	roleRepo    ports.RolerRepository
 	userRepo    ports.UserRepository
 	orderRepo   ports.OrdererRepository
-	companyRepo ports.CompanyAddreser
+	companyRepo ports.CompanyRepository
+	metricsRepo ports.MetricsRepository
 }
 
 func NewRepositoryContainer(db *gorm.DB) *RepositoryContainer {
@@ -25,9 +26,14 @@ func (c *RepositoryContainer) Initialize() error {
 	c.roleRepo = repositories.NewRoleRepository(c.db)
 	c.userRepo = repositories.NewUserRepository(c.db)
 	c.orderRepo = repositories.NewOrderRepository(c.db)
-	c.companyRepo = repositories.NewCompanyAddressRepository(c.db)
+	c.companyRepo = repositories.NewCompanyRepository(c.db)
+	c.metricsRepo = repositories.NewMetricsRepository(c.db)
 
 	return nil
+}
+
+func (c *RepositoryContainer) GetMetricsRepository() ports.MetricsRepository {
+	return c.metricsRepo
 }
 
 func (c *RepositoryContainer) GetRoleRepository() ports.RolerRepository {
@@ -42,6 +48,6 @@ func (c *RepositoryContainer) GetOrderRepository() ports.OrdererRepository {
 	return c.orderRepo
 }
 
-func (c *RepositoryContainer) GetCompanyAddressRepository() ports.CompanyAddreser {
+func (c *RepositoryContainer) GetCompanyRepository() ports.CompanyRepository {
 	return c.companyRepo
 }

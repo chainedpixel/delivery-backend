@@ -20,6 +20,7 @@ type ServiceContainer struct {
 	userService    domainPorts.Userer
 	orderService   domainPorts.Orderer
 	companyService domainPorts.Companyrer
+	metricsService domainPorts.MetricsService
 	roleService    domainPorts.Roler
 }
 
@@ -42,10 +43,15 @@ func (c *ServiceContainer) Initialize() error {
 	c.authService = auth.NewAuthService(c.repositories.GetUserRepository(), c.jwtService)
 	c.userService = services.NewUserService(c.repositories.GetUserRepository())
 	c.orderService = services.NewOrderService(c.repositories.GetOrderRepository())
-	c.companyService = services.NewCompanyService(c.repositories.GetCompanyAddressRepository())
+	c.metricsService = services.NewCompanyMetricsService(c.repositories.GetCompanyRepository(), c.repositories.GetMetricsRepository())
+	c.companyService = services.NewCompanyService(c.repositories.GetCompanyRepository(), c.metricsService)
 	c.roleService = services.NewRoleService(c.repositories.GetRoleRepository())
 
 	return nil
+}
+
+func (c *ServiceContainer) GetMetricsService() domainPorts.MetricsService {
+	return c.metricsService
 }
 
 func (c *ServiceContainer) GetTokenService() ports.TokenProvider {

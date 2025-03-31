@@ -46,8 +46,9 @@ func (s *authService) CreateSession(ctx context.Context, authUser *entities.User
 
 	// 2. Generar token
 	claims := &auth.AuthClaims{
-		UserID: authUser.ID,
-		Role:   roleName,
+		UserID:    authUser.ID,
+		CompanyID: authUser.CompanyID,
+		Role:      roleName,
 	}
 
 	token, err := s.tokenService.GenerateToken(claims)

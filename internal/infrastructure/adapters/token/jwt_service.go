@@ -37,6 +37,7 @@ func (s *JWTService) GenerateToken(claims *auth.AuthClaims) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"sub":  claims.UserID,
 		"role": claims.Role,
+		"cid":  claims.CompanyID,
 		"exp":  exp.Unix(),
 		"iat":  now.Unix(),
 	})

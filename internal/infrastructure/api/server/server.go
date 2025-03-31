@@ -83,6 +83,8 @@ func (s *Server) configureProtectedRoutes(router *mux.Router) {
 	routes.RegisterUserRoutes(router, s.container.GetHandlerContainer().GetUserHandler())
 	routes.RegisterOrderRoutes(router, s.container.GetHandlerContainer().GetOrderHandler())
 	routes.RegisterRoleRoutes(router, s.container.GetHandlerContainer().GetRoleHandler())
+	routes.RegisterCompanyRoutes(router, s.container.GetHandlerContainer().GetCompanyHandler())
+	routes.RegisterBranchRoutes(router, s.container.GetHandlerContainer().GetBranchHandler())
 }
 
 func (s *Server) configureGlobalOptions() {
