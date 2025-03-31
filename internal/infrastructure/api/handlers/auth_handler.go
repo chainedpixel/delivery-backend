@@ -1,14 +1,14 @@
 package handlers
 
 import (
-	"application/ports"
-	"infrastructure/api/dto"
-	"infrastructure/api/responser"
-	errPackage "infrastructure/error"
 	"net"
 	"net/http"
-	"shared/logs"
 	"strings"
+
+	"github.com/MarlonG1/delivery-backend/internal/application/ports"
+	"github.com/MarlonG1/delivery-backend/internal/infrastructure/api/dto"
+	"github.com/MarlonG1/delivery-backend/internal/infrastructure/api/responser"
+	errPackage "github.com/MarlonG1/delivery-backend/internal/infrastructure/error"
 )
 
 type AuthHandler struct {
@@ -48,13 +48,6 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 		h.respWriter.HandleError(w, err)
 		return
 	}
-
-	logs.Debug("Client IP information", map[string]interface{}{
-		"x_forwarded_for": r.Header.Get("X-Forwarded-For"),
-		"x_real_ip":       r.Header.Get("X-Real-IP"),
-		"remote_addr":     r.RemoteAddr,
-		"final_ip":        getClientIP(r),
-	})
 
 	// 3. Responder
 	h.respWriter.Success(w, http.StatusOK, dto.LoginResponse{

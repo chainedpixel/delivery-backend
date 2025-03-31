@@ -2,14 +2,15 @@ package order
 
 import (
 	"context"
-	"domain/delivery/interfaces"
-	"domain/delivery/models/entities"
-	errPackage "domain/error"
-	"infrastructure/api/dto"
-	error2 "infrastructure/error"
+	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/interfaces"
+	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/models/auth"
+	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/models/entities"
+	errPackage "github.com/MarlonG1/delivery-backend/internal/domain/error"
+	"github.com/MarlonG1/delivery-backend/internal/infrastructure/api/dto"
+	error2 "github.com/MarlonG1/delivery-backend/internal/infrastructure/error"
+	"github.com/MarlonG1/delivery-backend/pkg/shared/logs"
+	"github.com/MarlonG1/delivery-backend/pkg/shared/mappers/request_mapper"
 	"net/http"
-	"shared/logs"
-	"shared/mappers/request_mapper"
 	"strconv"
 	"time"
 )
@@ -28,8 +29,13 @@ func NewOrderUseCase(orderService interfaces.Orderer, companyService interfaces.
 
 // CreateOrder crea un nuevo pedido
 func (uc *OrderUseCase) CreateOrder(ctx context.Context, authUserID string, reqOrder *dto.OrderCreateRequest) error {
+	claims, ok := ctx.Value("claims").(*auth.AuthClaims)
+	if !ok {
+		return error2.NewGeneralServiceError("OrderUseCase", "CreateOrder", nil)
+	}
+
 	//1. Obtener la dirección de la empresa según el ID
-	companyAddress, err := uc.companyService.GetAddressByID(ctx, reqOrder.CompanyPickUpID)
+	companyAddress, err := uc.companyService.GetAddressByID(ctx, reqOrder.CompanyPickUpID, claims.UserID)
 	if err != nil {
 		return err
 	}

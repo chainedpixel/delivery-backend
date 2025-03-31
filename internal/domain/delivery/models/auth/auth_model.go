@@ -1,8 +1,8 @@
 package auth
 
 import (
-	"domain/delivery/value_objects"
-	errPackage "domain/error"
+	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/value_objects"
+	errPackage "github.com/MarlonG1/delivery-backend/internal/domain/error"
 	"time"
 )
 

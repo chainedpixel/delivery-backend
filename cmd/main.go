@@ -1,14 +1,15 @@
 package main
 
 import (
-	"bootstrap"
-	"config"
-	"config/database"
-	_ "docs/swagger"
 	"fmt"
-	"infrastructure/api/server"
-	infrastructureDb "infrastructure/database"
-	"shared/logs"
+	config "github.com/MarlonG1/delivery-backend/configs"
+	"github.com/MarlonG1/delivery-backend/configs/database"
+	"github.com/MarlonG1/delivery-backend/internal/bootstrap"
+	"github.com/MarlonG1/delivery-backend/internal/infrastructure/api/server"
+	infraDB "github.com/MarlonG1/delivery-backend/internal/infrastructure/database"
+	"github.com/MarlonG1/delivery-backend/pkg/shared/logs"
+
+	_ "github.com/MarlonG1/delivery-backend/docs/swagger"
 )
 
 func main() {
@@ -58,7 +59,7 @@ func initDatabaseConfigurations(envConfig *config.EnvConfig) (*database.DbConnec
 		return nil, err
 	}
 
-	if err := infrastructureDb.RunMigrations(dbConnection.Db); err != nil {
+	if err := infraDB.RunMigrations(dbConnection.Db); err != nil {
 		logs.Fatal("Error running migrations", map[string]interface{}{
 			"error": err.Error(),
 		})

@@ -2,17 +2,18 @@ package services
 
 import (
 	"context"
-	"domain/delivery/constants"
-	"domain/delivery/interfaces"
-	"domain/delivery/models/entities"
-	"domain/delivery/ports"
-	"domain/delivery/value_objects"
-	errPackage "domain/error"
 	"fmt"
 	"github.com/google/uuid"
 	"math/rand"
-	"shared/logs"
 	"time"
+
+	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/constants"
+	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/interfaces"
+	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/models/entities"
+	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/ports"
+	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/value_objects"
+	errPackage "github.com/MarlonG1/delivery-backend/internal/domain/error"
+	"github.com/MarlonG1/delivery-backend/pkg/shared/logs"
 )
 
 type OrderService struct {

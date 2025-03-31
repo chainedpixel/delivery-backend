@@ -1,9 +1,9 @@
 package error
 
 import (
-	"config"
 	"errors"
 	"fmt"
+	"github.com/MarlonG1/delivery-backend/configs"
 	"gorm.io/gorm"
 )
 

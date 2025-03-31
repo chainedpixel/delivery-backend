@@ -1,19 +1,23 @@
 package bootstrap
 
-import "infrastructure/api/handlers"
+import "github.com/MarlonG1/delivery-backend/internal/infrastructure/api/handlers"
 
 type HandlerContainer struct {
 	usesCases *UseCaseContainer
+	services  *ServiceContainer
 
-	authHandler  *handlers.AuthHandler
-	userHandler  *handlers.UserHandler
-	orderHandler *handlers.OrderHandler
-	roleHandler  *handlers.RoleHandler
+	authHandler    *handlers.AuthHandler
+	userHandler    *handlers.UserHandler
+	orderHandler   *handlers.OrderHandler
+	roleHandler    *handlers.RoleHandler
+	companyHandler *handlers.CompanyHandler
+	branchHandler  *handlers.BranchHandler
 }
 
-func NewHandlerContainer(userCases *UseCaseContainer) *HandlerContainer {
+func NewHandlerContainer(userCases *UseCaseContainer, services *ServiceContainer) *HandlerContainer {
 	return &HandlerContainer{
 		usesCases: userCases,
+		services:  services,
 	}
 }
 
@@ -22,8 +26,18 @@ func (c *HandlerContainer) Initialize() error {
 	c.userHandler = handlers.NewUserHandler(c.usesCases.GetUserUseCase())
 	c.orderHandler = handlers.NewOrderHandler(c.usesCases.GetOrderUseCase())
 	c.roleHandler = handlers.NewRoleHandler(c.usesCases.GetRoleUseCase())
+	c.companyHandler = handlers.NewCompanyHandler(c.usesCases.GetCompanyUseCase())
+	c.branchHandler = handlers.NewBranchHandler(c.usesCases.GetBranchUseCase())
 
 	return nil
+}
+
+func (c *HandlerContainer) GetBranchHandler() *handlers.BranchHandler {
+	return c.branchHandler
+}
+
+func (c *HandlerContainer) GetCompanyHandler() *handlers.CompanyHandler {
+	return c.companyHandler
 }
 
 func (c *HandlerContainer) GetAuthHandler() *handlers.AuthHandler {

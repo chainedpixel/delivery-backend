@@ -1,10 +1,11 @@
 package handlers
 
 import (
-	"application/ports"
 	"github.com/gorilla/mux"
-	"infrastructure/api/responser"
 	"net/http"
+
+	"github.com/MarlonG1/delivery-backend/internal/application/ports"
+	"github.com/MarlonG1/delivery-backend/internal/infrastructure/api/responser"
 )
 
 type RoleHandler struct {

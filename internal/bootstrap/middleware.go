@@ -1,6 +1,6 @@
 package bootstrap
 
-import "infrastructure/api/middleware"
+import "github.com/MarlonG1/delivery-backend/internal/infrastructure/api/middleware"
 
 type MiddlewareContainer struct {
 	services *ServiceContainer

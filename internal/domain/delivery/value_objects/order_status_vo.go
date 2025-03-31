@@ -1,8 +1,9 @@
 package value_objects
 
 import (
-	"domain/delivery/constants"
 	"strings"
+
+	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/constants"
 )
 
 type OrderStatus struct {

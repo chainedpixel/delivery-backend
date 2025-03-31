@@ -3,11 +3,12 @@ package middleware
 import (
 	"bufio"
 	"fmt"
-	"infrastructure/api/responser"
 	"net"
 	"net/http"
 	"runtime/debug"
-	"shared/logs"
+
+	"github.com/MarlonG1/delivery-backend/internal/infrastructure/api/responser"
+	"github.com/MarlonG1/delivery-backend/pkg/shared/logs"
 )
 
 type ErrorMiddleware struct {

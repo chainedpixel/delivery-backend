@@ -1,10 +1,10 @@
 package database
 
 import (
-	errPackage "config/error"
 	"fmt"
+	errPackage "github.com/MarlonG1/delivery-backend/configs/error"
+	"github.com/MarlonG1/delivery-backend/pkg/shared/logs"
 	"gorm.io/gorm"
-	"shared/logs"
 )
 
 type DriverConfig interface {

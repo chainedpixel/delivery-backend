@@ -1,8 +1,8 @@
 package routes
 
 import (
+	"github.com/MarlonG1/delivery-backend/internal/infrastructure/api/handlers"
 	"github.com/gorilla/mux"
-	"infrastructure/api/handlers"
 	"net/http"
 )
 

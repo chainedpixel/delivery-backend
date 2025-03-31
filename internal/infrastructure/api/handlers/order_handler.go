@@ -1,15 +1,15 @@
 package handlers
 
 import (
-	"application/ports"
-	"domain/delivery/models/auth"
 	"encoding/json"
+	"github.com/MarlonG1/delivery-backend/internal/application/ports"
+	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/models/auth"
+	"github.com/MarlonG1/delivery-backend/internal/infrastructure/api/dto"
+	"github.com/MarlonG1/delivery-backend/internal/infrastructure/api/responser"
+	"github.com/MarlonG1/delivery-backend/pkg/shared/logs"
+	"github.com/MarlonG1/delivery-backend/pkg/shared/mappers/response_mapper"
 	"github.com/gorilla/mux"
-	"infrastructure/api/dto"
-	"infrastructure/api/responser"
 	"net/http"
-	"shared/logs"
-	"shared/mappers/response_mapper"
 )
 
 type OrderHandler struct {

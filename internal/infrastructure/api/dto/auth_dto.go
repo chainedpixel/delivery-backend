@@ -1,10 +1,10 @@
 package dto
 
 import (
-	"domain/delivery/models/auth"
-	errPackage "domain/error"
 	"encoding/json"
 	"fmt"
+	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/models/auth"
+	errPackage "github.com/MarlonG1/delivery-backend/internal/domain/error"
 	"io"
 )
 

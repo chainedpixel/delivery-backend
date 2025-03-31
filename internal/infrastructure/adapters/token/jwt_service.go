@@ -1,14 +1,15 @@
 package token
 
 import (
-	"application/ports"
-	"domain/delivery/models/auth"
-	errPackage "domain/error"
 	"encoding/json"
 	"fmt"
 	"github.com/golang-jwt/jwt"
-	"shared/logs"
 	"time"
+
+	"github.com/MarlonG1/delivery-backend/internal/application/ports"
+	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/models/auth"
+	errPackage "github.com/MarlonG1/delivery-backend/internal/domain/error"
+	"github.com/MarlonG1/delivery-backend/pkg/shared/logs"
 )
 
 type JWTService struct {
@@ -36,6 +37,7 @@ func (s *JWTService) GenerateToken(claims *auth.AuthClaims) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"sub":  claims.UserID,
 		"role": claims.Role,
+		"cid":  claims.CompanyID,
 		"exp":  exp.Unix(),
 		"iat":  now.Unix(),
 	})

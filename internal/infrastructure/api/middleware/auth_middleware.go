@@ -1,13 +1,14 @@
 package middleware
 
 import (
-	"application/ports"
 	"context"
-	"infrastructure/api/responser"
-	errPackage "infrastructure/error"
 	"net/http"
-	"shared/logs"
 	"strings"
+
+	"github.com/MarlonG1/delivery-backend/internal/application/ports"
+	"github.com/MarlonG1/delivery-backend/internal/infrastructure/api/responser"
+	errPackage "github.com/MarlonG1/delivery-backend/internal/infrastructure/error"
+	"github.com/MarlonG1/delivery-backend/pkg/shared/logs"
 )
 
 type AuthMiddleware struct {

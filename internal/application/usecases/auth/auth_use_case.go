@@ -1,9 +1,9 @@
 package auth
 
 import (
-	"application/ports"
 	"context"
-	"domain/delivery/models/auth"
+	"github.com/MarlonG1/delivery-backend/internal/application/ports"
+	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/models/auth"
 )
 
 type AuthUseCase struct {

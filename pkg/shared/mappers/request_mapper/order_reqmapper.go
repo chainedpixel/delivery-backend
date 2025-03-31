@@ -1,12 +1,12 @@
 package request_mapper
 
 import (
-	"domain/delivery/constants"
-	"domain/delivery/models/entities"
 	"encoding/json"
 	"fmt"
+	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/constants"
+	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/models/entities"
+	"github.com/MarlonG1/delivery-backend/internal/infrastructure/api/dto"
 	"github.com/google/uuid"
-	"infrastructure/api/dto"
 	"time"
 )
 

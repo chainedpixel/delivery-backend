@@ -1,12 +1,12 @@
 package server
 
 import (
-	"bootstrap"
-	"config"
+	"github.com/MarlonG1/delivery-backend/configs"
+	"github.com/MarlonG1/delivery-backend/internal/bootstrap"
+	"github.com/MarlonG1/delivery-backend/internal/infrastructure/api/routes"
+	"github.com/MarlonG1/delivery-backend/pkg/shared/logs"
 	"github.com/gorilla/mux"
-	"infrastructure/api/routes"
 	"net/http"
-	"shared/logs"
 	"time"
 )
 
@@ -83,6 +83,8 @@ func (s *Server) configureProtectedRoutes(router *mux.Router) {
 	routes.RegisterUserRoutes(router, s.container.GetHandlerContainer().GetUserHandler())
 	routes.RegisterOrderRoutes(router, s.container.GetHandlerContainer().GetOrderHandler())
 	routes.RegisterRoleRoutes(router, s.container.GetHandlerContainer().GetRoleHandler())
+	routes.RegisterCompanyRoutes(router, s.container.GetHandlerContainer().GetCompanyHandler())
+	routes.RegisterBranchRoutes(router, s.container.GetHandlerContainer().GetBranchHandler())
 }
 
 func (s *Server) configureGlobalOptions() {

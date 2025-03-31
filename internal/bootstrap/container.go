@@ -1,7 +1,7 @@
 package bootstrap
 
 import (
-	"config"
+	"github.com/MarlonG1/delivery-backend/configs"
 	"gorm.io/gorm"
 	"sync"
 )
@@ -58,7 +58,7 @@ func (c *Container) Initialize() error {
 		return err
 	}
 
-	c.handlers = NewHandlerContainer(c.useCases)
+	c.handlers = NewHandlerContainer(c.useCases, c.services)
 	if err := c.handlers.Initialize(); err != nil {
 		return err
 	}

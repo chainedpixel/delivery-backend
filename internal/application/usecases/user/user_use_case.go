@@ -1,11 +1,11 @@
 package user
 
 import (
-	appPorts "application/ports"
 	"context"
-	"domain/delivery/interfaces"
-	"domain/delivery/models/auth"
-	"domain/delivery/models/entities"
+	appPorts "github.com/MarlonG1/delivery-backend/internal/application/ports"
+	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/interfaces"
+	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/models/auth"
+	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/models/entities"
 	"net/http"
 	"strconv"
 	"strings"

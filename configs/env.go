@@ -1,9 +1,9 @@
 package config
 
 import (
-	errPackage "config/error"
 	"errors"
 	"fmt"
+	errPackage "github.com/MarlonG1/delivery-backend/configs/error"
 	"github.com/spf13/viper"
 	"path/filepath"
 	"runtime"
@@ -104,5 +104,4 @@ func MapEnvKeys(v *viper.Viper) {
 	// .env keys for log configuration
 	v.Set("log.level", v.GetString("log_level"))
 	v.Set("log.fileLogging", v.GetString("log_file_logging"))
-
 }

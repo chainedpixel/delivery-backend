@@ -1,7 +1,7 @@
 package entities
 
 import (
-	errPackage "domain/error"
+	errPackage "github.com/MarlonG1/delivery-backend/internal/domain/error"
 	"time"
 )
 
