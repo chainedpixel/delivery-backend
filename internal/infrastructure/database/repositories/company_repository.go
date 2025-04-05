@@ -227,3 +227,58 @@ func (r *CompanyRepository) UpdateCompanyAddress(ctx context.Context, address *e
 func (r *CompanyRepository) DeleteCompanyAddress(ctx context.Context, addressID string) error {
 	return r.db.WithContext(ctx).Delete(&entities.CompanyAddress{}, "id = ?", addressID).Error
 }
+
+func (r *CompanyRepository) GetCompanies(ctx context.Context, params *entities.CompanyQueryParams) ([]entities.Company, int64, error) {
+	query := r.db.WithContext(ctx).Model(&entities.Company{})
+
+	// Aplicar filtros
+	if params.Name != "" {
+		query = query.Where("name LIKE ?", "%"+params.Name+"%")
+	}
+	if params.ContactEmail != "" {
+		query = query.Where("contact_email LIKE ?", "%"+params.ContactEmail+"%")
+	}
+	if params.ContactPhone != "" {
+		query = query.Where("contact_phone LIKE ?", "%"+params.ContactPhone+"%")
+	}
+	if params.IsActive != nil {
+		query = query.Where("is_active = ?", *params.IsActive)
+	}
+	if params.ContractStartDate != nil {
+		query = query.Where("contract_start_date >= ?", params.ContractStartDate)
+	}
+	if params.ContractEndDate != nil {
+		query = query.Where("contract_end_date <= ?", params.ContractEndDate)
+	}
+
+	// Contar total de items antes de la paginación
+	var total int64
+	if err := query.Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+
+	// Aplicar ordenamiento
+	if params.SortBy != "" {
+		order := "DESC"
+		if params.SortDirection == "asc" {
+			order = "ASC"
+		}
+		query = query.Order(params.SortBy + " " + order)
+	} else {
+		query = query.Order("created_at DESC") // Ordenamiento por defecto
+	}
+
+	// Aplicar paginación
+	query = query.Offset((params.Page - 1) * params.PageSize).Limit(params.PageSize)
+
+	// Cargar relaciones
+	query = query.Preload("Branches")
+
+	// Obtener compañías
+	var companies []entities.Company
+	if err := query.Find(&companies).Error; err != nil {
+		return nil, 0, err
+	}
+
+	return companies, total, nil
+}

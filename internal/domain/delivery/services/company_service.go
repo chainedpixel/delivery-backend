@@ -1029,3 +1029,15 @@ func (c *CompanyService) GetBranchByID(ctx context.Context, branchID string) (*e
 
 	return branch, err
 }
+
+func (c *CompanyService) GetCompanies(ctx context.Context, params *entities.CompanyQueryParams) ([]entities.Company, int64, error) {
+	companies, total, err := c.repo.GetCompanies(ctx, params)
+	if err != nil {
+		logs.Error("Failed to get companies", map[string]interface{}{
+			"error": err,
+		})
+		return nil, 0, errPackage.NewDomainErrorWithCause("CompanyService", "GetCompanies", "Error getting companies", err)
+	}
+
+	return companies, total, nil
+}
