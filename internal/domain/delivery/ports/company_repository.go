@@ -21,6 +21,7 @@ type CompanyRepository interface {
 	AddCompanyAddress(ctx context.Context, address *entities.CompanyAddress) error
 	UpdateCompanyAddress(ctx context.Context, address *entities.CompanyAddress) error
 	DeleteCompanyAddress(ctx context.Context, addressID string) error
+	GetCompanies(ctx context.Context, params *entities.CompanyQueryParams) ([]entities.Company, int64, error)
 
 	// Métodos para verificaciones
 	ExistsTaxID(ctx context.Context, taxID string, excludeID string) (bool, error)

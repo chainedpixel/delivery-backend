@@ -3,11 +3,15 @@ package company
 import (
 	"context"
 	"github.com/MarlonG1/delivery-backend/internal/application/ports"
+	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/constants"
 	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/interfaces"
 	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/models/auth"
 	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/models/entities"
 	errPackage "github.com/MarlonG1/delivery-backend/internal/domain/error"
 	"github.com/MarlonG1/delivery-backend/pkg/shared/logs"
+	"net/http"
+	"strconv"
+	"time"
 )
 
 type CompanyUseCase struct {
@@ -250,4 +254,111 @@ func (uc *CompanyUseCase) GetCompanyMetrics(ctx context.Context) (*entities.Comp
 	}
 
 	return metrics, nil
+}
+
+// GetCompanies obtiene todas las empresas con filtros y paginación
+func (uc *CompanyUseCase) GetCompanies(ctx context.Context, request *http.Request) ([]entities.Company, *entities.CompanyQueryParams, int64, error) {
+	// 1. Obtener los claims del contexto
+	claims, ok := ctx.Value("claims").(*auth.AuthClaims)
+	if !ok {
+		logs.Error("Failed to get claims from context", map[string]interface{}{
+			"error": "Failed to get claims from context",
+		})
+		return nil, nil, 0, errPackage.NewDomainErrorWithCause("CompanyUseCase", "GetCompanies", "Failed to get claims from context", nil)
+	}
+
+	// 2. Verificar permisos de acceso (opcional, según requerimientos)
+	if claims.Role != constants.AdminRole {
+		logs.Error("User does not have admin permissions", map[string]interface{}{
+			"user_id": claims.UserID,
+			"role":    claims.Role,
+		})
+		return nil, nil, 0, errPackage.NewDomainError("CompanyUseCase", "GetCompanies", "User does not have sufficient permissions")
+	}
+
+	// 3. Parsear parámetros de consulta
+	params := uc.parseCompanyQueryParams(request)
+
+	// 4. Obtener las empresas según los parámetros
+	companies, total, err := uc.companyService.GetCompanies(ctx, params)
+	if err != nil {
+		logs.Error("Failed to get companies", map[string]interface{}{
+			"error": err.Error(),
+		})
+		return nil, nil, 0, err
+	}
+
+	return companies, params, total, nil
+}
+
+// Función auxiliar para parsear los parámetros de consulta
+func (uc *CompanyUseCase) parseCompanyQueryParams(r *http.Request) *entities.CompanyQueryParams {
+	params := &entities.CompanyQueryParams{}
+
+	// Filtros específicos para compañías
+	params.Name = r.URL.Query().Get("name")
+	params.ContactEmail = r.URL.Query().Get("contact_email")
+	params.ContactPhone = r.URL.Query().Get("contact_phone")
+
+	// Estado activo/inactivo
+	isActive := r.URL.Query().Get("is_active")
+	if isActive != "" {
+		active := isActive == "true" || isActive == "1"
+		params.IsActive = &active
+	}
+
+	// Fechas de contrato
+	contractStartDateStr := r.URL.Query().Get("contract_start_date")
+	if contractStartDateStr != "" {
+		if startDate, err := time.Parse(time.RFC3339, contractStartDateStr); err == nil {
+			params.ContractStartDate = &startDate
+		}
+	}
+
+	contractEndDateStr := r.URL.Query().Get("contract_end_date")
+	if contractEndDateStr != "" {
+		if endDate, err := time.Parse(time.RFC3339, contractEndDateStr); err == nil {
+			params.ContractEndDate = &endDate
+		}
+	}
+
+	// Incluir eliminados
+	includeDeletedStr := r.URL.Query().Get("include_deleted")
+	params.IncludeDeleted = includeDeletedStr == "true" || includeDeletedStr == "1"
+
+	// Parsear parámetros de paginación
+	uc.parsePaginationQueryParams(r, &params.PaginationQueryParams)
+
+	return params
+}
+
+// Función auxiliar para parsear los parámetros de paginación
+func (uc *CompanyUseCase) parsePaginationQueryParams(r *http.Request, params *entities.PaginationQueryParams) {
+	// Paginación
+	if pageStr := r.URL.Query().Get("page"); pageStr != "" {
+		if page, err := strconv.Atoi(pageStr); err == nil && page > 0 {
+			params.Page = page
+		} else {
+			params.Page = 1 // Default
+		}
+	} else {
+		params.Page = 1 // Default
+	}
+
+	if pageSizeStr := r.URL.Query().Get("page_size"); pageSizeStr != "" {
+		if pageSize, err := strconv.Atoi(pageSizeStr); err == nil && pageSize > 0 {
+			params.PageSize = pageSize
+		} else {
+			params.PageSize = 10 // Default
+		}
+	} else {
+		params.PageSize = 10 // Default
+	}
+
+	// Ordenamiento
+	params.SortBy = r.URL.Query().Get("sort_by")
+	params.SortDirection = r.URL.Query().Get("sort_direction")
+	if params.SortDirection != "asc" && params.SortDirection != "desc" {
+		params.SortDirection = "desc" // Default
+	}
 }

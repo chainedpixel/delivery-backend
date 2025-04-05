@@ -1865,6 +1865,62 @@ paths:
       - branches
       - zones
   /api/v1/companies:
+    get:
+      consumes:
+      - application/json
+      description: Obtener lista de compañías con filtros y paginación
+      parameters:
+      - description: Nombre de la empresa
+        in: query
+        name: name
+        type: string
+      - description: Nombre legal de la empresa
+        in: query
+        name: legal_name
+        type: string
+      - description: Identificador fiscal
+        in: query
+        name: tax_id
+        type: string
+      - description: Estado activo/inactivo
+        in: query
+        name: is_active
+        type: boolean
+      - default: 1
+        description: Número de página
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Tamaño de página
+        in: query
+        name: page_size
+        type: integer
+      - description: Campo para ordenar
+        in: query
+        name: sort_by
+        type: string
+      - default: desc
+        description: Dirección (asc o desc)
+        in: query
+        name: sort_direction
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.PaginatedResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responser.APIErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Obtener lista de compañías
+      tags:
+      - companies
     post:
       consumes:
       - application/json

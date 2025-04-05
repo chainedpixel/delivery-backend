@@ -21,4 +21,5 @@ func RegisterCompanyRoutes(router *mux.Router, companyHandler *handlers.CompanyH
 	router.HandleFunc("/companies/metrics", companyHandler.GetCompanyMetrics).Methods(http.MethodGet)
 
 	router.HandleFunc("/companies", companyHandler.CreateCompany).Methods(http.MethodPost)
+	router.HandleFunc("/companies", companyHandler.GetCompanies).Methods(http.MethodGet)
 }

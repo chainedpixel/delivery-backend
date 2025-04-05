@@ -288,3 +288,18 @@ type CompanyListResponse struct {
 	// Cuando se creó la empresa
 	CreatedAt time.Time `json:"created_at" format:"date-time"`
 }
+
+// CompanySimpleListResponse representa un item simplificado en la lista de empresas
+type CompanySimpleListResponse struct {
+	// ID único de la empresa
+	ID string `json:"id" example:"b5f8c3d1-2e59-4c4b-a6e8-e5f3c0c3d1b5"`
+
+	// Nombre comercial de la empresa
+	Name string `json:"name" example:"Express Delivery Co."`
+
+	// Indica si la empresa está activa
+	IsActive bool `json:"is_active" example:"true"`
+
+	// Número de sucursales
+	Count int `json:"count" example:"12"`
+}

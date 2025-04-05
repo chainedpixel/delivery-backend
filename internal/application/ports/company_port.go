@@ -23,6 +23,7 @@ type CompanyUseCase interface {
 
 	// Operaciones relacionadas con métricas
 	GetCompanyMetrics(ctx context.Context) (*entities.CompanyMetrics, error)
+	GetCompanies(ctx context.Context, request *http.Request) ([]entities.Company, *entities.CompanyQueryParams, int64, error)
 }
 
 // Definición de la interfaz de casos de uso para Branches

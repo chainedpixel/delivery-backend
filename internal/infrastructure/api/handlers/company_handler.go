@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"github.com/MarlonG1/delivery-backend/pkg/shared/logs"
 	"net/http"
 
 	"github.com/MarlonG1/delivery-backend/internal/application/ports"
@@ -35,14 +36,27 @@ func NewCompanyHandler(useCase ports.CompanyUseCase) *CompanyHandler {
 // @Failure      401  {object}  responser.APIErrorResponse
 // @Router       /api/v1/companies/profile [get]
 func (h *CompanyHandler) GetCompanyProfile(w http.ResponseWriter, r *http.Request) {
+	// Obtener la información de la compañía
 	company, err := h.useCase.GetCompanyByID(r.Context())
 	if err != nil {
 		h.respWriter.HandleError(w, err)
 		return
 	}
 
-	// Convertir a DTO
-	response := response_mapper.CompanyToResponseDTO(company, true)
+	// Obtener las métricas de la compañía
+	metrics, err := h.useCase.GetCompanyMetrics(r.Context())
+	if err != nil {
+		// Solo log del error de métricas, no detener la respuesta
+		logs.Warn("Failed to get company metrics", map[string]interface{}{
+			"error":      err.Error(),
+			"company_id": company.ID,
+		})
+		// Continuamos sin métricas
+	}
+
+	// Convertir a DTO usando el nuevo mapper que incluye métricas
+	response := response_mapper.CompanyToResponseWithMetricsDTO(company, metrics, true)
+
 	h.respWriter.Success(w, http.StatusOK, response)
 }
 
@@ -140,6 +154,37 @@ func (h *CompanyHandler) GetCompanyAddresses(w http.ResponseWriter, r *http.Requ
 	}
 
 	h.respWriter.Success(w, http.StatusOK, addressesResponse)
+}
+
+// GetCompanies godoc
+// @Summary      Obtener lista de compañías
+// @Description  Obtener lista de compañías con filtros y paginación
+// @Tags         companies
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        name         query  string  false  "Nombre de la empresa"
+// @Param        legal_name   query  string  false  "Nombre legal de la empresa"
+// @Param        tax_id       query  string  false  "Identificador fiscal"
+// @Param        is_active    query  boolean false  "Estado activo/inactivo"
+// @Param        page         query  int     false  "Número de página"  default(1)
+// @Param        page_size    query  int     false  "Tamaño de página"  default(10)
+// @Param        sort_by      query  string  false  "Campo para ordenar"
+// @Param        sort_direction query  string  false  "Dirección (asc o desc)"  default(desc)
+// @Success      200  {object}  dto.PaginatedResponse
+// @Failure      401  {object}  responser.APIErrorResponse
+// @Router       /api/v1/companies [get]
+func (h *CompanyHandler) GetCompanies(w http.ResponseWriter, r *http.Request) {
+	// Obtener las empresas con filtros y paginación
+	companies, params, total, err := h.useCase.GetCompanies(r.Context(), r)
+	if err != nil {
+		h.respWriter.HandleError(w, err)
+		return
+	}
+
+	// Mapear las empresas a la respuesta DTO
+	response := response_mapper.MapCompaniesToSimpleList(companies, params, total)
+	h.respWriter.Success(w, http.StatusOK, response)
 }
 
 // AddCompanyAddress godoc

@@ -6,7 +6,6 @@ import "time"
 type CompanyQueryParams struct {
 	// Filtros específicos para empresas
 	Name              string     `json:"name,omitempty"`
-	TaxID             string     `json:"tax_id,omitempty"`
 	ContactEmail      string     `json:"contact_email,omitempty"`
 	ContactPhone      string     `json:"contact_phone,omitempty"`
 	IsActive          *bool      `json:"is_active,omitempty"`

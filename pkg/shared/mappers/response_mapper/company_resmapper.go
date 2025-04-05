@@ -111,3 +111,43 @@ func CompanyToMetricsDTO(metrics *entities.CompanyMetrics) *dto.CompanyMetricsRe
 		UniqueCustomers:     metrics.UniqueCustomers,
 	}
 }
+
+// MapCompaniesToSimpleList mapea un conjunto de compañías a una respuesta paginada simplificada
+func MapCompaniesToSimpleList(companies []entities.Company, params *entities.CompanyQueryParams, total int64) *dto.PaginatedResponse {
+	responseItems := make([]dto.CompanySimpleListResponse, len(companies))
+
+	for i, company := range companies {
+		count := 0
+		if company.Branches != nil {
+			count = len(company.Branches)
+		}
+
+		responseItems[i] = dto.CompanySimpleListResponse{
+			ID:       company.ID,
+			Name:     company.Name,
+			IsActive: company.IsActive,
+			Count:    count,
+		}
+	}
+
+	return &dto.PaginatedResponse{
+		Data:       responseItems,
+		TotalItems: total,
+		Page:       params.Page,
+		PageSize:   params.PageSize,
+		TotalPages: calculateTotalPages(total, params.PageSize),
+	}
+}
+
+// CompanyToResponseWithMetricsDTO mapea una entidad de compañía junto con sus métricas a su DTO de respuesta
+func CompanyToResponseWithMetricsDTO(company *entities.Company, metrics *entities.CompanyMetrics, includeDetails bool) *dto.CompanyResponse {
+	// Primero crear la respuesta base usando la función existente
+	response := CompanyToResponseDTO(company, includeDetails)
+
+	// Agregar métricas si están disponibles
+	if metrics != nil {
+		response.Metrics = CompanyToMetricsDTO(metrics)
+	}
+
+	return response
+}

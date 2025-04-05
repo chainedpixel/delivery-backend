@@ -24,6 +24,7 @@ type Companyrer interface {
 	AddCompanyAddress(ctx context.Context, companyID string, address *entities.CompanyAddress) error
 	UpdateCompanyAddress(ctx context.Context, companyID string, address *entities.CompanyAddress) error
 	DeleteCompanyAddress(ctx context.Context, addressID, companyID string) error
+	GetCompanies(ctx context.Context, params *entities.CompanyQueryParams) ([]entities.Company, int64, error)
 
 	// CRUD de Branch
 	GetCompanyBranches(ctx context.Context, companyID string) ([]entities.Branch, error)
