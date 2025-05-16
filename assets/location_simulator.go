@@ -21,7 +21,6 @@ const (
 )
 
 func main() {
-
 	token := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjaWQiOiJhMGVlYmM5OS05YzBiLTRlZjgtYmI2ZC02YmI5YmQzODBhMTEiLCJleHAiOjE3NDg3MTM4OTMsImlhdCI6MTc0NzQxNzg5Mywicm9sZSI6IkFETUlOIiwic3ViIjoiYjJjM2Q0ZTUtZjZhNy04YjljLTBkMWUtMmYzYTRiNWM2ZDdlIn0.quHe6wqTDDoW6k7MsAt6zB2G7Tvcf-9RKCdZ2go0i20"
 	baseURL := "http://localhost:7319/api/v1"
 	orderID := "0c97a632-4e53-4cd5-a8e0-9109bf55deee"

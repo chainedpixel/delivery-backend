@@ -6,6 +6,8 @@ import (
 
 	"github.com/MarlonG1/delivery-backend/internal/application/ports"
 	"github.com/MarlonG1/delivery-backend/internal/infrastructure/api/responser"
+
+	_ "github.com/MarlonG1/delivery-backend/internal/domain/delivery/models/entities"
 )
 
 type RoleHandler struct {

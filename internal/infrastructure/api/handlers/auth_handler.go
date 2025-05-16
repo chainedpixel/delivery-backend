@@ -9,6 +9,8 @@ import (
 	"github.com/MarlonG1/delivery-backend/internal/infrastructure/api/dto"
 	"github.com/MarlonG1/delivery-backend/internal/infrastructure/api/responser"
 	errPackage "github.com/MarlonG1/delivery-backend/internal/infrastructure/error"
+
+	_ "github.com/MarlonG1/delivery-backend/internal/domain/delivery/models/entities"
 )
 
 type AuthHandler struct {

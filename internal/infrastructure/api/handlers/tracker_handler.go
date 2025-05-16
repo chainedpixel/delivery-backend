@@ -8,6 +8,8 @@ import (
 	"github.com/MarlonG1/delivery-backend/internal/infrastructure/api/responser"
 	"github.com/MarlonG1/delivery-backend/pkg/shared/logs"
 	"github.com/gorilla/mux"
+
+	_ "github.com/MarlonG1/delivery-backend/internal/domain/delivery/models/entities"
 )
 
 // TrackerHandler maneja las peticiones relacionadas con el rastreo de pedidos
