@@ -21,6 +21,7 @@ type ServiceContainer struct {
 	orderService   domainPorts.Orderer
 	companyService domainPorts.Companyrer
 	metricsService domainPorts.MetricsService
+	trackerService domainPorts.OrderTracker
 	roleService    domainPorts.Roler
 }
 
@@ -42,7 +43,8 @@ func (c *ServiceContainer) Initialize() error {
 	c.jwtService = token.NewJWTService(c.config.Server.JWTSecret, c.cacheService)
 	c.authService = auth.NewAuthService(c.repositories.GetUserRepository(), c.jwtService)
 	c.userService = services.NewUserService(c.repositories.GetUserRepository())
-	c.orderService = services.NewOrderService(c.repositories.GetOrderRepository())
+	c.trackerService = services.NewTrackerService(c.repositories.GetTrackerRepository())
+	c.orderService = services.NewOrderService(c.repositories.GetOrderRepository(), c.trackerService)
 	c.metricsService = services.NewCompanyMetricsService(c.repositories.GetCompanyRepository(), c.repositories.GetMetricsRepository())
 	c.companyService = services.NewCompanyService(c.repositories.GetCompanyRepository(), c.metricsService)
 	c.roleService = services.NewRoleService(c.repositories.GetRoleRepository())
@@ -80,4 +82,8 @@ func (c *ServiceContainer) GetCompanyService() domainPorts.Companyrer {
 
 func (c *ServiceContainer) GetRoleService() domainPorts.Roler {
 	return c.roleService
+}
+
+func (c *ServiceContainer) GetTrackerService() domainPorts.OrderTracker {
+	return c.trackerService
 }

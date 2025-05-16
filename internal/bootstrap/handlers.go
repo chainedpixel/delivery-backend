@@ -12,6 +12,7 @@ type HandlerContainer struct {
 	roleHandler    *handlers.RoleHandler
 	companyHandler *handlers.CompanyHandler
 	branchHandler  *handlers.BranchHandler
+	trackerHandler *handlers.TrackerHandler
 }
 
 func NewHandlerContainer(userCases *UseCaseContainer, services *ServiceContainer) *HandlerContainer {
@@ -28,6 +29,7 @@ func (c *HandlerContainer) Initialize() error {
 	c.roleHandler = handlers.NewRoleHandler(c.usesCases.GetRoleUseCase())
 	c.companyHandler = handlers.NewCompanyHandler(c.usesCases.GetCompanyUseCase())
 	c.branchHandler = handlers.NewBranchHandler(c.usesCases.GetBranchUseCase())
+	c.trackerHandler = handlers.NewTrackerHandler(c.usesCases.GetTrackerUseCase())
 
 	return nil
 }
@@ -54,4 +56,8 @@ func (c *HandlerContainer) GetOrderHandler() *handlers.OrderHandler {
 
 func (c *HandlerContainer) GetRoleHandler() *handlers.RoleHandler {
 	return c.roleHandler
+}
+
+func (c *HandlerContainer) GetTrackerHandler() *handlers.TrackerHandler {
+	return c.trackerHandler
 }

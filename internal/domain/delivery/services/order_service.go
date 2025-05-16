@@ -10,6 +10,7 @@ import (
 	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/constants"
 	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/interfaces"
 	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/models/entities"
+	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/models/websocket"
 	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/ports"
 	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/value_objects"
 	errPackage "github.com/MarlonG1/delivery-backend/internal/domain/error"
@@ -17,12 +18,14 @@ import (
 )
 
 type OrderService struct {
-	repo ports.OrdererRepository
+	repo           ports.OrdererRepository
+	trackerService interfaces.OrderTracker
 }
 
-func NewOrderService(repo ports.OrdererRepository) interfaces.Orderer {
+func NewOrderService(repo ports.OrdererRepository, trackerService interfaces.OrderTracker) interfaces.Orderer {
 	return &OrderService{
-		repo: repo,
+		repo:           repo,
+		trackerService: trackerService,
 	}
 }
 
@@ -61,6 +64,12 @@ func (o OrderService) AssignDriverToOrder(ctx context.Context, orderID, driverID
 			"error":    err.Error(),
 		})
 		return errPackage.NewDomainErrorWithCause("OrderService", "AssignDriverToOrder", "failed to assign driver to order", err)
+	}
+
+	// Notificar a los clientes sobre la asignación del conductor
+	order, err := o.repo.GetOrderByID(ctx, orderID)
+	if err == nil && order != nil {
+		o.notifyOrderUpdate(order, "Se ha asignado un conductor a tu pedido")
 	}
 
 	return nil
@@ -109,6 +118,9 @@ func (o OrderService) CreateOrder(ctx context.Context, order *entities.Order) er
 		})
 		return errPackage.NewDomainErrorWithCause("OrderService", "CreateOrder", "failed to create qr code", err)
 	}
+
+	// 6. Notificar la creación del pedido
+	o.notifyOrderUpdate(order, "Pedido creado correctamente")
 
 	return nil
 }
@@ -159,6 +171,13 @@ func (o OrderService) ChangeStatus(ctx context.Context, id, status string) error
 			"error":   err.Error(),
 		})
 		return errPackage.NewDomainErrorWithCause("OrderService", "ChangeStatus", "failed to change status", err)
+	}
+
+	// 6. Obtener el pedido actualizado y notificar a los clientes
+	updatedOrder, err := o.repo.GetOrderByID(ctx, id)
+	if err == nil && updatedOrder != nil {
+		description := getStatusChangeDescription(order.Status, status)
+		o.notifyOrderUpdate(updatedOrder, description)
 	}
 
 	return nil
@@ -229,6 +248,12 @@ func (o OrderService) UpdateOrder(ctx context.Context, orderID string, order *en
 		return errPackage.NewDomainErrorWithCause("OrderService", "UpdateOrder", "failed to update order", err)
 	}
 
+	// 5. Notificar actualización
+	updatedOrder, err := o.repo.GetOrderByID(ctx, orderID)
+	if err == nil && updatedOrder != nil {
+		o.notifyOrderUpdate(updatedOrder, "Pedido actualizado")
+	}
+
 	return nil
 }
 
@@ -265,6 +290,12 @@ func (o OrderService) SoftDeleteOrder(ctx context.Context, id string) error {
 		return errPackage.NewDomainErrorWithCause("OrderService", "SoftDeleteOrder", "failed to soft delete order", err)
 	}
 
+	// 3. Notificar eliminación
+	order, err := o.repo.GetOrderByID(ctx, id)
+	if err == nil && order != nil {
+		o.notifyOrderUpdate(order, "Pedido eliminado")
+	}
+
 	return nil
 }
 
@@ -285,6 +316,12 @@ func (o OrderService) RestoreOrder(ctx context.Context, id string) error {
 			"error":   err.Error(),
 		})
 		return errPackage.NewDomainErrorWithCause("OrderService", "RestoreOrder", "failed to restore order", err)
+	}
+
+	// Notificar restauración
+	order, err := o.repo.GetOrderByID(ctx, id)
+	if err == nil && order != nil {
+		o.notifyOrderUpdate(order, "Pedido restaurado")
 	}
 
 	return nil
@@ -334,6 +371,53 @@ func (o OrderService) IsAvailableForDelete(ctx context.Context, orderID string) 
 	return nil
 }
 
+// notifyOrderUpdate envía actualizaciones del pedido a los clientes suscritos
+func (o OrderService) notifyOrderUpdate(order *entities.Order, description string) {
+	if o.trackerService == nil || order == nil {
+		return
+	}
+
+	// Crear los datos de actualización
+	updateData := &websocket.OrderUpdateData{
+		Status:      order.Status,
+		Description: description,
+		UpdatedAt:   time.Now(),
+		Order:       websocket.OrderInfoFromEntity(order),
+	}
+
+	// Enviar la actualización
+	err := o.trackerService.SendOrderUpdate(order.ID, updateData)
+	if err != nil {
+		logs.Error("Failed to send order update notification", map[string]interface{}{
+			"orderID": order.ID,
+			"status":  order.Status,
+			"error":   err.Error(),
+		})
+	}
+}
+
+// getStatusChangeDescription devuelve una descripción amigable para el cambio de estado
+func getStatusChangeDescription(oldStatus, newStatus string) string {
+	switch newStatus {
+	case constants.OrderStatusPending:
+		return "Tu pedido está pendiente de confirmación"
+	case constants.OrderStatusAccepted:
+		return "Tu pedido ha sido aceptado"
+	case constants.OrderStatusPickedUp:
+		return "El repartidor ha recogido tu pedido"
+	case constants.OrderStatusInTransit:
+		return "Tu pedido está en camino"
+	case constants.OrderStatusDelivered:
+		return "Tu pedido ha sido entregado correctamente"
+	case constants.OrderStatusCancelled:
+		return "Tu pedido ha sido cancelado"
+	case constants.OrderStatusCompleted:
+		return "Tu pedido ha sido completado"
+	default:
+		return "Estado del pedido actualizado"
+	}
+}
+
 func generateQRCode(order entities.Order) *entities.QRCode {
 	return &entities.QRCode{
 		OrderID: order.ID,
@@ -356,4 +440,47 @@ func generateTrackingNumber() string {
 	random := fmt.Sprintf("%04d", rand.Intn(10000))
 
 	return fmt.Sprintf("%s-%s-%s", prefix, timestamp, random)
+}
+
+// UpdateDriverLocation actualiza la ubicación del repartidor y notifica a los clientes
+func (o OrderService) UpdateDriverLocation(ctx context.Context, orderID string, latitude, longitude float64) error {
+	// Verificar que el pedido existe
+	_, err := o.repo.GetOrderByID(ctx, orderID)
+	if err != nil {
+		logs.Error("Failed to get order for location update", map[string]interface{}{
+			"orderID": orderID,
+			"error":   err.Error(),
+		})
+		return errPackage.NewDomainErrorWithCause("OrderService", "UpdateDriverLocation", "failed to get order", err)
+	}
+
+	// Verificar que el pedido está en un estado adecuado para actualizar ubicación
+	//if order.Status != constants.OrderStatusInTransit &&
+	//	order.Status != constants.OrderStatusPickedUp {
+	//	logs.Warn("Order not in right state for location updates", map[string]interface{}{
+	//		"orderID": orderID,
+	//		"status":  order.Status,
+	//	})
+	//	return errPackage.NewDomainError("OrderService", "UpdateDriverLocation", "order not in right state for location updates")
+	//}
+
+	// Enviar la actualización de ubicación
+	locationData := &websocket.LocationUpdateData{
+		Latitude:  latitude,
+		Longitude: longitude,
+		UpdatedAt: time.Now(),
+	}
+
+	err = o.trackerService.SendLocationUpdate(orderID, locationData)
+	if err != nil {
+		logs.Error("Failed to send location update", map[string]interface{}{
+			"orderID":   orderID,
+			"latitude":  latitude,
+			"longitude": longitude,
+			"error":     err.Error(),
+		})
+		return errPackage.NewDomainErrorWithCause("OrderService", "UpdateDriverLocation", "failed to send location update", err)
+	}
+
+	return nil
 }

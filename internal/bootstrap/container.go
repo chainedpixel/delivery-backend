@@ -2,6 +2,7 @@ package bootstrap
 
 import (
 	"github.com/MarlonG1/delivery-backend/configs"
+	"github.com/MarlonG1/delivery-backend/internal/infrastructure/websocket"
 	"gorm.io/gorm"
 	"sync"
 )
@@ -19,14 +20,16 @@ type Container struct {
 	useCases     *UseCaseContainer
 	handlers     *HandlerContainer
 	middleware   *MiddlewareContainer
+	wsHub        *websocket.Hub
 
 	mu sync.RWMutex
 }
 
-func NewContainer(db *gorm.DB, config *config.EnvConfig) *Container {
+func NewContainer(db *gorm.DB, config *config.EnvConfig, wsHub *websocket.Hub) *Container {
 	return &Container{
 		db:     db,
 		config: config,
+		wsHub:  wsHub,
 	}
 }
 
@@ -38,7 +41,7 @@ func (c *Container) Initialize() error {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
-	c.repositories = NewRepositoryContainer(c.db)
+	c.repositories = NewRepositoryContainer(c.db, c.wsHub)
 	if err := c.repositories.Initialize(); err != nil {
 		return err
 	}
@@ -48,7 +51,7 @@ func (c *Container) Initialize() error {
 		return err
 	}
 
-	c.useCases = NewUseCaseContainer(c.services)
+	c.useCases = NewUseCaseContainer(c.services, c.wsHub)
 	if err := c.useCases.Initialize(); err != nil {
 		return err
 	}

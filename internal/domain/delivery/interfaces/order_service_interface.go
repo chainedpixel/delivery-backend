@@ -20,4 +20,5 @@ type Orderer interface {
 	OrderIsDeleted(ctx context.Context, orderID string) bool
 	RestoreOrder(ctx context.Context, id string) error
 	IsAvailableForDelete(ctx context.Context, orderID string) error
+	UpdateDriverLocation(ctx context.Context, orderID string, latitude, longitude float64) error
 }

@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"context"
+	"github.com/gorilla/websocket"
 	"net/http"
 	"strings"
 )
@@ -14,11 +15,18 @@ func NewTokenExtractor() *TokenExtractor {
 
 func (te *TokenExtractor) ExtractToken(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		authHeader := r.Header.Get("Authorization")
-		parts := strings.Split(authHeader, " ")
+		var tokenString string
+
+		if websocket.IsWebSocketUpgrade(r) {
+			tokenString = r.URL.Query().Get("token")
+		} else {
+			authHeader := r.Header.Get("Authorization")
+			parts := strings.Split(authHeader, " ")
+			tokenString = parts[1]
+		}
 
 		// Almacenar el token en el contexto
-		ctx := context.WithValue(r.Context(), "userToken", parts[1])
+		ctx := context.WithValue(r.Context(), "userToken", tokenString)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
