@@ -10,6 +10,8 @@ import (
 	"github.com/MarlonG1/delivery-backend/pkg/shared/mappers/response_mapper"
 	"github.com/gorilla/mux"
 	"net/http"
+
+	_ "github.com/MarlonG1/delivery-backend/internal/domain/delivery/models/entities"
 )
 
 type OrderHandler struct {

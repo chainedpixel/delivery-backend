@@ -11,6 +11,8 @@ import (
 	errPackage "github.com/MarlonG1/delivery-backend/internal/infrastructure/error"
 	"github.com/MarlonG1/delivery-backend/pkg/shared/mappers/request_mapper"
 	"github.com/MarlonG1/delivery-backend/pkg/shared/mappers/response_mapper"
+
+	_ "github.com/MarlonG1/delivery-backend/internal/domain/delivery/models/entities"
 )
 
 type UserHandler struct {

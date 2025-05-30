@@ -7,6 +7,7 @@ import (
 	"github.com/MarlonG1/delivery-backend/internal/bootstrap"
 	"github.com/MarlonG1/delivery-backend/internal/infrastructure/api/server"
 	infraDB "github.com/MarlonG1/delivery-backend/internal/infrastructure/database"
+	"github.com/MarlonG1/delivery-backend/internal/infrastructure/websocket"
 	"github.com/MarlonG1/delivery-backend/pkg/shared/logs"
 
 	_ "github.com/MarlonG1/delivery-backend/docs/swagger"
@@ -32,7 +33,10 @@ func main() {
 		return
 	}
 
-	container := bootstrap.NewContainer(dbConnection.Db, envConfig)
+	wsHub := websocket.NewHub()
+	go wsHub.Run()
+
+	container := bootstrap.NewContainer(dbConnection.Db, envConfig, wsHub)
 	apiSv := server.NewAPIServer(container, envConfig)
 
 	if err = apiSv.Start(); err != nil {

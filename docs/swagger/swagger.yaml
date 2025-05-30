@@ -1,5 +1,161 @@
 definitions:
-  dto.ActivateUserDTO:
+  github_com_MarlonG1_delivery-backend_internal_domain_delivery_models_entities.Profile:
+    properties:
+      additional_info:
+        example: Additional information
+        type: string
+      birth_date:
+        example: "2021-01-01"
+        type: string
+      document_number:
+        example: "000000000"
+        type: string
+      document_type:
+        example: DNI
+        type: string
+      emergency_contact_name:
+        example: John Doe
+        type: string
+      emergency_contact_phone:
+        example: "21212828"
+        type: string
+      profile_picture_url:
+        type: string
+      user_id:
+        example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        type: string
+    type: object
+  github_com_MarlonG1_delivery-backend_internal_domain_delivery_models_entities.Role:
+    properties:
+      created_at:
+        example: "2021-01-01T00:00:00Z"
+        type: string
+      description:
+        example: Administrator role
+        type: string
+      id:
+        example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        type: string
+      is_active:
+        example: true
+        type: boolean
+      name:
+        example: admin
+        type: string
+    type: object
+  github_com_MarlonG1_delivery-backend_internal_domain_delivery_models_entities.User:
+    properties:
+      company_id:
+        example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        type: string
+      created_at:
+        example: "2021-01-01T00:00:00Z"
+        type: string
+      deleted_at:
+        example: "2021-01-01T00:00:00Z"
+        type: string
+      email:
+        example: example@example.com
+        type: string
+      email_verified_at:
+        example: "2021-01-01T00:00:00Z"
+        type: string
+      full_name:
+        example: John Doe
+        type: string
+      id:
+        example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        type: string
+      is_active:
+        example: true
+        type: boolean
+      phone:
+        example: "21212828"
+        type: string
+      phone_verified_at:
+        example: "2021-01-01T00:00:00Z"
+        type: string
+      profile:
+        $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_domain_delivery_models_entities.Profile'
+      roles:
+        items:
+          $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_domain_delivery_models_entities.UserRole'
+        type: array
+      sessions:
+        description: Relationships
+        items:
+          $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_domain_delivery_models_entities.UserSession'
+        type: array
+      updated_at:
+        example: "2021-01-01T00:00:00Z"
+        type: string
+    type: object
+  github_com_MarlonG1_delivery-backend_internal_domain_delivery_models_entities.UserRole:
+    properties:
+      assigned_at:
+        example: "2021-01-01T00:00:00Z"
+        type: string
+      assigned_by:
+        example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        type: string
+      auth:
+        allOf:
+        - $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_domain_delivery_models_entities.Role'
+        description: Relationships
+      role_id:
+        example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        type: string
+      user_id:
+        example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        type: string
+    type: object
+  github_com_MarlonG1_delivery-backend_internal_domain_delivery_models_entities.UserSession:
+    properties:
+      created_at:
+        example: "2021-01-01T00:00:00Z"
+        type: string
+      device_info:
+        example: '{"os":"android","version":"10"}'
+        type: string
+      expires_at:
+        example: "2021-01-01T00:00:00Z"
+        type: string
+      id:
+        example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        type: string
+      ip_address:
+        example: 200.43.52.1
+        type: string
+      last_activity:
+        example: "2021-01-01T00:00:00Z"
+        type: string
+    type: object
+  github_com_MarlonG1_delivery-backend_internal_domain_delivery_models_entities.Zone:
+    properties:
+      base_rate:
+        type: number
+      boundaries:
+        type: string
+      center_point:
+        type: string
+      code:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: string
+      is_active:
+        type: boolean
+      max_delivery_time:
+        type: integer
+      name:
+        type: string
+      priority_level:
+        type: integer
+      updated_at:
+        type: string
+    type: object
+  github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.ActivateUserDTO:
     properties:
       active:
         description: |-
@@ -8,7 +164,7 @@ definitions:
         example: true
         type: boolean
     type: object
-  dto.AssignRoleDTO:
+  github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.AssignRoleDTO:
     properties:
       role:
         description: |-
@@ -17,11 +173,11 @@ definitions:
         example: admin or 3fa85f64-5717-4562-b3fc-2c963f66afa6
         type: string
     type: object
-  dto.BranchCreateRequest:
+  github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.BranchCreateRequest:
     properties:
       address:
         allOf:
-        - $ref: '#/definitions/dto.CompanyAddressDTO'
+        - $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.CompanyAddressDTO'
         description: Dirección asociada a la sucursal (opcional)
       code:
         description: Código único de la sucursal
@@ -45,7 +201,7 @@ definitions:
         type: string
       operating_hours:
         allOf:
-        - $ref: '#/definitions/dto.OperatingHoursDTO'
+        - $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.OperatingHoursDTO'
         description: Horarios de operación de la sucursal
       zone_id:
         description: ID de la zona a la que pertenece la sucursal
@@ -60,7 +216,7 @@ definitions:
     - operating_hours
     - zone_id
     type: object
-  dto.BranchMetricsResponse:
+  github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.BranchMetricsResponse:
     properties:
       active_drivers:
         description: Número de repartidores activos
@@ -99,11 +255,11 @@ definitions:
         example: 120
         type: integer
     type: object
-  dto.BranchResponse:
+  github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.BranchResponse:
     properties:
       address:
         allOf:
-        - $ref: '#/definitions/dto.CompanyAddressResponse'
+        - $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.CompanyAddressResponse'
         description: Dirección asociada a la sucursal
       code:
         description: Código único de la sucursal
@@ -143,7 +299,7 @@ definitions:
         type: boolean
       metrics:
         allOf:
-        - $ref: '#/definitions/dto.BranchMetricsResponse'
+        - $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.BranchMetricsResponse'
         description: Métricas de la sucursal (opcional)
       name:
         description: Nombre de la sucursal
@@ -166,7 +322,7 @@ definitions:
         example: Zona Norte
         type: string
     type: object
-  dto.BranchUpdateRequest:
+  github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.BranchUpdateRequest:
     properties:
       code:
         description: Código único de la sucursal
@@ -190,14 +346,14 @@ definitions:
         type: string
       operating_hours:
         allOf:
-        - $ref: '#/definitions/dto.OperatingHoursDTO'
+        - $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.OperatingHoursDTO'
         description: Horarios de operación de la sucursal
       zone_id:
         description: ID de la zona a la que pertenece la sucursal
         example: f8c3e8d7-b6a5-4d3c-9f1e-0a2b4c6d8e0f
         type: string
     type: object
-  dto.CompanyAddressDTO:
+  github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.CompanyAddressDTO:
     properties:
       address_line1:
         description: Primera línea de dirección
@@ -236,7 +392,7 @@ definitions:
     - city
     - state
     type: object
-  dto.CompanyAddressResponse:
+  github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.CompanyAddressResponse:
     properties:
       address_line1:
         description: Primera línea de dirección
@@ -283,7 +439,7 @@ definitions:
         example: Cundinamarca
         type: string
     type: object
-  dto.CompanyCreateRequest:
+  github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.CompanyCreateRequest:
     properties:
       contact_email:
         description: Email de contacto principal de la empresa
@@ -295,7 +451,7 @@ definitions:
         type: string
       contract_details:
         allOf:
-        - $ref: '#/definitions/dto.ContractDetailsDTO'
+        - $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.ContractDetailsDTO'
         description: Detalles del contrato en formato JSON
       contract_end_date:
         description: Fecha de fin del contrato (opcional)
@@ -319,7 +475,7 @@ definitions:
         type: string
       main_address:
         allOf:
-        - $ref: '#/definitions/dto.CompanyAddressDTO'
+        - $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.CompanyAddressDTO'
         description: Dirección principal de la empresa
       name:
         description: Nombre comercial de la empresa
@@ -343,7 +499,7 @@ definitions:
     - name
     - tax_id
     type: object
-  dto.CompanyMetricsResponse:
+  github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.CompanyMetricsResponse:
     properties:
       active_branches:
         description: Número de sucursales activas
@@ -378,17 +534,17 @@ definitions:
         example: 500
         type: integer
     type: object
-  dto.CompanyResponse:
+  github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.CompanyResponse:
     properties:
       addresses:
         description: Direcciones asociadas a la empresa
         items:
-          $ref: '#/definitions/dto.CompanyAddressResponse'
+          $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.CompanyAddressResponse'
         type: array
       branches:
         description: Sucursales asociadas a la empresa
         items:
-          $ref: '#/definitions/dto.BranchResponse'
+          $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.BranchResponse'
         type: array
       contact_email:
         description: Email de contacto principal de la empresa
@@ -435,7 +591,7 @@ definitions:
         type: string
       metrics:
         allOf:
-        - $ref: '#/definitions/dto.CompanyMetricsResponse'
+        - $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.CompanyMetricsResponse'
         description: Métricas de la empresa (opcional)
       name:
         description: Nombre comercial de la empresa
@@ -454,7 +610,7 @@ definitions:
         example: https://www.expressdelivery.com
         type: string
     type: object
-  dto.CompanyUpdateRequest:
+  github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.CompanyUpdateRequest:
     properties:
       contact_email:
         description: Email de contacto principal de la empresa
@@ -466,7 +622,7 @@ definitions:
         type: string
       contract_details:
         allOf:
-        - $ref: '#/definitions/dto.ContractDetailsDTO'
+        - $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.ContractDetailsDTO'
         description: Detalles del contrato en formato JSON
       contract_end_date:
         description: Fecha de fin del contrato
@@ -493,7 +649,7 @@ definitions:
         example: https://www.expressdelivery.com
         type: string
     type: object
-  dto.ContractDetailsDTO:
+  github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.ContractDetailsDTO:
     properties:
       contract_type:
         description: Tipo de contrato
@@ -530,7 +686,7 @@ definitions:
     - payment_terms
     - renewal_type
     type: object
-  dto.DeliveryAddressRequest:
+  github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.DeliveryAddressRequest:
     description: Delivery destination address information
     properties:
       address_line1:
@@ -582,7 +738,7 @@ definitions:
     - recipient_phone
     - state
     type: object
-  dto.DeliveryAddressResponse:
+  github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.DeliveryAddressResponse:
     description: Delivery address information
     properties:
       address_line1:
@@ -622,7 +778,7 @@ definitions:
         example: NY
         type: string
     type: object
-  dto.DeliveryAddressUpdateRequest:
+  github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.DeliveryAddressUpdateRequest:
     description: Delivery destination address information for updates
     properties:
       address_line1:
@@ -658,7 +814,7 @@ definitions:
         example: NY
         type: string
     type: object
-  dto.LoginRequest:
+  github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.LoginRequest:
     properties:
       device_info:
         additionalProperties: true
@@ -674,27 +830,27 @@ definitions:
     - email
     - password
     type: object
-  dto.LoginResponse:
+  github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.LoginResponse:
     properties:
       token:
         description: JWT Token
         type: string
     type: object
-  dto.OperatingHoursDTO:
+  github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.OperatingHoursDTO:
     properties:
       weekdays:
         allOf:
-        - $ref: '#/definitions/dto.OperatingHoursTimeDTO'
+        - $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.OperatingHoursTimeDTO'
         description: Horario para días de semana
       weekends:
         allOf:
-        - $ref: '#/definitions/dto.OperatingHoursTimeDTO'
+        - $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.OperatingHoursTimeDTO'
         description: Horario para fines de semana
     required:
     - weekdays
     - weekends
     type: object
-  dto.OperatingHoursTimeDTO:
+  github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.OperatingHoursTimeDTO:
     properties:
       end:
         description: Hora de fin (formato HH:MM)
@@ -708,7 +864,7 @@ definitions:
     - end
     - start
     type: object
-  dto.OrderCreateRequest:
+  github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.OrderCreateRequest:
     description: Request structure for creating a delivery order
     properties:
       client_id:
@@ -725,7 +881,7 @@ definitions:
         type: string
       delivery_address:
         allOf:
-        - $ref: '#/definitions/dto.DeliveryAddressRequest'
+        - $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.DeliveryAddressRequest'
         description: |-
           Delivery destination address details
           @required
@@ -750,7 +906,7 @@ definitions:
         type: number
       package_details:
         allOf:
-        - $ref: '#/definitions/dto.PackageDetailRequest'
+        - $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.PackageDetailRequest'
         description: |-
           Details about the package being delivered
           @required
@@ -800,7 +956,7 @@ definitions:
     - pickup_time
     - price
     type: object
-  dto.OrderDetailResponse:
+  github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.OrderDetailResponse:
     description: Order details including price, schedule and delivery requirements
     properties:
       delivered_at:
@@ -835,7 +991,7 @@ definitions:
         example: false
         type: boolean
     type: object
-  dto.OrderResponse:
+  github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.OrderResponse:
     description: Order information with all related details
     properties:
       branch_id:
@@ -873,11 +1029,11 @@ definitions:
         type: string
       delivery_address:
         allOf:
-        - $ref: '#/definitions/dto.DeliveryAddressResponse'
+        - $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.DeliveryAddressResponse'
         description: Delivery destination address
       detail:
         allOf:
-        - $ref: '#/definitions/dto.OrderDetailResponse'
+        - $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.OrderDetailResponse'
         description: Details of the order
       driver_id:
         description: Driver ID assigned to the order
@@ -903,11 +1059,11 @@ definitions:
         type: string
       package_detail:
         allOf:
-        - $ref: '#/definitions/dto.PackageDetailResponse'
+        - $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.PackageDetailResponse'
         description: Details about the package
       pickup_address:
         allOf:
-        - $ref: '#/definitions/dto.PickupAddressResponse'
+        - $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.PickupAddressResponse'
         description: Pickup origin address
       status:
         description: Current status of the order
@@ -916,7 +1072,7 @@ definitions:
       status_history:
         description: Order status history
         items:
-          $ref: '#/definitions/dto.OrderStatusHistoryResponse'
+          $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.OrderStatusHistoryResponse'
         type: array
       tracking_number:
         description: Tracking number for the order
@@ -928,7 +1084,7 @@ definitions:
         format: date-time
         type: string
     type: object
-  dto.OrderStatusHistoryResponse:
+  github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.OrderStatusHistoryResponse:
     properties:
       description:
         description: Description of the status change
@@ -944,12 +1100,12 @@ definitions:
         format: date-time
         type: string
     type: object
-  dto.OrderUpdateRequest:
+  github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.OrderUpdateRequest:
     description: Request structure for updating a delivery order
     properties:
       delivery_address:
         allOf:
-        - $ref: '#/definitions/dto.DeliveryAddressUpdateRequest'
+        - $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.DeliveryAddressUpdateRequest'
         description: Delivery destination address details
       delivery_deadline:
         description: Deadline for delivery completion - only modifiable if order is
@@ -970,7 +1126,7 @@ definitions:
         type: number
       package_details:
         allOf:
-        - $ref: '#/definitions/dto.PackageDetailUpdateRequest'
+        - $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.PackageDetailUpdateRequest'
         description: Details about the package being delivered
       pickup_contact_name:
         description: |-
@@ -1004,7 +1160,7 @@ definitions:
         example: false
         type: boolean
     type: object
-  dto.PackageDetailRequest:
+  github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.PackageDetailRequest:
     description: Package characteristics and handling information
     properties:
       height:
@@ -1048,7 +1204,7 @@ definitions:
         minimum: 0
         type: number
     type: object
-  dto.PackageDetailResponse:
+  github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.PackageDetailResponse:
     description: Package characteristics and handling requirements
     properties:
       dimensions:
@@ -1072,7 +1228,7 @@ definitions:
         example: 2.5
         type: number
     type: object
-  dto.PackageDetailUpdateRequest:
+  github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.PackageDetailUpdateRequest:
     description: Package characteristics and handling information for updates
     properties:
       height:
@@ -1116,7 +1272,7 @@ definitions:
         minimum: 0
         type: number
     type: object
-  dto.PaginatedResponse:
+  github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.PaginatedResponse:
     description: Paginated data response with metadata about pagination
     properties:
       data:
@@ -1138,7 +1294,7 @@ definitions:
         example: 5
         type: integer
     type: object
-  dto.PickupAddressResponse:
+  github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.PickupAddressResponse:
     description: Pickup address information
     properties:
       address_line1:
@@ -1186,7 +1342,7 @@ definitions:
         example: IL
         type: string
     type: object
-  dto.UpdateUserDTO:
+  github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.UpdateUserDTO:
     properties:
       active:
         description: Active status of the user to be updated
@@ -1210,7 +1366,7 @@ definitions:
         type: string
       profile:
         allOf:
-        - $ref: '#/definitions/dto.UpdateUserProfileDTO'
+        - $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.UpdateUserProfileDTO'
         description: Profile of the user to be updated
       roles:
         example:
@@ -1219,7 +1375,7 @@ definitions:
           type: string
         type: array
     type: object
-  dto.UpdateUserProfileDTO:
+  github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.UpdateUserProfileDTO:
     properties:
       additional_info:
         description: AdditionalInfo of the user to be updated
@@ -1246,7 +1402,7 @@ definitions:
         example: "21212828"
         type: string
     type: object
-  dto.UserDTO:
+  github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.UserDTO:
     properties:
       email:
         description: |-
@@ -1274,7 +1430,7 @@ definitions:
         type: string
       profile:
         allOf:
-        - $ref: '#/definitions/dto.UserProfileDTO'
+        - $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.UserProfileDTO'
         description: |-
           Profile of the user to be created
           @required
@@ -1288,7 +1444,7 @@ definitions:
           type: string
         type: array
     type: object
-  dto.UserProfileDTO:
+  github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.UserProfileDTO:
     properties:
       additional_info:
         description: AdditionalInfo of the user to be created
@@ -1325,7 +1481,7 @@ definitions:
         example: "21212828"
         type: string
     type: object
-  dto.ZoneAssignmentRequest:
+  github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.ZoneAssignmentRequest:
     description: Solicitud para asignar una zona a una sucursal
     properties:
       zone_id:
@@ -1337,163 +1493,7 @@ definitions:
     required:
     - zone_id
     type: object
-  entities.Profile:
-    properties:
-      additional_info:
-        example: Additional information
-        type: string
-      birth_date:
-        example: "2021-01-01"
-        type: string
-      document_number:
-        example: "000000000"
-        type: string
-      document_type:
-        example: DNI
-        type: string
-      emergency_contact_name:
-        example: John Doe
-        type: string
-      emergency_contact_phone:
-        example: "21212828"
-        type: string
-      profile_picture_url:
-        type: string
-      user_id:
-        example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
-        type: string
-    type: object
-  entities.Role:
-    properties:
-      created_at:
-        example: "2021-01-01T00:00:00Z"
-        type: string
-      description:
-        example: Administrator role
-        type: string
-      id:
-        example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
-        type: string
-      is_active:
-        example: true
-        type: boolean
-      name:
-        example: admin
-        type: string
-    type: object
-  entities.User:
-    properties:
-      company_id:
-        example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
-        type: string
-      created_at:
-        example: "2021-01-01T00:00:00Z"
-        type: string
-      deleted_at:
-        example: "2021-01-01T00:00:00Z"
-        type: string
-      email:
-        example: example@example.com
-        type: string
-      email_verified_at:
-        example: "2021-01-01T00:00:00Z"
-        type: string
-      full_name:
-        example: John Doe
-        type: string
-      id:
-        example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
-        type: string
-      is_active:
-        example: true
-        type: boolean
-      phone:
-        example: "21212828"
-        type: string
-      phone_verified_at:
-        example: "2021-01-01T00:00:00Z"
-        type: string
-      profile:
-        $ref: '#/definitions/entities.Profile'
-      roles:
-        items:
-          $ref: '#/definitions/entities.UserRole'
-        type: array
-      sessions:
-        description: Relationships
-        items:
-          $ref: '#/definitions/entities.UserSession'
-        type: array
-      updated_at:
-        example: "2021-01-01T00:00:00Z"
-        type: string
-    type: object
-  entities.UserRole:
-    properties:
-      assigned_at:
-        example: "2021-01-01T00:00:00Z"
-        type: string
-      assigned_by:
-        example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
-        type: string
-      auth:
-        allOf:
-        - $ref: '#/definitions/entities.Role'
-        description: Relationships
-      role_id:
-        example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
-        type: string
-      user_id:
-        example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
-        type: string
-    type: object
-  entities.UserSession:
-    properties:
-      created_at:
-        example: "2021-01-01T00:00:00Z"
-        type: string
-      device_info:
-        example: '{"os":"android","version":"10"}'
-        type: string
-      expires_at:
-        example: "2021-01-01T00:00:00Z"
-        type: string
-      id:
-        example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
-        type: string
-      ip_address:
-        example: 200.43.52.1
-        type: string
-      last_activity:
-        example: "2021-01-01T00:00:00Z"
-        type: string
-    type: object
-  entities.Zone:
-    properties:
-      base_rate:
-        type: number
-      boundaries:
-        type: string
-      center_point:
-        type: string
-      code:
-        type: string
-      created_at:
-        type: string
-      id:
-        type: string
-      is_active:
-        type: boolean
-      max_delivery_time:
-        type: integer
-      name:
-        type: string
-      priority_level:
-        type: integer
-      updated_at:
-        type: string
-    type: object
-  responser.APIError:
+  github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIError:
     properties:
       code:
         type: string
@@ -1504,10 +1504,17 @@ definitions:
       message:
         type: string
     type: object
-  responser.APIErrorResponse:
+  github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse:
     properties:
       error:
-        $ref: '#/definitions/responser.APIError'
+        $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIError'
+    type: object
+  internal_infrastructure_api_handlers.LocationUpdateRequest:
+    properties:
+      latitude:
+        type: number
+      longitude:
+        type: number
     type: object
 info:
   contact: {}
@@ -1523,22 +1530,22 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/dto.LoginRequest'
+          $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.LoginRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.LoginResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.LoginResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responser.APIErrorResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/responser.APIErrorResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
       summary: This endpoint is used to authenticate a users and return a JWT token
         to be used in subsequent requests
       tags:
@@ -1559,11 +1566,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responser.APIErrorResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/responser.APIErrorResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
       security:
       - BearerAuth: []
       summary: This endpoint is used to logout a users and invalidate the JWT token
@@ -1621,11 +1628,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.PaginatedResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.PaginatedResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responser.APIErrorResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
       security:
       - BearerAuth: []
       summary: Obtiene todas las sucursales de la empresa del usuario autenticado
@@ -1641,7 +1648,7 @@ paths:
         name: branch
         required: true
         schema:
-          $ref: '#/definitions/dto.BranchCreateRequest'
+          $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.BranchCreateRequest'
       produces:
       - application/json
       responses:
@@ -1652,7 +1659,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responser.APIErrorResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
       security:
       - BearerAuth: []
       summary: Crea una nueva sucursal
@@ -1675,11 +1682,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.BranchResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.BranchResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responser.APIErrorResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
       security:
       - BearerAuth: []
       summary: Obtiene una sucursal por su ID
@@ -1700,7 +1707,7 @@ paths:
         name: branch
         required: true
         schema:
-          $ref: '#/definitions/dto.BranchUpdateRequest'
+          $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.BranchUpdateRequest'
       produces:
       - application/json
       responses:
@@ -1711,7 +1718,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responser.APIErrorResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
       security:
       - BearerAuth: []
       summary: Actualiza una sucursal existente
@@ -1735,12 +1742,12 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/entities.Zone'
+              $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_domain_delivery_models_entities.Zone'
             type: array
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responser.APIErrorResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
       security:
       - BearerAuth: []
       summary: Obtiene las zonas disponibles para una sucursal
@@ -1768,7 +1775,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responser.APIErrorResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
       security:
       - BearerAuth: []
       summary: Desactiva una sucursal
@@ -1792,11 +1799,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.BranchMetricsResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.BranchMetricsResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responser.APIErrorResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
       security:
       - BearerAuth: []
       summary: Obtiene las métricas de una sucursal
@@ -1824,7 +1831,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responser.APIErrorResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
       security:
       - BearerAuth: []
       summary: Reactiva una sucursal
@@ -1846,7 +1853,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/dto.ZoneAssignmentRequest'
+          $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.ZoneAssignmentRequest'
       produces:
       - application/json
       responses:
@@ -1857,7 +1864,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responser.APIErrorResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
       security:
       - BearerAuth: []
       summary: Asigna una zona a una sucursal
@@ -1911,11 +1918,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.PaginatedResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.PaginatedResponse'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/responser.APIErrorResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
       security:
       - BearerAuth: []
       summary: Obtener lista de compañías
@@ -1931,7 +1938,7 @@ paths:
         name: company
         required: true
         schema:
-          $ref: '#/definitions/dto.CompanyCreateRequest'
+          $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.CompanyCreateRequest'
       produces:
       - application/json
       responses:
@@ -1942,7 +1949,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responser.APIErrorResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
       security:
       - BearerAuth: []
       summary: Crear una nueva compañia
@@ -1960,12 +1967,12 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/dto.CompanyAddressResponse'
+              $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.CompanyAddressResponse'
             type: array
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responser.APIErrorResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
       security:
       - BearerAuth: []
       summary: Obtener todas las direcciones de la compañia autenticada
@@ -1981,7 +1988,7 @@ paths:
         name: address
         required: true
         schema:
-          $ref: '#/definitions/dto.CompanyAddressDTO'
+          $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.CompanyAddressDTO'
       produces:
       - application/json
       responses:
@@ -1992,7 +1999,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responser.APIErrorResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
       security:
       - BearerAuth: []
       summary: Agregar una nueva dirección para la compañia autenticada
@@ -2019,7 +2026,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responser.APIErrorResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
       security:
       - BearerAuth: []
       summary: Eliminar una dirección de la compañia autenticada
@@ -2040,7 +2047,7 @@ paths:
         name: address
         required: true
         schema:
-          $ref: '#/definitions/dto.CompanyAddressDTO'
+          $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.CompanyAddressDTO'
       produces:
       - application/json
       responses:
@@ -2051,7 +2058,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responser.APIErrorResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
       security:
       - BearerAuth: []
       summary: Actualizar una dirección para la compañia autenticada
@@ -2072,7 +2079,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responser.APIErrorResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
       security:
       - BearerAuth: []
       summary: Deactivate the authenticated company
@@ -2089,11 +2096,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.CompanyMetricsResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.CompanyMetricsResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responser.APIErrorResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
       security:
       - BearerAuth: []
       summary: Obtener las métricas de la compañia
@@ -2111,11 +2118,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.CompanyResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.CompanyResponse'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/responser.APIErrorResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
       security:
       - BearerAuth: []
       summary: Obtener la información de principal de la compañia
@@ -2131,7 +2138,7 @@ paths:
         name: company
         required: true
         schema:
-          $ref: '#/definitions/dto.CompanyUpdateRequest'
+          $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.CompanyUpdateRequest'
       produces:
       - application/json
       responses:
@@ -2142,7 +2149,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responser.APIErrorResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
       security:
       - BearerAuth: []
       summary: Actualizar la información de la compañia
@@ -2163,7 +2170,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responser.APIErrorResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
       security:
       - BearerAuth: []
       summary: Reactivate the authenticated company
@@ -2221,11 +2228,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.PaginatedResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.PaginatedResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responser.APIErrorResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
       security:
       - BearerAuth: []
       summary: This endpoint is used to get orders by company
@@ -2241,7 +2248,7 @@ paths:
         name: order
         required: true
         schema:
-          $ref: '#/definitions/dto.OrderCreateRequest'
+          $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.OrderCreateRequest'
       produces:
       - application/json
       responses:
@@ -2252,7 +2259,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responser.APIErrorResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
       security:
       - BearerAuth: []
       summary: This endpoint is used to create a new order
@@ -2279,7 +2286,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responser.APIErrorResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
       security:
       - BearerAuth: []
       summary: This endpoint is used to delete an order
@@ -2301,11 +2308,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.OrderResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.OrderResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responser.APIErrorResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
       security:
       - BearerAuth: []
       summary: This endpoint is used to get an order by ID
@@ -2332,11 +2339,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.OrderResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.OrderResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responser.APIErrorResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
       security:
       - BearerAuth: []
       summary: This endpoint is used to change the status of an order
@@ -2357,7 +2364,7 @@ paths:
         name: order
         required: true
         schema:
-          $ref: '#/definitions/dto.OrderUpdateRequest'
+          $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.OrderUpdateRequest'
       produces:
       - application/json
       responses:
@@ -2368,7 +2375,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responser.APIErrorResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
       security:
       - BearerAuth: []
       summary: This endpoint is used to update an order by ID
@@ -2395,7 +2402,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responser.APIErrorResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
       security:
       - BearerAuth: []
       summary: This endpoint is used to restore a deleted order
@@ -2413,12 +2420,12 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/entities.Role'
+              $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_domain_delivery_models_entities.Role'
             type: array
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responser.APIErrorResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
       security:
       - BearerAuth: []
       summary: Get all roles
@@ -2441,16 +2448,70 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/entities.Role'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_domain_delivery_models_entities.Role'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responser.APIErrorResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
       security:
       - BearerAuth: []
       summary: Get role by ID or name
       tags:
       - roles
+  /api/v1/tracking/location/{order_id}:
+    post:
+      consumes:
+      - application/json
+      description: Actualiza la ubicación del repartidor para un pedido específico
+      parameters:
+      - description: ID del pedido
+        in: path
+        name: order_id
+        required: true
+        type: string
+      - description: Datos de ubicación
+        in: body
+        name: location
+        required: true
+        schema:
+          $ref: '#/definitions/internal_infrastructure_api_handlers.LocationUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Ubicación actualizada correctamente
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Actualiza la ubicación del repartidor
+      tags:
+      - tracking
+  /api/v1/tracking/ws:
+    get:
+      consumes:
+      - application/json
+      description: Crea un canal WebSocket para recibir actualizaciones de pedidos
+      produces:
+      - application/json
+      responses:
+        "101":
+          description: Conexión WebSocket establecida
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Establece una conexión WebSocket para rastrear pedidos en tiempo real
+      tags:
+      - tracking
   /api/v1/users:
     get:
       consumes:
@@ -2507,11 +2568,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.PaginatedResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.PaginatedResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responser.APIErrorResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
       security:
       - BearerAuth: []
       summary: This endpoint is used to get all users
@@ -2527,7 +2588,7 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/dto.UserDTO'
+          $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.UserDTO'
       produces:
       - application/json
       responses:
@@ -2538,7 +2599,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responser.APIErrorResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
       security:
       - BearerAuth: []
       summary: This endpoint is used to create a new user
@@ -2565,7 +2626,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responser.APIErrorResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
       security:
       - BearerAuth: []
       summary: This endpoint is used to delete a user by ID
@@ -2587,11 +2648,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/entities.User'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_domain_delivery_models_entities.User'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responser.APIErrorResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
       security:
       - BearerAuth: []
       summary: This endpoint is used to get a user by ID
@@ -2612,7 +2673,7 @@ paths:
         name: active
         required: true
         schema:
-          $ref: '#/definitions/dto.ActivateUserDTO'
+          $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.ActivateUserDTO'
       produces:
       - application/json
       responses:
@@ -2623,7 +2684,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responser.APIErrorResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
       security:
       - BearerAuth: []
       summary: This endpoint is used to activate or deactivate a user by ID
@@ -2644,7 +2705,7 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/dto.UpdateUserDTO'
+          $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.UpdateUserDTO'
       produces:
       - application/json
       responses:
@@ -2655,7 +2716,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responser.APIErrorResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
       security:
       - BearerAuth: []
       summary: This endpoint is used to update a user by ID
@@ -2672,11 +2733,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/entities.User'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_domain_delivery_models_entities.User'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/responser.APIErrorResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
       security:
       - BearerAuth: []
       summary: This endpoint is used to get the authenticated users profile information
@@ -2704,7 +2765,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responser.APIErrorResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
       security:
       - BearerAuth: []
       summary: This endpoint is used to recover a user by ID
@@ -2726,7 +2787,7 @@ paths:
         name: role
         required: true
         schema:
-          $ref: '#/definitions/dto.AssignRoleDTO'
+          $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.AssignRoleDTO'
       produces:
       - application/json
       responses:
@@ -2737,7 +2798,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responser.APIErrorResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
       security:
       - BearerAuth: []
       summary: This endpoint is used to unassign a role from a user
@@ -2760,12 +2821,12 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/entities.Role'
+              $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_domain_delivery_models_entities.Role'
             type: array
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responser.APIErrorResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
       security:
       - BearerAuth: []
       summary: This endpoint is used to get all roles of a user
@@ -2786,7 +2847,7 @@ paths:
         name: role
         required: true
         schema:
-          $ref: '#/definitions/dto.AssignRoleDTO'
+          $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.AssignRoleDTO'
       produces:
       - application/json
       responses:
@@ -2797,7 +2858,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responser.APIErrorResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
       security:
       - BearerAuth: []
       summary: This endpoint is used to assign a role to a user
@@ -2824,7 +2885,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/responser.APIErrorResponse'
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
       security:
       - BearerAuth: []
       summary: This endpoint is used to clean all sessions of a user

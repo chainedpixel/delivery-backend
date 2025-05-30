@@ -11,6 +11,8 @@ import (
 	"github.com/MarlonG1/delivery-backend/pkg/shared/mappers/request_mapper"
 	"github.com/MarlonG1/delivery-backend/pkg/shared/mappers/response_mapper"
 	"github.com/gorilla/mux"
+
+	_ "github.com/MarlonG1/delivery-backend/internal/domain/delivery/models/entities"
 )
 
 type CompanyHandler struct {

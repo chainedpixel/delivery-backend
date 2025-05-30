@@ -35,7 +35,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.LoginRequest"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.LoginRequest"
                         }
                     }
                 ],
@@ -43,19 +43,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.LoginResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.LoginResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responser.APIErrorResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/responser.APIErrorResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
                         }
                     }
                 }
@@ -90,13 +90,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responser.APIErrorResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/responser.APIErrorResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
                         }
                     }
                 }
@@ -186,13 +186,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.PaginatedResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.PaginatedResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responser.APIErrorResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
                         }
                     }
                 }
@@ -221,7 +221,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.BranchCreateRequest"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.BranchCreateRequest"
                         }
                     }
                 ],
@@ -235,7 +235,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responser.APIErrorResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
                         }
                     }
                 }
@@ -275,14 +275,14 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/entities.Zone"
+                                "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_domain_delivery_models_entities.Zone"
                             }
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responser.APIErrorResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
                         }
                     }
                 }
@@ -325,7 +325,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responser.APIErrorResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
                         }
                     }
                 }
@@ -363,13 +363,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.BranchMetricsResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.BranchMetricsResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responser.APIErrorResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
                         }
                     }
                 }
@@ -412,7 +412,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responser.APIErrorResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
                         }
                     }
                 }
@@ -451,7 +451,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.ZoneAssignmentRequest"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.ZoneAssignmentRequest"
                         }
                     }
                 ],
@@ -465,7 +465,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responser.APIErrorResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
                         }
                     }
                 }
@@ -502,13 +502,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.BranchResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.BranchResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responser.APIErrorResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
                         }
                     }
                 }
@@ -544,7 +544,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.BranchUpdateRequest"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.BranchUpdateRequest"
                         }
                     }
                 ],
@@ -558,7 +558,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responser.APIErrorResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
                         }
                     }
                 }
@@ -639,13 +639,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.PaginatedResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.PaginatedResponse"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/responser.APIErrorResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
                         }
                     }
                 }
@@ -674,7 +674,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.CompanyCreateRequest"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.CompanyCreateRequest"
                         }
                     }
                 ],
@@ -688,7 +688,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responser.APIErrorResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
                         }
                     }
                 }
@@ -718,14 +718,14 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/dto.CompanyAddressResponse"
+                                "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.CompanyAddressResponse"
                             }
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responser.APIErrorResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
                         }
                     }
                 }
@@ -754,7 +754,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.CompanyAddressDTO"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.CompanyAddressDTO"
                         }
                     }
                 ],
@@ -768,7 +768,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responser.APIErrorResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
                         }
                     }
                 }
@@ -806,7 +806,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.CompanyAddressDTO"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.CompanyAddressDTO"
                         }
                     }
                 ],
@@ -820,7 +820,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responser.APIErrorResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
                         }
                     }
                 }
@@ -861,7 +861,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responser.APIErrorResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
                         }
                     }
                 }
@@ -895,7 +895,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responser.APIErrorResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
                         }
                     }
                 }
@@ -924,13 +924,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.CompanyMetricsResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.CompanyMetricsResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responser.APIErrorResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
                         }
                     }
                 }
@@ -958,13 +958,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.CompanyResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.CompanyResponse"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/responser.APIErrorResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
                         }
                     }
                 }
@@ -993,7 +993,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.CompanyUpdateRequest"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.CompanyUpdateRequest"
                         }
                     }
                 ],
@@ -1007,7 +1007,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responser.APIErrorResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
                         }
                     }
                 }
@@ -1041,7 +1041,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responser.APIErrorResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
                         }
                     }
                 }
@@ -1131,13 +1131,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.PaginatedResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.PaginatedResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responser.APIErrorResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
                         }
                     }
                 }
@@ -1166,7 +1166,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.OrderCreateRequest"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.OrderCreateRequest"
                         }
                     }
                 ],
@@ -1180,7 +1180,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responser.APIErrorResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
                         }
                     }
                 }
@@ -1223,7 +1223,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responser.APIErrorResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
                         }
                     }
                 }
@@ -1260,13 +1260,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.OrderResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.OrderResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responser.APIErrorResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
                         }
                     }
                 }
@@ -1302,7 +1302,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.OrderUpdateRequest"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.OrderUpdateRequest"
                         }
                     }
                 ],
@@ -1316,7 +1316,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responser.APIErrorResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
                         }
                     }
                 }
@@ -1357,7 +1357,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responser.APIErrorResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
                         }
                     }
                 }
@@ -1399,13 +1399,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.OrderResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.OrderResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responser.APIErrorResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
                         }
                     }
                 }
@@ -1435,14 +1435,14 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/entities.Role"
+                                "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_domain_delivery_models_entities.Role"
                             }
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responser.APIErrorResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
                         }
                     }
                 }
@@ -1479,13 +1479,99 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/entities.Role"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_domain_delivery_models_entities.Role"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responser.APIErrorResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/tracking/location/{order_id}": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Actualiza la ubicación del repartidor para un pedido específico",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tracking"
+                ],
+                "summary": "Actualiza la ubicación del repartidor",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID del pedido",
+                        "name": "order_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Datos de ubicación",
+                        "name": "location",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/internal_infrastructure_api_handlers.LocationUpdateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ubicación actualizada correctamente",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/tracking/ws": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Crea un canal WebSocket para recibir actualizaciones de pedidos",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tracking"
+                ],
+                "summary": "Establece una conexión WebSocket para rastrear pedidos en tiempo real",
+                "responses": {
+                    "101": {
+                        "description": "Conexión WebSocket establecida",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
                         }
                     }
                 }
@@ -1581,13 +1667,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.PaginatedResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.PaginatedResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responser.APIErrorResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
                         }
                     }
                 }
@@ -1616,7 +1702,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.UserDTO"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.UserDTO"
                         }
                     }
                 ],
@@ -1630,7 +1716,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responser.APIErrorResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
                         }
                     }
                 }
@@ -1658,13 +1744,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/entities.User"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_domain_delivery_models_entities.User"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/responser.APIErrorResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
                         }
                     }
                 }
@@ -1707,7 +1793,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responser.APIErrorResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
                         }
                     }
                 }
@@ -1746,14 +1832,14 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/entities.Role"
+                                "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_domain_delivery_models_entities.Role"
                             }
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responser.APIErrorResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
                         }
                     }
                 }
@@ -1789,7 +1875,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.AssignRoleDTO"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.AssignRoleDTO"
                         }
                     }
                 ],
@@ -1803,7 +1889,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responser.APIErrorResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
                         }
                     }
                 }
@@ -1839,7 +1925,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.AssignRoleDTO"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.AssignRoleDTO"
                         }
                     }
                 ],
@@ -1853,7 +1939,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responser.APIErrorResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
                         }
                     }
                 }
@@ -1896,7 +1982,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responser.APIErrorResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
                         }
                     }
                 }
@@ -1933,13 +2019,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/entities.User"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_domain_delivery_models_entities.User"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responser.APIErrorResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
                         }
                     }
                 }
@@ -1975,7 +2061,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.UpdateUserDTO"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.UpdateUserDTO"
                         }
                     }
                 ],
@@ -1989,7 +2075,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responser.APIErrorResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
                         }
                     }
                 }
@@ -2030,7 +2116,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responser.APIErrorResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
                         }
                     }
                 }
@@ -2066,7 +2152,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.ActivateUserDTO"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.ActivateUserDTO"
                         }
                     }
                 ],
@@ -2080,7 +2166,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responser.APIErrorResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
                         }
                     }
                 }
@@ -2088,7 +2174,229 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "dto.ActivateUserDTO": {
+        "github_com_MarlonG1_delivery-backend_internal_domain_delivery_models_entities.Profile": {
+            "type": "object",
+            "properties": {
+                "additional_info": {
+                    "type": "string",
+                    "example": "Additional information"
+                },
+                "birth_date": {
+                    "type": "string",
+                    "example": "2021-01-01"
+                },
+                "document_number": {
+                    "type": "string",
+                    "example": "000000000"
+                },
+                "document_type": {
+                    "type": "string",
+                    "example": "DNI"
+                },
+                "emergency_contact_name": {
+                    "type": "string",
+                    "example": "John Doe"
+                },
+                "emergency_contact_phone": {
+                    "type": "string",
+                    "example": "21212828"
+                },
+                "profile_picture_url": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string",
+                    "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                }
+            }
+        },
+        "github_com_MarlonG1_delivery-backend_internal_domain_delivery_models_entities.Role": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                },
+                "description": {
+                    "type": "string",
+                    "example": "Administrator role"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                },
+                "is_active": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "name": {
+                    "type": "string",
+                    "example": "admin"
+                }
+            }
+        },
+        "github_com_MarlonG1_delivery-backend_internal_domain_delivery_models_entities.User": {
+            "type": "object",
+            "properties": {
+                "company_id": {
+                    "type": "string",
+                    "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                },
+                "created_at": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                },
+                "deleted_at": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                },
+                "email": {
+                    "type": "string",
+                    "example": "example@example.com"
+                },
+                "email_verified_at": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                },
+                "full_name": {
+                    "type": "string",
+                    "example": "John Doe"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                },
+                "is_active": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "phone": {
+                    "type": "string",
+                    "example": "21212828"
+                },
+                "phone_verified_at": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                },
+                "profile": {
+                    "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_domain_delivery_models_entities.Profile"
+                },
+                "roles": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_domain_delivery_models_entities.UserRole"
+                    }
+                },
+                "sessions": {
+                    "description": "Relationships",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_domain_delivery_models_entities.UserSession"
+                    }
+                },
+                "updated_at": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                }
+            }
+        },
+        "github_com_MarlonG1_delivery-backend_internal_domain_delivery_models_entities.UserRole": {
+            "type": "object",
+            "properties": {
+                "assigned_at": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                },
+                "assigned_by": {
+                    "type": "string",
+                    "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                },
+                "auth": {
+                    "description": "Relationships",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_domain_delivery_models_entities.Role"
+                        }
+                    ]
+                },
+                "role_id": {
+                    "type": "string",
+                    "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                },
+                "user_id": {
+                    "type": "string",
+                    "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                }
+            }
+        },
+        "github_com_MarlonG1_delivery-backend_internal_domain_delivery_models_entities.UserSession": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                },
+                "device_info": {
+                    "type": "string",
+                    "example": "{\"os\":\"android\",\"version\":\"10\"}"
+                },
+                "expires_at": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                },
+                "ip_address": {
+                    "type": "string",
+                    "example": "200.43.52.1"
+                },
+                "last_activity": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                }
+            }
+        },
+        "github_com_MarlonG1_delivery-backend_internal_domain_delivery_models_entities.Zone": {
+            "type": "object",
+            "properties": {
+                "base_rate": {
+                    "type": "number"
+                },
+                "boundaries": {
+                    "type": "string"
+                },
+                "center_point": {
+                    "type": "string"
+                },
+                "code": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "is_active": {
+                    "type": "boolean"
+                },
+                "max_delivery_time": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "priority_level": {
+                    "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.ActivateUserDTO": {
             "type": "object",
             "properties": {
                 "active": {
@@ -2098,7 +2406,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.AssignRoleDTO": {
+        "github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.AssignRoleDTO": {
             "type": "object",
             "properties": {
                 "role": {
@@ -2108,7 +2416,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.BranchCreateRequest": {
+        "github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.BranchCreateRequest": {
             "type": "object",
             "required": [
                 "code",
@@ -2124,7 +2432,7 @@ const docTemplate = `{
                     "description": "Dirección asociada a la sucursal (opcional)",
                     "allOf": [
                         {
-                            "$ref": "#/definitions/dto.CompanyAddressDTO"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.CompanyAddressDTO"
                         }
                     ]
                 },
@@ -2157,7 +2465,7 @@ const docTemplate = `{
                     "description": "Horarios de operación de la sucursal",
                     "allOf": [
                         {
-                            "$ref": "#/definitions/dto.OperatingHoursDTO"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.OperatingHoursDTO"
                         }
                     ]
                 },
@@ -2168,7 +2476,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.BranchMetricsResponse": {
+        "github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.BranchMetricsResponse": {
             "type": "object",
             "properties": {
                 "active_drivers": {
@@ -2218,14 +2526,14 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.BranchResponse": {
+        "github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.BranchResponse": {
             "type": "object",
             "properties": {
                 "address": {
                     "description": "Dirección asociada a la sucursal",
                     "allOf": [
                         {
-                            "$ref": "#/definitions/dto.CompanyAddressResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.CompanyAddressResponse"
                         }
                     ]
                 },
@@ -2278,7 +2586,7 @@ const docTemplate = `{
                     "description": "Métricas de la sucursal (opcional)",
                     "allOf": [
                         {
-                            "$ref": "#/definitions/dto.BranchMetricsResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.BranchMetricsResponse"
                         }
                     ]
                 },
@@ -2309,7 +2617,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.BranchUpdateRequest": {
+        "github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.BranchUpdateRequest": {
             "type": "object",
             "properties": {
                 "code": {
@@ -2341,7 +2649,7 @@ const docTemplate = `{
                     "description": "Horarios de operación de la sucursal",
                     "allOf": [
                         {
-                            "$ref": "#/definitions/dto.OperatingHoursDTO"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.OperatingHoursDTO"
                         }
                     ]
                 },
@@ -2352,7 +2660,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.CompanyAddressDTO": {
+        "github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.CompanyAddressDTO": {
             "type": "object",
             "required": [
                 "address_line1",
@@ -2402,7 +2710,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.CompanyAddressResponse": {
+        "github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.CompanyAddressResponse": {
             "type": "object",
             "properties": {
                 "address_line1": {
@@ -2462,7 +2770,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.CompanyCreateRequest": {
+        "github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.CompanyCreateRequest": {
             "type": "object",
             "required": [
                 "contact_email",
@@ -2489,7 +2797,7 @@ const docTemplate = `{
                     "description": "Detalles del contrato en formato JSON",
                     "allOf": [
                         {
-                            "$ref": "#/definitions/dto.ContractDetailsDTO"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.ContractDetailsDTO"
                         }
                     ]
                 },
@@ -2522,7 +2830,7 @@ const docTemplate = `{
                     "description": "Dirección principal de la empresa",
                     "allOf": [
                         {
-                            "$ref": "#/definitions/dto.CompanyAddressDTO"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.CompanyAddressDTO"
                         }
                     ]
                 },
@@ -2543,7 +2851,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.CompanyMetricsResponse": {
+        "github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.CompanyMetricsResponse": {
             "type": "object",
             "properties": {
                 "active_branches": {
@@ -2588,21 +2896,21 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.CompanyResponse": {
+        "github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.CompanyResponse": {
             "type": "object",
             "properties": {
                 "addresses": {
                     "description": "Direcciones asociadas a la empresa",
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/dto.CompanyAddressResponse"
+                        "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.CompanyAddressResponse"
                     }
                 },
                 "branches": {
                     "description": "Sucursales asociadas a la empresa",
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/dto.BranchResponse"
+                        "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.BranchResponse"
                     }
                 },
                 "contact_email": {
@@ -2663,7 +2971,7 @@ const docTemplate = `{
                     "description": "Métricas de la empresa (opcional)",
                     "allOf": [
                         {
-                            "$ref": "#/definitions/dto.CompanyMetricsResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.CompanyMetricsResponse"
                         }
                     ]
                 },
@@ -2689,7 +2997,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.CompanyUpdateRequest": {
+        "github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.CompanyUpdateRequest": {
             "type": "object",
             "properties": {
                 "contact_email": {
@@ -2706,7 +3014,7 @@ const docTemplate = `{
                     "description": "Detalles del contrato en formato JSON",
                     "allOf": [
                         {
-                            "$ref": "#/definitions/dto.ContractDetailsDTO"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.ContractDetailsDTO"
                         }
                     ]
                 },
@@ -2742,7 +3050,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.ContractDetailsDTO": {
+        "github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.ContractDetailsDTO": {
             "type": "object",
             "required": [
                 "contract_type",
@@ -2790,7 +3098,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.DeliveryAddressRequest": {
+        "github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.DeliveryAddressRequest": {
             "description": "Delivery destination address information",
             "type": "object",
             "required": [
@@ -2843,7 +3151,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.DeliveryAddressResponse": {
+        "github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.DeliveryAddressResponse": {
             "description": "Delivery address information",
             "type": "object",
             "properties": {
@@ -2894,7 +3202,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.DeliveryAddressUpdateRequest": {
+        "github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.DeliveryAddressUpdateRequest": {
             "description": "Delivery destination address information for updates",
             "type": "object",
             "properties": {
@@ -2940,7 +3248,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.LoginRequest": {
+        "github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.LoginRequest": {
             "type": "object",
             "required": [
                 "email",
@@ -2962,7 +3270,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.LoginResponse": {
+        "github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.LoginResponse": {
             "type": "object",
             "properties": {
                 "token": {
@@ -2971,7 +3279,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.OperatingHoursDTO": {
+        "github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.OperatingHoursDTO": {
             "type": "object",
             "required": [
                 "weekdays",
@@ -2982,7 +3290,7 @@ const docTemplate = `{
                     "description": "Horario para días de semana",
                     "allOf": [
                         {
-                            "$ref": "#/definitions/dto.OperatingHoursTimeDTO"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.OperatingHoursTimeDTO"
                         }
                     ]
                 },
@@ -2990,13 +3298,13 @@ const docTemplate = `{
                     "description": "Horario para fines de semana",
                     "allOf": [
                         {
-                            "$ref": "#/definitions/dto.OperatingHoursTimeDTO"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.OperatingHoursTimeDTO"
                         }
                     ]
                 }
             }
         },
-        "dto.OperatingHoursTimeDTO": {
+        "github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.OperatingHoursTimeDTO": {
             "type": "object",
             "required": [
                 "end",
@@ -3015,7 +3323,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.OrderCreateRequest": {
+        "github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.OrderCreateRequest": {
             "description": "Request structure for creating a delivery order",
             "type": "object",
             "required": [
@@ -3045,7 +3353,7 @@ const docTemplate = `{
                     "description": "Delivery destination address details\n@required",
                     "allOf": [
                         {
-                            "$ref": "#/definitions/dto.DeliveryAddressRequest"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.DeliveryAddressRequest"
                         }
                     ]
                 },
@@ -3070,7 +3378,7 @@ const docTemplate = `{
                     "description": "Details about the package being delivered\n@required",
                     "allOf": [
                         {
-                            "$ref": "#/definitions/dto.PackageDetailRequest"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.PackageDetailRequest"
                         }
                     ]
                 },
@@ -3105,7 +3413,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.OrderDetailResponse": {
+        "github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.OrderDetailResponse": {
             "description": "Order details including price, schedule and delivery requirements",
             "type": "object",
             "properties": {
@@ -3149,7 +3457,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.OrderResponse": {
+        "github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.OrderResponse": {
             "description": "Order information with all related details",
             "type": "object",
             "properties": {
@@ -3198,7 +3506,7 @@ const docTemplate = `{
                     "description": "Delivery destination address",
                     "allOf": [
                         {
-                            "$ref": "#/definitions/dto.DeliveryAddressResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.DeliveryAddressResponse"
                         }
                     ]
                 },
@@ -3206,7 +3514,7 @@ const docTemplate = `{
                     "description": "Details of the order",
                     "allOf": [
                         {
-                            "$ref": "#/definitions/dto.OrderDetailResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.OrderDetailResponse"
                         }
                     ]
                 },
@@ -3241,7 +3549,7 @@ const docTemplate = `{
                     "description": "Details about the package",
                     "allOf": [
                         {
-                            "$ref": "#/definitions/dto.PackageDetailResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.PackageDetailResponse"
                         }
                     ]
                 },
@@ -3249,7 +3557,7 @@ const docTemplate = `{
                     "description": "Pickup origin address",
                     "allOf": [
                         {
-                            "$ref": "#/definitions/dto.PickupAddressResponse"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.PickupAddressResponse"
                         }
                     ]
                 },
@@ -3262,7 +3570,7 @@ const docTemplate = `{
                     "description": "Order status history",
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/dto.OrderStatusHistoryResponse"
+                        "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.OrderStatusHistoryResponse"
                     }
                 },
                 "tracking_number": {
@@ -3278,7 +3586,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.OrderStatusHistoryResponse": {
+        "github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.OrderStatusHistoryResponse": {
             "type": "object",
             "properties": {
                 "description": {
@@ -3299,7 +3607,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.OrderUpdateRequest": {
+        "github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.OrderUpdateRequest": {
             "description": "Request structure for updating a delivery order",
             "type": "object",
             "properties": {
@@ -3307,7 +3615,7 @@ const docTemplate = `{
                     "description": "Delivery destination address details",
                     "allOf": [
                         {
-                            "$ref": "#/definitions/dto.DeliveryAddressUpdateRequest"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.DeliveryAddressUpdateRequest"
                         }
                     ]
                 },
@@ -3332,7 +3640,7 @@ const docTemplate = `{
                     "description": "Details about the package being delivered",
                     "allOf": [
                         {
-                            "$ref": "#/definitions/dto.PackageDetailUpdateRequest"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.PackageDetailUpdateRequest"
                         }
                     ]
                 },
@@ -3370,7 +3678,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.PackageDetailRequest": {
+        "github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.PackageDetailRequest": {
             "description": "Package characteristics and handling information",
             "type": "object",
             "properties": {
@@ -3415,7 +3723,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.PackageDetailResponse": {
+        "github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.PackageDetailResponse": {
             "description": "Package characteristics and handling requirements",
             "type": "object",
             "properties": {
@@ -3446,7 +3754,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.PackageDetailUpdateRequest": {
+        "github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.PackageDetailUpdateRequest": {
             "description": "Package characteristics and handling information for updates",
             "type": "object",
             "properties": {
@@ -3491,7 +3799,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.PaginatedResponse": {
+        "github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.PaginatedResponse": {
             "description": "Paginated data response with metadata about pagination",
             "type": "object",
             "properties": {
@@ -3520,7 +3828,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.PickupAddressResponse": {
+        "github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.PickupAddressResponse": {
             "description": "Pickup address information",
             "type": "object",
             "properties": {
@@ -3581,7 +3889,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.UpdateUserDTO": {
+        "github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.UpdateUserDTO": {
             "type": "object",
             "properties": {
                 "active": {
@@ -3613,7 +3921,7 @@ const docTemplate = `{
                     "description": "Profile of the user to be updated",
                     "allOf": [
                         {
-                            "$ref": "#/definitions/dto.UpdateUserProfileDTO"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.UpdateUserProfileDTO"
                         }
                     ]
                 },
@@ -3628,7 +3936,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.UpdateUserProfileDTO": {
+        "github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.UpdateUserProfileDTO": {
             "type": "object",
             "properties": {
                 "additional_info": {
@@ -3663,7 +3971,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.UserDTO": {
+        "github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.UserDTO": {
             "type": "object",
             "properties": {
                 "email": {
@@ -3690,7 +3998,7 @@ const docTemplate = `{
                     "description": "Profile of the user to be created\n@required",
                     "allOf": [
                         {
-                            "$ref": "#/definitions/dto.UserProfileDTO"
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.UserProfileDTO"
                         }
                     ]
                 },
@@ -3706,7 +4014,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.UserProfileDTO": {
+        "github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.UserProfileDTO": {
             "type": "object",
             "properties": {
                 "additional_info": {
@@ -3741,7 +4049,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.ZoneAssignmentRequest": {
+        "github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.ZoneAssignmentRequest": {
             "description": "Solicitud para asignar una zona a una sucursal",
             "type": "object",
             "required": [
@@ -3755,229 +4063,7 @@ const docTemplate = `{
                 }
             }
         },
-        "entities.Profile": {
-            "type": "object",
-            "properties": {
-                "additional_info": {
-                    "type": "string",
-                    "example": "Additional information"
-                },
-                "birth_date": {
-                    "type": "string",
-                    "example": "2021-01-01"
-                },
-                "document_number": {
-                    "type": "string",
-                    "example": "000000000"
-                },
-                "document_type": {
-                    "type": "string",
-                    "example": "DNI"
-                },
-                "emergency_contact_name": {
-                    "type": "string",
-                    "example": "John Doe"
-                },
-                "emergency_contact_phone": {
-                    "type": "string",
-                    "example": "21212828"
-                },
-                "profile_picture_url": {
-                    "type": "string"
-                },
-                "user_id": {
-                    "type": "string",
-                    "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
-                }
-            }
-        },
-        "entities.Role": {
-            "type": "object",
-            "properties": {
-                "created_at": {
-                    "type": "string",
-                    "example": "2021-01-01T00:00:00Z"
-                },
-                "description": {
-                    "type": "string",
-                    "example": "Administrator role"
-                },
-                "id": {
-                    "type": "string",
-                    "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
-                },
-                "is_active": {
-                    "type": "boolean",
-                    "example": true
-                },
-                "name": {
-                    "type": "string",
-                    "example": "admin"
-                }
-            }
-        },
-        "entities.User": {
-            "type": "object",
-            "properties": {
-                "company_id": {
-                    "type": "string",
-                    "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
-                },
-                "created_at": {
-                    "type": "string",
-                    "example": "2021-01-01T00:00:00Z"
-                },
-                "deleted_at": {
-                    "type": "string",
-                    "example": "2021-01-01T00:00:00Z"
-                },
-                "email": {
-                    "type": "string",
-                    "example": "example@example.com"
-                },
-                "email_verified_at": {
-                    "type": "string",
-                    "example": "2021-01-01T00:00:00Z"
-                },
-                "full_name": {
-                    "type": "string",
-                    "example": "John Doe"
-                },
-                "id": {
-                    "type": "string",
-                    "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
-                },
-                "is_active": {
-                    "type": "boolean",
-                    "example": true
-                },
-                "phone": {
-                    "type": "string",
-                    "example": "21212828"
-                },
-                "phone_verified_at": {
-                    "type": "string",
-                    "example": "2021-01-01T00:00:00Z"
-                },
-                "profile": {
-                    "$ref": "#/definitions/entities.Profile"
-                },
-                "roles": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/entities.UserRole"
-                    }
-                },
-                "sessions": {
-                    "description": "Relationships",
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/entities.UserSession"
-                    }
-                },
-                "updated_at": {
-                    "type": "string",
-                    "example": "2021-01-01T00:00:00Z"
-                }
-            }
-        },
-        "entities.UserRole": {
-            "type": "object",
-            "properties": {
-                "assigned_at": {
-                    "type": "string",
-                    "example": "2021-01-01T00:00:00Z"
-                },
-                "assigned_by": {
-                    "type": "string",
-                    "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
-                },
-                "auth": {
-                    "description": "Relationships",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/entities.Role"
-                        }
-                    ]
-                },
-                "role_id": {
-                    "type": "string",
-                    "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
-                },
-                "user_id": {
-                    "type": "string",
-                    "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
-                }
-            }
-        },
-        "entities.UserSession": {
-            "type": "object",
-            "properties": {
-                "created_at": {
-                    "type": "string",
-                    "example": "2021-01-01T00:00:00Z"
-                },
-                "device_info": {
-                    "type": "string",
-                    "example": "{\"os\":\"android\",\"version\":\"10\"}"
-                },
-                "expires_at": {
-                    "type": "string",
-                    "example": "2021-01-01T00:00:00Z"
-                },
-                "id": {
-                    "type": "string",
-                    "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
-                },
-                "ip_address": {
-                    "type": "string",
-                    "example": "200.43.52.1"
-                },
-                "last_activity": {
-                    "type": "string",
-                    "example": "2021-01-01T00:00:00Z"
-                }
-            }
-        },
-        "entities.Zone": {
-            "type": "object",
-            "properties": {
-                "base_rate": {
-                    "type": "number"
-                },
-                "boundaries": {
-                    "type": "string"
-                },
-                "center_point": {
-                    "type": "string"
-                },
-                "code": {
-                    "type": "string"
-                },
-                "created_at": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "is_active": {
-                    "type": "boolean"
-                },
-                "max_delivery_time": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "priority_level": {
-                    "type": "integer"
-                },
-                "updated_at": {
-                    "type": "string"
-                }
-            }
-        },
-        "responser.APIError": {
+        "github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIError": {
             "type": "object",
             "properties": {
                 "code": {
@@ -3994,11 +4080,22 @@ const docTemplate = `{
                 }
             }
         },
-        "responser.APIErrorResponse": {
+        "github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse": {
             "type": "object",
             "properties": {
                 "error": {
-                    "$ref": "#/definitions/responser.APIError"
+                    "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIError"
+                }
+            }
+        },
+        "internal_infrastructure_api_handlers.LocationUpdateRequest": {
+            "type": "object",
+            "properties": {
+                "latitude": {
+                    "type": "number"
+                },
+                "longitude": {
+                    "type": "number"
                 }
             }
         }
