@@ -412,6 +412,7 @@ func (r *orderRepository) applyOrderPreloads(query *gorm.DB) *gorm.DB {
 		Preload("Branch").
 		Preload("Client").
 		Preload("Driver").
+		Preload("Driver.User").
 		Preload("Detail").
 		Preload("PackageDetail").
 		Preload("DeliveryAddress").

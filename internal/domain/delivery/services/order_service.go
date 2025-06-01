@@ -7,25 +7,35 @@ import (
 	"math/rand"
 	"time"
 
+	"github.com/MarlonG1/delivery-backend/internal/application/ports"
 	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/constants"
 	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/interfaces"
 	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/models/entities"
 	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/models/websocket"
-	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/ports"
+	domainPorts "github.com/MarlonG1/delivery-backend/internal/domain/delivery/ports"
 	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/value_objects"
 	errPackage "github.com/MarlonG1/delivery-backend/internal/domain/error"
 	"github.com/MarlonG1/delivery-backend/pkg/shared/logs"
 )
 
 type OrderService struct {
-	repo           ports.OrdererRepository
+	repo           domainPorts.OrdererRepository
 	trackerService interfaces.OrderTracker
+	emailService   ports.EmailService
+	companyRepo    domainPorts.CompanyRepository
 }
 
-func NewOrderService(repo ports.OrdererRepository, trackerService interfaces.OrderTracker) interfaces.Orderer {
+func NewOrderService(
+	repo domainPorts.OrdererRepository,
+	trackerService interfaces.OrderTracker,
+	emailService ports.EmailService,
+	companyRepo domainPorts.CompanyRepository,
+) interfaces.Orderer {
 	return &OrderService{
 		repo:           repo,
 		trackerService: trackerService,
+		emailService:   emailService,
+		companyRepo:    companyRepo,
 	}
 }
 
@@ -69,7 +79,7 @@ func (o OrderService) AssignDriverToOrder(ctx context.Context, orderID, driverID
 	// Notificar a los clientes sobre la asignación del conductor
 	order, err := o.repo.GetOrderByID(ctx, orderID)
 	if err == nil && order != nil {
-		o.notifyOrderUpdate(order, "Se ha asignado un conductor a tu pedido")
+		o.notifyOrderUpdate(ctx, order, "Se ha asignado un conductor a tu pedido")
 	}
 
 	return nil
@@ -119,8 +129,11 @@ func (o OrderService) CreateOrder(ctx context.Context, order *entities.Order) er
 		return errPackage.NewDomainErrorWithCause("OrderService", "CreateOrder", "failed to create qr code", err)
 	}
 
-	// 6. Notificar la creación del pedido
-	o.notifyOrderUpdate(order, "Pedido creado correctamente")
+	// 6. Notificar la creación del pedido (WebSocket + Email)
+	o.notifyOrderUpdate(ctx, order, "Pedido creado correctamente")
+
+	// 7. Enviar email de confirmación
+	go o.sendOrderEmail(context.Background(), "order_created", order)
 
 	return nil
 }
@@ -177,7 +190,10 @@ func (o OrderService) ChangeStatus(ctx context.Context, id, status string) error
 	updatedOrder, err := o.repo.GetOrderByID(ctx, id)
 	if err == nil && updatedOrder != nil {
 		description := getStatusChangeDescription(order.Status, status)
-		o.notifyOrderUpdate(updatedOrder, description)
+		o.notifyOrderUpdate(ctx, updatedOrder, description)
+
+		// 7. Enviar email según el estado
+		go o.handleStatusChangeEmail(ctx, updatedOrder, order.Status, status)
 	}
 
 	return nil
@@ -251,7 +267,7 @@ func (o OrderService) UpdateOrder(ctx context.Context, orderID string, order *en
 	// 5. Notificar actualización
 	updatedOrder, err := o.repo.GetOrderByID(ctx, orderID)
 	if err == nil && updatedOrder != nil {
-		o.notifyOrderUpdate(updatedOrder, "Pedido actualizado")
+		o.notifyOrderUpdate(ctx, updatedOrder, "Pedido actualizado")
 	}
 
 	return nil
@@ -293,7 +309,7 @@ func (o OrderService) SoftDeleteOrder(ctx context.Context, id string) error {
 	// 3. Notificar eliminación
 	order, err := o.repo.GetOrderByID(ctx, id)
 	if err == nil && order != nil {
-		o.notifyOrderUpdate(order, "Pedido eliminado")
+		o.notifyOrderUpdate(ctx, order, "Pedido eliminado")
 	}
 
 	return nil
@@ -321,7 +337,7 @@ func (o OrderService) RestoreOrder(ctx context.Context, id string) error {
 	// Notificar restauración
 	order, err := o.repo.GetOrderByID(ctx, id)
 	if err == nil && order != nil {
-		o.notifyOrderUpdate(order, "Pedido restaurado")
+		o.notifyOrderUpdate(ctx, order, "Pedido restaurado")
 	}
 
 	return nil
@@ -371,8 +387,8 @@ func (o OrderService) IsAvailableForDelete(ctx context.Context, orderID string) 
 	return nil
 }
 
-// notifyOrderUpdate envía actualizaciones del pedido a los clientes suscritos
-func (o OrderService) notifyOrderUpdate(order *entities.Order, description string) {
+// notifyOrderUpdate envía actualizaciones del pedido a los clientes suscritos (WebSocket)
+func (o OrderService) notifyOrderUpdate(ctx context.Context, order *entities.Order, description string) {
 	if o.trackerService == nil || order == nil {
 		return
 	}
@@ -385,7 +401,7 @@ func (o OrderService) notifyOrderUpdate(order *entities.Order, description strin
 		Order:       websocket.OrderInfoFromEntity(order),
 	}
 
-	// Enviar la actualización
+	// Enviar la actualización por WebSocket
 	err := o.trackerService.SendOrderUpdate(order.ID, updateData)
 	if err != nil {
 		logs.Error("Failed to send order update notification", map[string]interface{}{
@@ -393,6 +409,110 @@ func (o OrderService) notifyOrderUpdate(order *entities.Order, description strin
 			"status":  order.Status,
 			"error":   err.Error(),
 		})
+	}
+}
+
+// sendOrderEmail envía un email relacionado con el pedido
+// ✅ SOLUCIÓN: Usar fullOrder en el log
+func (o OrderService) sendOrderEmail(ctx context.Context, emailType string, order *entities.Order) {
+	if o.emailService == nil || order == nil {
+		return
+	}
+
+	// 1. Recargar la orden con todas las relaciones
+	fullOrder, err := o.repo.GetOrderByID(ctx, order.ID)
+	if err != nil {
+		logs.Error("Failed to reload order with relations for email", map[string]interface{}{
+			"orderID": order.ID,
+			"error":   err.Error(),
+		})
+		return
+	}
+
+	// 2. Validaciones críticas
+	if fullOrder.Client == nil {
+		logs.Error("Order client is null, cannot send email", map[string]interface{}{
+			"orderID": order.ID,
+		})
+		return
+	}
+
+	if fullOrder.Client.Email == "" {
+		logs.Error("Order client email is empty, cannot send email", map[string]interface{}{
+			"orderID":    order.ID,
+			"clientID":   fullOrder.Client.ID,
+			"clientName": fullOrder.Client.FullName,
+		})
+		return
+	}
+
+	// 3. Obtener datos de la empresa
+	company, err := o.companyRepo.GetCompanyByID(ctx, fullOrder.CompanyID)
+	if err != nil {
+		logs.Error("Failed to get company for email", map[string]interface{}{
+			"orderID":   fullOrder.ID,
+			"companyID": fullOrder.CompanyID,
+			"error":     err.Error(),
+		})
+		return
+	}
+
+	// 4. Construir datos para el email
+	orderData := &ports.OrderEmailData{
+		Order:         fullOrder,
+		Customer:      fullOrder.Client,
+		Company:       company,
+		TrackingURL:   fmt.Sprintf("https://elotes.xyz/pages/tracker/index.html?order_id=%s", fullOrder.ID),
+		EstimatedTime: "",
+		DriverInfo:    nil,
+	}
+
+	// 5. Agregar información del conductor si existe
+	if fullOrder.Driver != nil && fullOrder.Driver.User != nil {
+		orderData.DriverInfo = &ports.DriverEmailInfo{
+			Name:        fullOrder.Driver.User.FullName,
+			Phone:       fullOrder.Driver.User.Phone,
+			VehicleInfo: fmt.Sprintf("%s %s", fullOrder.Driver.VehicleModel, fullOrder.Driver.VehicleColor),
+		}
+	}
+
+	// 6. Calcular tiempo estimado si es relevante
+	if fullOrder.Detail != nil && !fullOrder.Detail.DeliveryDeadline.IsZero() {
+		duration := time.Until(fullOrder.Detail.DeliveryDeadline)
+		if duration > 0 {
+			orderData.EstimatedTime = fmt.Sprintf("%d minutos", int(duration.Minutes()))
+		}
+	}
+
+	// 7. Enviar el email
+	err = o.emailService.SendOrderEmail(ctx, emailType, orderData)
+	if err != nil {
+		logs.Error("Failed to send order email", map[string]interface{}{
+			"orderID":   fullOrder.ID,
+			"emailType": emailType,
+			"error":     err.Error(),
+		})
+	} else {
+		logs.Info("Order email sent successfully", map[string]interface{}{
+			"orderID":   fullOrder.ID,
+			"emailType": emailType,
+			"customer":  fullOrder.Client.Email,
+		})
+	}
+}
+
+// handleStatusChangeEmail maneja el envío de emails según cambios de estado
+func (o OrderService) handleStatusChangeEmail(ctx context.Context, order *entities.Order, oldStatus, newStatus string) {
+	switch newStatus {
+	case constants.OrderStatusAccepted, constants.OrderStatusPickedUp:
+		// Pedido iniciado/recogido
+		o.sendOrderEmail(ctx, "order_started", order)
+	case constants.OrderStatusDelivered:
+		// Pedido completado
+		o.sendOrderEmail(ctx, "order_completed", order)
+	case constants.OrderStatusCancelled:
+		// Pedido cancelado
+		o.sendOrderEmail(ctx, "order_cancelled", order)
 	}
 }
 
@@ -453,16 +573,6 @@ func (o OrderService) UpdateDriverLocation(ctx context.Context, orderID string, 
 		})
 		return errPackage.NewDomainErrorWithCause("OrderService", "UpdateDriverLocation", "failed to get order", err)
 	}
-
-	// Verificar que el pedido está en un estado adecuado para actualizar ubicación
-	//if order.Status != constants.OrderStatusInTransit &&
-	//	order.Status != constants.OrderStatusPickedUp {
-	//	logs.Warn("Order not in right state for location updates", map[string]interface{}{
-	//		"orderID": orderID,
-	//		"status":  order.Status,
-	//	})
-	//	return errPackage.NewDomainError("OrderService", "UpdateDriverLocation", "order not in right state for location updates")
-	//}
 
 	// Enviar la actualización de ubicación
 	locationData := &websocket.LocationUpdateData{

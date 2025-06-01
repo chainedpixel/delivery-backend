@@ -6,13 +6,15 @@ type HandlerContainer struct {
 	usesCases *UseCaseContainer
 	services  *ServiceContainer
 
-	authHandler    *handlers.AuthHandler
-	userHandler    *handlers.UserHandler
-	orderHandler   *handlers.OrderHandler
-	roleHandler    *handlers.RoleHandler
-	companyHandler *handlers.CompanyHandler
-	branchHandler  *handlers.BranchHandler
-	trackerHandler *handlers.TrackerHandler
+	authHandler       *handlers.AuthHandler
+	userHandler       *handlers.UserHandler
+	orderHandler      *handlers.OrderHandler
+	roleHandler       *handlers.RoleHandler
+	companyHandler    *handlers.CompanyHandler
+	branchHandler     *handlers.BranchHandler
+	trackerHandler    *handlers.TrackerHandler
+	emailTestHandler  *handlers.EmailTestHandler
+	simulationHandler *handlers.OrderSimulationHandler
 }
 
 func NewHandlerContainer(userCases *UseCaseContainer, services *ServiceContainer) *HandlerContainer {
@@ -30,8 +32,18 @@ func (c *HandlerContainer) Initialize() error {
 	c.companyHandler = handlers.NewCompanyHandler(c.usesCases.GetCompanyUseCase())
 	c.branchHandler = handlers.NewBranchHandler(c.usesCases.GetBranchUseCase())
 	c.trackerHandler = handlers.NewTrackerHandler(c.usesCases.GetTrackerUseCase())
+	c.emailTestHandler = handlers.NewEmailTestHandler(c.services.GetEmailService())
+	c.simulationHandler = handlers.NewOrderSimulationHandler(c.services.GetSimulationService())
 
 	return nil
+}
+
+func (c *HandlerContainer) GetSimulationHandler() *handlers.OrderSimulationHandler {
+	return c.simulationHandler
+}
+
+func (c *HandlerContainer) GetEmailTestHandler() *handlers.EmailTestHandler {
+	return c.emailTestHandler
 }
 
 func (c *HandlerContainer) GetBranchHandler() *handlers.BranchHandler {

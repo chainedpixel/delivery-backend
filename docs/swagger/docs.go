@@ -1411,6 +1411,206 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/orders/{order_id}/assign-driver": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Asigna automáticamente un driver disponible al pedido especificado",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orders-simulation"
+                ],
+                "summary": "Asigna un driver aleatorio a un pedido",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Order ID",
+                        "name": "order_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/orders/{order_id}/simulate": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Simula todo el flujo de un pedido: asignación de driver y cambios de estado automáticos",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orders-simulation"
+                ],
+                "summary": "Inicia la simulación automática de un pedido",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Order ID",
+                        "name": "order_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/orders/{order_id}/simulate-movement": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Inicia la simulación de movimiento del conductor en tiempo real",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orders-simulation"
+                ],
+                "summary": "Simula el movimiento del conductor para un pedido",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Order ID",
+                        "name": "order_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/orders/{order_id}/simulation-status": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retorna información detallada sobre el estado actual del pedido y su simulación",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orders-simulation"
+                ],
+                "summary": "Obtiene el estado actual de la simulación",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Order ID",
+                        "name": "order_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/roles": {
             "get": {
                 "security": [
@@ -1480,6 +1680,186 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_domain_delivery_models_entities.Role"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/test/email": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Endpoint para probar el envío de correos electrónicos del sistema",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "email-testing"
+                ],
+                "summary": "Envía un email de prueba",
+                "parameters": [
+                    {
+                        "description": "Email test data",
+                        "name": "email",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.EmailTestRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.EmailTestResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/test/email/order": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Endpoint para probar los templates de emails de pedidos existentes",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "email-testing"
+                ],
+                "summary": "Envía un email de prueba usando templates de pedidos",
+                "parameters": [
+                    {
+                        "description": "Order test data",
+                        "name": "email",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.EmailTestResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/test/email/status": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Endpoint para verificar el estado y configuración del servicio de email",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "email-testing"
+                ],
+                "summary": "Obtiene el estado del servicio de email",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/test/email/welcome": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Endpoint para enviar un email de bienvenida predefinido (útil para pruebas rápidas)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "email-testing"
+                ],
+                "summary": "Envía un email de bienvenida de prueba",
+                "parameters": [
+                    {
+                        "description": "Recipient info",
+                        "name": "email",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.EmailTestResponse"
                         }
                     },
                     "400": {
@@ -3245,6 +3625,93 @@ const docTemplate = `{
                     "description": "State or province name",
                     "type": "string",
                     "example": "NY"
+                }
+            }
+        },
+        "github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.EmailTestRequest": {
+            "type": "object",
+            "required": [
+                "body",
+                "content_type",
+                "subject",
+                "to"
+            ],
+            "properties": {
+                "attachments": {
+                    "description": "Adjuntos (opcional) - URLs o paths a archivos",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "[\"path/to/file.pdf\"]"
+                    ]
+                },
+                "bcc": {
+                    "description": "BCC (opcional)",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "[\"bcc@example.com\"]"
+                    ]
+                },
+                "body": {
+                    "description": "Cuerpo del email (puede ser HTML o texto plano)",
+                    "type": "string",
+                    "example": "\u003ch1\u003eThis is a test email\u003c/h1\u003e\u003cp\u003eHello from delivery system!\u003c/p\u003e"
+                },
+                "cc": {
+                    "description": "CC (opcional)",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "[\"cc1@example.com\"",
+                        " \"cc2@example.com\"]"
+                    ]
+                },
+                "content_type": {
+                    "description": "Tipo de contenido (html o text)",
+                    "type": "string",
+                    "example": "html"
+                },
+                "subject": {
+                    "description": "Asunto del email",
+                    "type": "string",
+                    "example": "Test Email Subject"
+                },
+                "to": {
+                    "description": "Email de destino",
+                    "type": "string",
+                    "example": "test@example.com"
+                }
+            }
+        },
+        "github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.EmailTestResponse": {
+            "type": "object",
+            "properties": {
+                "details": {
+                    "description": "Detalles adicionales",
+                    "type": "object",
+                    "additionalProperties": true
+                },
+                "message": {
+                    "description": "Mensaje de resultado",
+                    "type": "string",
+                    "example": "Email sent successfully"
+                },
+                "message_id": {
+                    "description": "ID del mensaje (si está disponible)",
+                    "type": "string",
+                    "example": "msg_12345"
+                },
+                "success": {
+                    "description": "Estado del envío",
+                    "type": "boolean",
+                    "example": true
                 }
             }
         },

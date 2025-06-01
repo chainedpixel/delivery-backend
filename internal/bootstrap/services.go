@@ -7,6 +7,7 @@ import (
 	"github.com/MarlonG1/delivery-backend/internal/domain/delivery/services"
 	"github.com/MarlonG1/delivery-backend/internal/infrastructure/adapters/auth"
 	"github.com/MarlonG1/delivery-backend/internal/infrastructure/adapters/cache"
+	"github.com/MarlonG1/delivery-backend/internal/infrastructure/adapters/email"
 	"github.com/MarlonG1/delivery-backend/internal/infrastructure/adapters/token"
 )
 
@@ -14,15 +15,17 @@ type ServiceContainer struct {
 	repositories *RepositoryContainer
 	config       *config.EnvConfig
 
-	jwtService     ports.TokenProvider
-	cacheService   ports.Cacher
-	authService    ports.Authenticator
-	userService    domainPorts.Userer
-	orderService   domainPorts.Orderer
-	companyService domainPorts.Companyrer
-	metricsService domainPorts.MetricsService
-	trackerService domainPorts.OrderTracker
-	roleService    domainPorts.Roler
+	jwtService        ports.TokenProvider
+	cacheService      ports.Cacher
+	authService       ports.Authenticator
+	userService       domainPorts.Userer
+	orderService      domainPorts.Orderer
+	companyService    domainPorts.Companyrer
+	metricsService    domainPorts.MetricsService
+	trackerService    domainPorts.OrderTracker
+	emailService      ports.EmailService
+	roleService       domainPorts.Roler
+	simulationService *services.OrderSimulationService
 }
 
 func NewServiceContainer(repositories *RepositoryContainer, config *config.EnvConfig) *ServiceContainer {
@@ -44,12 +47,22 @@ func (c *ServiceContainer) Initialize() error {
 	c.authService = auth.NewAuthService(c.repositories.GetUserRepository(), c.jwtService)
 	c.userService = services.NewUserService(c.repositories.GetUserRepository())
 	c.trackerService = services.NewTrackerService(c.repositories.GetTrackerRepository())
-	c.orderService = services.NewOrderService(c.repositories.GetOrderRepository(), c.trackerService)
+	c.emailService = email.NewEmailService(c.config)
+	c.orderService = services.NewOrderService(c.repositories.GetOrderRepository(), c.trackerService, c.emailService, c.repositories.GetCompanyRepository())
+	c.simulationService = services.NewOrderSimulationService(c.orderService, c.repositories.GetCompanyRepository(), c.repositories.GetUserRepository(), c.trackerService)
 	c.metricsService = services.NewCompanyMetricsService(c.repositories.GetCompanyRepository(), c.repositories.GetMetricsRepository())
 	c.companyService = services.NewCompanyService(c.repositories.GetCompanyRepository(), c.metricsService)
 	c.roleService = services.NewRoleService(c.repositories.GetRoleRepository())
 
 	return nil
+}
+
+func (c *ServiceContainer) GetSimulationService() *services.OrderSimulationService {
+	return c.simulationService
+}
+
+func (c *ServiceContainer) GetEmailService() ports.EmailService {
+	return c.emailService
 }
 
 func (c *ServiceContainer) GetMetricsService() domainPorts.MetricsService {

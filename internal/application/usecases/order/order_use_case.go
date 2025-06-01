@@ -35,7 +35,7 @@ func (uc *OrderUseCase) CreateOrder(ctx context.Context, authUserID string, reqO
 	}
 
 	//1. Obtener la dirección de la empresa según el ID
-	companyAddress, err := uc.companyService.GetAddressByID(ctx, reqOrder.CompanyPickUpID, claims.UserID)
+	companyAddress, err := uc.companyService.GetAddressByID(ctx, claims.CompanyID, reqOrder.CompanyPickUpID)
 	if err != nil {
 		return err
 	}

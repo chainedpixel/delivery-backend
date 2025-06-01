@@ -56,23 +56,51 @@ type OrderInfo struct {
 	TrackingNumber string  `json:"tracking_number"`
 	Status         string  `json:"status"`
 	DriverName     string  `json:"driver_name,omitempty"`
+	DriverID       string  `json:"driver_id,omitempty"`
 	EstimatedTime  int     `json:"estimated_time,omitempty"` // Tiempo estimado en minutos
 	CompanyName    string  `json:"company_name"`
+	ClientName     string  `json:"client_name,omitempty"`
 	Progress       float64 `json:"progress"` // Porcentaje de progreso (0-100)
+	CreatedAt      string  `json:"created_at,omitempty"`
+	UpdatedAt      string  `json:"updated_at,omitempty"`
 }
 
-// OrderInfoFromEntity convierte una entidad Order a un OrderInfo
+// OrderInfoFromEntity convierte una entidad Order a un OrderInfo con manejo seguro de nulos
 func OrderInfoFromEntity(order *entities.Order) *OrderInfo {
+	if order == nil {
+		return nil
+	}
+
 	info := &OrderInfo{
 		ID:             order.ID,
 		TrackingNumber: order.TrackingNumber,
 		Status:         order.Status,
-		CompanyName:    order.Company.Name,
+		CompanyName:    "Sistema de Delivery", // Valor por defecto
+		ClientName:     "",
+		DriverName:     "",
+		DriverID:       "",
+		CreatedAt:      order.CreatedAt.Format("2006-01-02 15:04:05"),
+		UpdatedAt:      order.UpdatedAt.Format("2006-01-02 15:04:05"),
 	}
 
-	// Agregar datos del repartidor si existe
-	if order.Driver != nil && order.Driver.User != nil {
-		info.DriverName = order.Driver.User.FullName
+	// Manejar datos de la empresa de forma segura
+	if order.Company != nil && order.Company.Name != "" {
+		info.CompanyName = order.Company.Name
+	}
+
+	// Manejar datos del cliente de forma segura
+	if order.Client != nil && order.Client.FullName != "" {
+		info.ClientName = order.Client.FullName
+	}
+
+	// Manejar datos del conductor de forma segura
+	if order.DriverID != nil {
+		info.DriverID = *order.DriverID
+		if order.Driver != nil && order.Driver.User != nil && order.Driver.User.FullName != "" {
+			info.DriverName = order.Driver.User.FullName
+		} else {
+			info.DriverName = "Conductor asignado"
+		}
 	}
 
 	// Calcular progreso según el estado
@@ -83,10 +111,16 @@ func OrderInfoFromEntity(order *entities.Order) *OrderInfo {
 		info.Progress = 25
 	case "PICKED_UP":
 		info.Progress = 50
+	case "IN_WAREHOUSE":
+		info.Progress = 60
 	case "IN_TRANSIT":
 		info.Progress = 75
 	case "DELIVERED":
+		info.Progress = 90
+	case "COMPLETED":
 		info.Progress = 100
+	case "CANCELLED", "RETURNED", "LOST":
+		info.Progress = 0
 	default:
 		info.Progress = 0
 	}

@@ -814,6 +814,71 @@ definitions:
         example: NY
         type: string
     type: object
+  github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.EmailTestRequest:
+    properties:
+      attachments:
+        description: Adjuntos (opcional) - URLs o paths a archivos
+        example:
+        - '["path/to/file.pdf"]'
+        items:
+          type: string
+        type: array
+      bcc:
+        description: BCC (opcional)
+        example:
+        - '["bcc@example.com"]'
+        items:
+          type: string
+        type: array
+      body:
+        description: Cuerpo del email (puede ser HTML o texto plano)
+        example: <h1>This is a test email</h1><p>Hello from delivery system!</p>
+        type: string
+      cc:
+        description: CC (opcional)
+        example:
+        - '["cc1@example.com"'
+        - ' "cc2@example.com"]'
+        items:
+          type: string
+        type: array
+      content_type:
+        description: Tipo de contenido (html o text)
+        example: html
+        type: string
+      subject:
+        description: Asunto del email
+        example: Test Email Subject
+        type: string
+      to:
+        description: Email de destino
+        example: test@example.com
+        type: string
+    required:
+    - body
+    - content_type
+    - subject
+    - to
+    type: object
+  github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.EmailTestResponse:
+    properties:
+      details:
+        additionalProperties: true
+        description: Detalles adicionales
+        type: object
+      message:
+        description: Mensaje de resultado
+        example: Email sent successfully
+        type: string
+      message_id:
+        description: ID del mensaje (si está disponible)
+        example: msg_12345
+        type: string
+      success:
+        description: Estado del envío
+        example: true
+        type: boolean
+    type: object
   github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.LoginRequest:
     properties:
       device_info:
@@ -2381,6 +2446,136 @@ paths:
       summary: This endpoint is used to update an order by ID
       tags:
       - orders
+  /api/v1/orders/{order_id}/assign-driver:
+    post:
+      consumes:
+      - application/json
+      description: Asigna automáticamente un driver disponible al pedido especificado
+      parameters:
+      - description: Order ID
+        in: path
+        name: order_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Asigna un driver aleatorio a un pedido
+      tags:
+      - orders-simulation
+  /api/v1/orders/{order_id}/simulate:
+    post:
+      consumes:
+      - application/json
+      description: 'Simula todo el flujo de un pedido: asignación de driver y cambios
+        de estado automáticos'
+      parameters:
+      - description: Order ID
+        in: path
+        name: order_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Inicia la simulación automática de un pedido
+      tags:
+      - orders-simulation
+  /api/v1/orders/{order_id}/simulate-movement:
+    post:
+      consumes:
+      - application/json
+      description: Inicia la simulación de movimiento del conductor en tiempo real
+      parameters:
+      - description: Order ID
+        in: path
+        name: order_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Simula el movimiento del conductor para un pedido
+      tags:
+      - orders-simulation
+  /api/v1/orders/{order_id}/simulation-status:
+    get:
+      consumes:
+      - application/json
+      description: Retorna información detallada sobre el estado actual del pedido
+        y su simulación
+      parameters:
+      - description: Order ID
+        in: path
+        name: order_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Obtiene el estado actual de la simulación
+      tags:
+      - orders-simulation
   /api/v1/orders/recovery/{order_id}:
     get:
       consumes:
@@ -2458,6 +2653,121 @@ paths:
       summary: Get role by ID or name
       tags:
       - roles
+  /api/v1/test/email:
+    post:
+      consumes:
+      - application/json
+      description: Endpoint para probar el envío de correos electrónicos del sistema
+      parameters:
+      - description: Email test data
+        in: body
+        name: email
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.EmailTestRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.EmailTestResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Envía un email de prueba
+      tags:
+      - email-testing
+  /api/v1/test/email/order:
+    post:
+      consumes:
+      - application/json
+      description: Endpoint para probar los templates de emails de pedidos existentes
+      parameters:
+      - description: Order test data
+        in: body
+        name: email
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.EmailTestResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Envía un email de prueba usando templates de pedidos
+      tags:
+      - email-testing
+  /api/v1/test/email/status:
+    get:
+      consumes:
+      - application/json
+      description: Endpoint para verificar el estado y configuración del servicio
+        de email
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Obtiene el estado del servicio de email
+      tags:
+      - email-testing
+  /api/v1/test/email/welcome:
+    post:
+      consumes:
+      - application/json
+      description: Endpoint para enviar un email de bienvenida predefinido (útil para
+        pruebas rápidas)
+      parameters:
+      - description: Recipient info
+        in: body
+        name: email
+        required: true
+        schema:
+          additionalProperties:
+            type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_dto.EmailTestResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_MarlonG1_delivery-backend_internal_infrastructure_api_responser.APIErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Envía un email de bienvenida de prueba
+      tags:
+      - email-testing
   /api/v1/tracking/location/{order_id}:
     post:
       consumes:

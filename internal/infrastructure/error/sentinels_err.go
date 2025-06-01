@@ -36,4 +36,21 @@ var (
 	ErrAuthorizationHeaderNotFound = errors.New("authorization header not found, please provide a valid token")
 	ErrInvalidAuthorizationFormat  = errors.New("invalid authorization format, the format should be 'Bearer <token>'")
 	ErrTokenExpiredOrTampered      = errors.New("token is expired or has been tampered with, please provide a valid token")
+
+	ErrInvalidEmailConfig   = errors.New("invalid email configuration")
+	ErrSMTPConnectionFailed = errors.New("failed to connect to SMTP server")
+
+	ErrNoRecipients        = errors.New("no recipients specified")
+	ErrEmailSendFailed     = errors.New("failed to send email")
+	ErrInvalidEmailAddress = errors.New("invalid email address")
+
+	ErrTemplateNotFound         = errors.New("email template not found")
+	ErrInvalidTemplate          = errors.New("invalid email template")
+	ErrTemplateProcessingFailed = errors.New("failed to process email template")
+
+	ErrEmptyEmailBody    = errors.New("email body cannot be empty")
+	ErrEmptyEmailSubject = errors.New("email subject cannot be empty")
+
+	ErrInvalidAttachment  = errors.New("invalid email attachment")
+	ErrAttachmentTooLarge = errors.New("attachment exceeds size limit")
 )
